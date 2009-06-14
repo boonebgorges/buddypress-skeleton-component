@@ -43,7 +43,7 @@ class BP_Example_Template {
 	var $pag_num;
 	var $pag_links;
 	
-	function bp_example_template( $user_id, $per_page, $max ) {
+	function bp_example_template( $user_id, $type, $per_page, $max ) {
 		global $bp;
 		
 		if ( !$user_id )
@@ -64,27 +64,34 @@ class BP_Example_Template {
 		$this->user_id = $user_id;
 		
 		/***
-		 * Consider using WordPress Object Caching to limit your calls to the database.
-		 * For more information and doc links, see the bottom of 'bp-example.php'
-		 *
-	 	 * Example:
-	 	 *	
-		 *		if ( !$this->items = wp_cache_get( 'bp_get_example_items_' . $user_id, 'bp' ) ) {
-		 *			$this->items = bp_example_get_items_for_user( $user_id );
-		 *			wp_cache_set( 'bp_get_example_items_' . $user_id, $this->items, 'bp' );
-		 *		}
-		 *
+		 * You can use the "type" variable to fetch different things to output.
+		 * For example on the groups template loop, you can fetch groups by "newest", "active", "alphabetical"
+		 * and more. This would be the "type". You can then call different functions to fetch those
+		 * different results.
 		 */
 		
+		// switch ( $type ) {
+		// 	case 'newest':
+		// 		$this->items = bp_example_get_newest( $user_id, $this->pag_num, $this->pag_page );
+		// 		break;
+		// 
+		// 	case 'popular':
+		// 		$this->items = bp_example_get_popular( $user_id, $this->pag_num, $this->pag_page );				
+		// 		break;
+		// 
+		// 	case 'alphabetical':
+		// 		$this->items = bp_example_get_alphabetical( $user_id, $this->pag_num, $this->pag_page );				
+		// 		break;
+		// }
+		
 		// Item Requests
-		/*
 		if ( !$max || $max >= (int)$this->items['total'] )
 			$this->total_item_count = (int)$this->items['total'];
 		else
 			$this->total_item_count = (int)$max;
 		
 		$this->items = $this->items['items'];
-				
+
 		if ( $max ) {
 			if ( $max >= count($this->items) )
 				$this->item_count = count($this->items);
@@ -93,7 +100,6 @@ class BP_Example_Template {
 		} else {
 			$this->item_count = count($this->items);
 		}
-		*/
 		
 		/* Remember to change the "x" in "xpage" to match whatever character(s) you're using above */
 		$this->pag_links = paginate_links( array(
@@ -152,7 +158,7 @@ class BP_Example_Template {
 	}
 }
 
-function bp_get_example_has_items( $args = '' ) {
+function bp_example_has_items( $args = '' ) {
 	global $bp, $items_template;
 	
 	/***
@@ -164,15 +170,15 @@ function bp_get_example_has_items( $args = '' ) {
 	 * e.g. bp_get_example_has_items( 'per_page=10&max=50' );
 	 */
 	
-	
 	/***
 	 * Set the defaults for the parameters you are accepting via the "bp_get_example_has_items()"
 	 * function call 
 	 */
 	$defaults = array(
+		'user_id' => false,
 		'per_page' => 10,
 		'max' => false,
-		'type' => 'all'
+		'type' => 'newest'
 	);
 
 	/***
@@ -182,31 +188,36 @@ function bp_get_example_has_items( $args = '' ) {
 	$r = wp_parse_args( $args, $defaults );
 	extract( $r, EXTR_SKIP );
 
-	$items_template = new BP_Example_Template( $per_page, $max, $type );
+	$items_template = new BP_Example_Template( $user_id, $type, $per_page, $max );
 		
 	return $items_template->has_items();
 }
 
-function bp_get_example_the_item() {
+function bp_example_the_item() {
 	global $items_template;
 	return $items_template->the_item();
 }
 
-function bp_get_example_items() {
+function bp_example_items() {
 	global $items_template;
 	return $items_template->user_items();
 }
 
-function bp_get_example_item_name() {
-	global $items_template;
-	
-	echo ''; // Example: $items_template->item->name;
+function bp_example_item_name() {
+	echo bp_example_get_item_name();
 }
-
-function bp_get_example_item_pagination() {
-	global $items_template;
+	/* Always provide a "get" function for each template tag, that will return, not echo. */
+	function bp_example_get_item_name() {
+		global $items_template;
+		echo apply_filters( 'bp_example_get_item_name', $items_template->item->name ); // Example: $items_template->item->name;
+	}
 	
-	echo $items_template->pag_links;
+function bp_example_item_pagination() {
+	echo bp_example_get_item_pagination();
 }
+	function bp_example_get_item_pagination() {
+		global $items_template;
+		return apply_filters( 'bp_example_get_item_pagination', $items_template->pag_links );
+	}
 
 ?>

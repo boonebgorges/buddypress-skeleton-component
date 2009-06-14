@@ -3,7 +3,7 @@ Contributors: apeatling, jeffsayre
 Tags: buddypress
 Requires at least: WPMU 2.7.1, BuddyPress 1.0.1
 Tested up to: 2.7.1/1.0.1
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 
 This is a bare-bones component that should provide a good starting block to building your own custom BuddyPress component.
 

@@ -30,7 +30,7 @@
  * The third parameter "1" adds the highest priority to the filter call.
  */
  
- add_filter( 'bp_get_example_some_output', 'wp_filter_kses', 1 );
+ add_filter( 'bp_example_get_item_name', 'wp_filter_kses', 1 );
 
 /**
  * In your save() method in 'bp-example-classes.php' you will have 'before save' filters on
