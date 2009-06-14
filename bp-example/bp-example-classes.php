@@ -74,11 +74,11 @@ class BP_Example_TableName {
 		 *   add_filter( 'example_data_fieldname1_before_save', 'wp_filter_kses' );
 		 */	
 		
-		$this->fieldname1 = apply_filters( 'example_data_fieldname1_before_save', $this->fieldname1, $this->id );
-		$this->fieldname2 = apply_filters( 'example_data_fieldname2_before_save', $this->fieldname2, $this->id );
+		$this->fieldname1 = apply_filters( 'bp_example_data_fieldname1_before_save', $this->fieldname1, $this->id );
+		$this->fieldname2 = apply_filters( 'bp_example_data_fieldname2_before_save', $this->fieldname2, $this->id );
 		
 		/* Call a before save action here */
-		do_action( 'example_data_before_save', $this );
+		do_action( 'bp_example_data_before_save', $this );
 						
 		if ( $this->id ) {
 			// Update
@@ -117,7 +117,7 @@ class BP_Example_TableName {
 		}	
 		
 		/* Add an after save action here */
-		do_action( 'example_data_after_save', $this ); 
+		do_action( 'bp_example_data_after_save', $this ); 
 		
 		return $result;
 	}

@@ -14,7 +14,7 @@ Site Wide Only: true
 */
 
 /*************************************************************************************************************
- --- SKELETON COMPONENT V1.2.1 ---
+ --- SKELETON COMPONENT V1.3 ---
 
  Contributors: apeatling, jeffsayre
 
@@ -37,25 +37,6 @@ Site Wide Only: true
  do this, whenever the user auto-upgrades BuddyPress - your custom component will be deleted automatically. Design
  your component to run in the /wp-content/plugins/ directory
  *************************************************************************************************************/
-
-/* Check to make sure BuddyPress is installed and active before your component is loaded */
-function bp_component_load_buddypress() {
-	if ( function_exists( 'bp_core_setup_globals' ) )
-		return true;
-	
-	/* Get the list of active sitewide plugins */
-	$active_sitewide_plugins = maybe_unserialize( get_site_option( 'active_sitewide_plugins' ) );
-	
-	if ( !isset( $active_sidewide_plugins['buddypress/bp-loader.php'] ) )
-		return false;
-	
-	if ( isset( $active_sidewide_plugins['buddypress/bp-loader.php'] ) && !function_exists( 'bp_core_setup_globals' ) ) {
-		require_once( WP_PLUGIN_DIR . '/buddypress/bp-loader.php' );
-		return true;
-	}
-	
-	return false;
-}
 
 /* Define a constant that can be checked to see if the component is installed or not. */
 define ( 'BP_EXAMPLE_IS_INSTALLED', 1 );
@@ -1007,6 +988,36 @@ function bp_example_remove_data( $user_id ) {
 }
 add_action( 'wpmu_delete_user', 'bp_example_remove_data', 1 );
 add_action( 'delete_user', 'bp_example_remove_data', 1 );
+
+/**
+ * bp_example_load_buddypress()
+ *
+ * When we activate the component, we must make sure BuddyPress is loaded first (if active)
+ * If it's not active, then the plugin should not be activated.
+ */
+function bp_example_load_buddypress() {
+	if ( function_exists( 'bp_core_setup_globals' ) )
+		return true;
+	
+	/* Get the list of active sitewide plugins */
+	$active_sitewide_plugins = maybe_unserialize( get_site_option( 'active_sitewide_plugins' ) );
+	if ( isset( $active_sidewide_plugins['buddypress/bp-loader.php'] ) && !function_exists( 'bp_core_setup_globals' ) ) {
+		require_once( WP_PLUGIN_DIR . '/buddypress/bp-loader.php' );
+		return true;
+	}
+	
+	/* If we get to here, BuddyPress is not active, so we need to deactive the plugin and redirect. */
+	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	if ( file_exists( ABSPATH . 'wp-admin/includes/mu.php' ) )
+		require_once( ABSPATH . 'wp-admin/includes/mu.php' );
+
+	deactivate_plugins( basename(__FILE__), true );
+	if ( function_exists( 'deactivate_sitewide_plugin') )
+		deactivate_sitewide_plugin( basename(__FILE__), true );
+		
+	wp_redirect( get_blog_option( BP_ROOT_BLOG, 'home' ) . '/wp-admin/plugins.php' );
+}
+add_action( 'plugins_loaded', 'bp_example_load_buddypress', 11 );
 
 /***
  * Object Caching Support ----
