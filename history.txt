@@ -1,0 +1,51 @@
+Version 1.2.1 ( June 10th 2009 )
+--------------------------------------------------------------
+- Updated to support changes up to BuddyPress 1.0.1 (r1538)
+- Added a check to make sure BuddyPress is installed and active before your component is loaded
+- Switched out bp_fetch_user_fullname(), which is deprecated, for bp_core_get_user_displayname()
+- Added get_() functions to template functions so that values can be returned inside of template loops as well as echoed
+- Added WP_PLUGIN_DIR to all require() calls to provide absolute paths
+- Added filters to bp_core_load_template() calls
+- Applied security enhancement to bp-example-widgets. Instead of echoing a variable, now directly references the set option via attribute_escape()
+- Added a missing stripslashes() to bp-example-notifications
+- Added missing $wpdb and $bp global declarations to bp_example_tablename()
+- Added max fallback to commented out groups widget example
+- Fixed pagination bug for when the max value is more than the total number of items being returned
+- Added deprecated.txt file to list all BuddyPress functions deprecated up to V1.0.1
+- Changed skeleton directory structure so all component files are located in bp-example folder. This is necessary to make require() work properly
+
+
+
+Version 1.2 ( April 25th 2009 )
+--------------------------------------------------------------
+Big thanks to Jeff Sayre for his help and changeset scouring for this version!
+
+- Updated to support changes up to BuddyPress 1.0-RC2 (r1406)
+- Added "Do not run you component in /wp-content/plugins/buddypress/" notice
+- Replaced BP_PLUGIN_URL calls with WP_PLUGIN_URL calls as custom components should not run in /buddypress/ dir.
+- Removed require call to bp-core.php as this is no longer needed and will cause problems.
+- Updated filters on internal settings to 'is_defined' calls (can then override in wp-config.php)
+- Moved bp-example-admin.php require call to an admin function so it is only loaded in the admin area.
+- Fixed missing translation function calls on strings
+- Added 'recorded_time' parameter to record_activity() function
+- Updated add_submenu() admin calls to use the new "BuddyPress" admin menu
+- Added before save filters to database save() method.
+- Added before and after save actions to save() method.
+- Removed call to bp_example_add_activity_bullets_css() as will no longer work and is theme specific.
+- Added much more emphasis on the importance of using wp_filter_kses()
+- Updated custom template loop class to use 'user_id=1&per_page=10&max=30' WordPress style parameter support.
+- Added wp_cache_get() object caching calls to show where data can be cached if used.
+
+
+Version 1.1 ( February 10th 2009 )
+--------------------------------------------------------------
+
+- Changed naming convention from 'component' to 'example' to avoid confusion
+- Added wp_nonce_url() checking for security on user actions
+
+
+Version 1.0 ( Feburary 7th 2009 )
+--------------------------------------------------------------
+
+- Initial Release.
+
