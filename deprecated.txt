@@ -1,0 +1,28 @@
+BuddyPress Deprecated Functions
+as of v1.0.1
+
+-----------------------------
+bp-core-templatetags.php
+-----------------------------
+
+bp_fetch_user_fullname() --> use bp_core_get_user_displayname()
+
+-----------------------------
+bp-core.php
+-----------------------------
+
+bp_core_global_user_fullname() --> use bp_core_get_user_displayname()
+bp_core_get_member_themes() --> use bp_core_get_buddypress_themes()
+bp_core_get_userid_from_user_login() --> use bp_core_get_userid()
+
+-----------------------------
+bp-groups.php
+-----------------------------
+
+groups_get_group_users() --> use groups_get_group_members()
+
+-----------------------------
+bp-xprofile-templatetags.php
+-----------------------------
+
+bp_group_has_fields() --> use bp_profile_group_has_fields()
