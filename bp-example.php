@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: My BuddyPress Component
+Plugin Name: BuddyPress Skeleton Component
 Plugin URI: http://example.org/my/awesome/bp/component
 Description: This BuddyPress component is the greatest thing since sliced bread.
 Version: 1.0
