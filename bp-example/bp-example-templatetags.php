@@ -85,20 +85,20 @@ class BP_Example_Template {
 		// }
 		
 		// Item Requests
-		if ( !$max || $max >= (int)$this->items['total'] )
-			$this->total_item_count = (int)$this->items['total'];
+		if ( !$max || $max >= (int)$this->items['total'] )
+			$this->total_item_count = (int)$this->items['total'];
 		else
-			$this->total_item_count = (int)$max;
+			$this->total_item_count = (int)$max;
 		
-		$this->items = $this->items['items'];
-
-		if ( $max ) {
-			if ( $max >= count($this->items) )
-				$this->item_count = count($this->items);
+		$this->items = $this->items['items'];
+		
+		if ( $max ) {
+			if ( $max >= count($this->items) )
+				$this->item_count = count($this->items);
 			else
-				$this->item_count = (int)$max;
-		} else {
-			$this->item_count = count($this->items);
+				$this->item_count = (int)$max;
+		} else {
+			$this->item_count = count($this->items);
 		}
 		
 		/* Remember to change the "x" in "xpage" to match whatever character(s) you're using above */

@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: My BuddyPress Component
+Plugin Name: BuddyPress Skeleton Component
 Plugin URI: http://example.org/my/awesome/bp/component
 Description: This BuddyPress component is the greatest thing since sliced bread.
-Version: 1.0
+Version: 1.2.1
 Revision Date: MMMM DD, YYYY
 Requires at least: What WPMU version, what BuddyPress version? (Example: WPMU 2.7.1, BuddyPress 1.0.1 (r1406))
 Tested up to: What WPMU version, what BuddyPress version?
@@ -14,7 +14,7 @@ Site Wide Only: true
 */
 
 /*************************************************************************************************************
- --- SKELETON COMPONENT V1.3 ---
+ --- SKELETON COMPONENT V1.2.1 ---
 
  Contributors: apeatling, jeffsayre
 
