@@ -1,5 +1,10 @@
 Version 1.2.1 ( June 10th 2009 )
 --------------------------------------------------------------
+- Fixed line ending bug causing invisible syntax error
+
+
+Version 1.2.1 ( June 10th 2009 )
+--------------------------------------------------------------
 - Updated to support changes up to BuddyPress 1.0.1 (r1538)
 - Added a check to make sure BuddyPress is installed and active before your component is loaded
 - Switched out bp_fetch_user_fullname(), which is deprecated, for bp_core_get_user_displayname()
