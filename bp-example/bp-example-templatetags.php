@@ -1,223 +1,71 @@
 <?php
 
 /**
- * In this file you should define template tag functions that end users can add to their template files.
- * Each template tag function should echo the final data so that it will output the required information
- * just by calling the function name.
+ * In this file you should create and register widgets for your component.
+ *
+ * Widgets should be small, contained functionality that a site administrator can drop into
+ * a widget enabled zone (column, sidebar etc)
+ *
+ * Good examples of suitable widget functionality would be short lists of updates or featured content.
+ *
+ * For example the friends and groups components have widgets to show the active, newest and most popular
+ * of each.
  */
 
-/**
- * If you want to go a step further, you can create your own custom WordPress loop for your component.
- * By doing this you could output a number of items within a loop, just as you would output a number
- * of blog posts within a standard WordPress loop.
- *
- * The example template class below would allow you do the following in the template file:
- *
- * 	<?php if ( bp_get_example_has_items() ) : ?>
- *
- *		<?php while ( bp_get_example_items() ) : bp_get_example_the_item(); ?>
- *
- *			<p><?php bp_get_example_item_name() ?></p>
- *
- *		<?php endwhile; ?>
- *		
- *	<?php else : ?>
- *
- *		<p class="error">No items!</p>
- *		
- *	<?php endif; ?>
- *
- * Obviously, you'd want to be more specific than the word 'item'.
- *
- */
+function bp_example_register_widgets() {
+	add_action('widgets_init', create_function('', 'return register_widget("BP_Example_Widget");') );
+}
+add_action( 'plugins_loaded', 'bp_example_register_widgets' );
 
-class BP_Example_Template {
-	var $current_item = -1;
-	var $item_count;
-	var $items;
-	var $item;
+class BP_Example_Widget extends WP_Widget {
 	
-	var $in_the_loop;
-	
-	var $pag_page;
-	var $pag_num;
-	var $pag_links;
-	
-	function bp_example_template( $user_id, $type, $per_page, $max ) {
+	function bp_example_widget() {
+		parent::WP_Widget( false, $name = __( 'Example Widget', 'buddypress' ) );
+	}
+
+	function widget( $args, $instance ) {
 		global $bp;
 		
-		if ( !$user_id )
-			$user_id = $bp->displayed_user->id;
-				
-		/***
-		 * If you want to make parameters that can be passed, then append a
-		 * character or two to "page" like this: $_REQUEST['xpage']
-		 * You can add more than a single letter.
-		 *
-		 * The "x" in "xpage" should be changed to something unique so as not to conflict with
-		 * BuddyPress core components which use the unique characters "b", "g", "u", "w",
-		 * "ac", "fr", "gr", "ml", "mr" with "page".
-		 */
+		extract( $args );
 		
-		$this->pag_page = isset( $_REQUEST['xpage'] ) ? intval( $_REQUEST['xpage'] ) : 1;
-		$this->pag_num = isset( $_GET['num'] ) ? intval( $_GET['num'] ) : $per_page;
-		$this->user_id = $user_id;
-		
-		/***
-		 * You can use the "type" variable to fetch different things to output.
-		 * For example on the groups template loop, you can fetch groups by "newest", "active", "alphabetical"
-		 * and more. This would be the "type". You can then call different functions to fetch those
-		 * different results.
-		 */
-		
-		// switch ( $type ) {
-		// 	case 'newest':
-		// 		$this->items = bp_example_get_newest( $user_id, $this->pag_num, $this->pag_page );
-		// 		break;
-		// 
-		// 	case 'popular':
-		// 		$this->items = bp_example_get_popular( $user_id, $this->pag_num, $this->pag_page );				
-		// 		break;
-		// 
-		// 	case 'alphabetical':
-		// 		$this->items = bp_example_get_alphabetical( $user_id, $this->pag_num, $this->pag_page );				
-		// 		break;
-		// }
-		
-		// Item Requests
-		if ( !$max || $max >= (int)$this->items['total'] )
-			$this->total_item_count = (int)$this->items['total'];
-		else
-			$this->total_item_count = (int)$max;
-		
-		$this->items = $this->items['items'];
-		
-		if ( $max ) {
-			if ( $max >= count($this->items) )
-				$this->item_count = count($this->items);
-			else
-				$this->item_count = (int)$max;
-		} else {
-			$this->item_count = count($this->items);
-		}
-		
-		/* Remember to change the "x" in "xpage" to match whatever character(s) you're using above */
-		$this->pag_links = paginate_links( array(
-			'base' => add_query_arg( 'xpage', '%#%' ),
-			'format' => '',
-			'total' => ceil( (int) $this->total_item_count / (int) $this->pag_num ),
-			'current' => (int) $this->pag_page,
-			'prev_text' => '&laquo;',
-			'next_text' => '&raquo;',
-			'mid_size' => 1			
-		));
-	}
+		echo $before_widget;
+		echo $before_title .
+			 $widget_name . 
+		     $after_title; ?>
 	
-	function has_items() {
-		if ( $this->item_count )
-			return true;
-		
-		return false;
-	}
-	
-	function next_item() {
-		$this->current_item++;
-		$this->item = $this->items[$this->current_item];
-		
-		return $this->item;
-	}
-	
-	function rewind_items() {
-		$this->current_item = -1;
-		if ( $this->item_count > 0 ) {
-			$this->item = $this->items[0];
-		}
-	}
-	
-	function user_items() { 
-		if ( $this->current_item + 1 < $this->item_count ) {
-			return true;
-		} elseif ( $this->current_item + 1 == $this->item_count ) {
-			do_action('loop_end');
-			// Do some cleaning up after the loop
-			$this->rewind_items();
-		}
-
-		$this->in_the_loop = false;
-		return false;
-	}
-	
-	function the_item() {
-		global $item, $bp;
-
-		$this->in_the_loop = true;
-		$this->item = $this->next_item();
-				
-		if ( 0 == $this->current_item ) // loop has just started
-			do_action('loop_start');
-	}
-}
-
-function bp_example_has_items( $args = '' ) {
-	global $bp, $items_template;
+	<?php
 	
 	/***
-	 * This function should accept arguments passes as a string, just the same
-	 * way a 'query_posts()' call accepts parameters.
-	 * At a minimum you should accept 'per_page' and 'max' parameters to determine
-	 * the number of items to show per page, and the total number to return.
-	 * 
-	 * e.g. bp_get_example_has_items( 'per_page=10&max=50' );
+	 * This is where you add your HTML and render what you want your widget to display.
 	 */
 	
-	/***
-	 * Set the defaults for the parameters you are accepting via the "bp_get_example_has_items()"
-	 * function call 
-	 */
-	$defaults = array(
-		'user_id' => false,
-		'per_page' => 10,
-		'max' => false,
-		'type' => 'newest'
-	);
+	?>
+	
+	<?php echo $after_widget; ?>
+	<?php
+	}
 
-	/***
-	 * This function will extract all the parameters passed in the string, and turn them into
-	 * proper variables you can use in the code - $per_page, $max
-	 */
-	$r = wp_parse_args( $args, $defaults );
-	extract( $r, EXTR_SKIP );
-
-	$items_template = new BP_Example_Template( $user_id, $type, $per_page, $max );
+	function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
 		
-	return $items_template->has_items();
-}
+		/* This is where you update options for this widget */
+		
+		$instance['max_items'] = strip_tags( $new_instance['max_items'] );
+		$instance['per_page'] = strip_tags( $new_instance['per_page'] );
 
-function bp_example_the_item() {
-	global $items_template;
-	return $items_template->the_item();
-}
-
-function bp_example_items() {
-	global $items_template;
-	return $items_template->user_items();
-}
-
-function bp_example_item_name() {
-	echo bp_example_get_item_name();
-}
-	/* Always provide a "get" function for each template tag, that will return, not echo. */
-	function bp_example_get_item_name() {
-		global $items_template;
-		echo apply_filters( 'bp_example_get_item_name', $items_template->item->name ); // Example: $items_template->item->name;
+		return $instance;
 	}
-	
-function bp_example_item_pagination() {
-	echo bp_example_get_item_pagination();
-}
-	function bp_example_get_item_pagination() {
-		global $items_template;
-		return apply_filters( 'bp_example_get_item_pagination', $items_template->pag_links );
+
+	function form( $instance ) {
+		$instance = wp_parse_args( (array) $instance, array( 'max_items' => 200, 'per_page' => 25 ) );
+		$per_page = strip_tags( $instance['per_page'] );
+		$max_items = strip_tags( $instance['max_items'] );
+		?>
+
+		<p><label for="bp-example-widget-per-page"><?php _e( 'Number of Items Per Page:', 'bp-example' ); ?> <input class="widefat" id="<?php echo $this->get_field_id( 'per_page' ); ?>" name="<?php echo $this->get_field_name( 'per_page' ); ?>" type="text" value="<?php echo attribute_escape( $per_page ); ?>" style="width: 30%" /></label></p>
+		<p><label for="bp-example-widget-max"><?php _e( 'Max items to show:', 'bp-example' ); ?> <input class="widefat" id="<?php echo $this->get_field_id( 'max_items' ); ?>" name="<?php echo $this->get_field_name( 'max_items' ); ?>" type="text" value="<?php echo attribute_escape( $max_items ); ?>" style="width: 30%" /></label></p>
+	<?php
 	}
+}
 
 ?>

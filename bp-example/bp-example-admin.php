@@ -11,27 +11,6 @@
  */
 
 /**
- * bp_example_add_admin_menu()
- *
- * Registers the component admin menu into the admin menu array.
- */
-function bp_example_add_admin_menu() {
-	global $wpdb, $bp;
-	
-	if ( !is_site_admin() )
-		return false;
-	
-	/**
-	 * Add the component's administration tab under the "BuddyPress" menu for site administrators
-	 *
-	 * Use 'bp-core.php' as the first parameter to add your submenu to the "BuddyPress" menu.
-	 * Use 'wpmu-admin.php' if you want it under the "Site Admin" menu.
-	 */
-	add_submenu_page( 'bp-core.php', __( 'Example Admin', 'bp-example' ), __( 'Example Admin', 'bp-example' ), 1, "bp_example_settings", "bp_example_admin" );	
-}
-add_action( 'admin_menu', 'bp_example_add_admin_menu' );
-
-/**
  * bp_example_admin()
  *
  * Checks for form submission, saves component settings and outputs admin screen HTML.
@@ -56,7 +35,7 @@ function bp_example_admin() {
 		
 		<?php if ( isset($updated) ) : ?><?php echo "<div id='message' class='updated fade'><p>" . __( 'Settings Updated.', 'bp-example' ) . "</p></div>" ?><?php endif; ?>
 			
-		<form action="<?php echo site_url() . '/wp-admin/admin.php?page=bp_example_settings' ?>" name="example-settings-form" id="example-settings-form" method="post">				
+		<form action="<?php echo site_url() . '/wp-admin/admin.php?page=bp-example-settings' ?>" name="example-settings-form" id="example-settings-form" method="post">				
 
 			<table class="form-table">
 				<tr valign="top">

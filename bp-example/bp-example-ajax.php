@@ -26,6 +26,11 @@
  * Below is an example of the addremove_friend AJAX action in the friends component.
  */
 
+/***
+ * NOTE:
+ * Try and avoid returning HTML layout in your ajax functions.
+ */
+
 function example_friends_ajax_addremove_friend() {
 	global $bp;
 
