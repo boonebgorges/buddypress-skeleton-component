@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: apeatling, jeffsayre
 Tags: buddypress
-Requires at least: WPMU 2.7.1, BuddyPress 1.0.1
-Tested up to: 2.7.1/1.0.1
-Stable tag: 1.2.2
+Requires at least: WPMU 2.8.4, BuddyPress 1.1
+Tested up to: 2.8.4/1.1
+Stable tag: 1.3
 
 This is a bare-bones component that should provide a good starting block to building your own custom BuddyPress component.
 
@@ -22,5 +22,4 @@ Copy /bp-example/ and bp-example.php into /wp-content/plugins/ and activate the 
 == Notes ==
 
 History.txt - contains all the changes since version 1.0
-Deprecated.txt - contains all the function deprecated in BuddyPress since 1.0
 License.txt - contains the licensing details for this component.

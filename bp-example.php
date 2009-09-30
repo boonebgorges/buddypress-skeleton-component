@@ -3,9 +3,9 @@
 Plugin Name: BuddyPress Skeleton Component
 Plugin URI: http://example.org/my/awesome/bp/component
 Description: This BuddyPress component is the greatest thing since sliced bread.
-Version: 1.2.2
+Version: 1.3
 Revision Date: MMMM DD, YYYY
-Requires at least: What WPMU version, what BuddyPress version? (Example: WPMU 2.7.1, BuddyPress 1.0.1 (r1406))
+Requires at least: What WPMU version, what BuddyPress version? ( Example: WPMU 2.8.4, BuddyPress 1.1 )
 Tested up to: What WPMU version, what BuddyPress version?
 License: (Example: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html)
 Author: Dr. Jan Itor
@@ -14,7 +14,7 @@ Site Wide Only: true
 */
 
 /*************************************************************************************************************
- --- SKELETON COMPONENT V1.2.2 ---
+ --- SKELETON COMPONENT V1.3 ---
 
  Contributors: apeatling, jeffsayre
 
@@ -42,7 +42,7 @@ Site Wide Only: true
 define ( 'BP_EXAMPLE_IS_INSTALLED', 1 );
 
 /* Define a constant that will hold the current version number of the component */
-define ( 'BP_EXAMPLE_VERSION', '1.0' );
+define ( 'BP_EXAMPLE_VERSION', '1.3' );
 
 /* Define a constant that will hold the database version number that can be used for upgrading the DB
  *
@@ -159,18 +159,19 @@ function bp_example_install() {
  */
 function bp_example_setup_globals() {
 	global $bp, $wpdb;
+
+	/* For internal identification */
+	$bp->example->id = 'example';
 	
 	$bp->example->table_name = $wpdb->base_prefix . 'bp_example';
-	$bp->example->image_base = WP_PLUGIN_URL . '/bp-example/images';
-	$bp->example->format_activity_function = 'bp_example_format_activity';
 	$bp->example->format_notification_function = 'bp_example_format_notifications';
 	$bp->example->slug = BP_EXAMPLE_SLUG;
-
-	$bp->version_numbers->example = BP_EXAMPLE_VERSION;
+	
+	/* Register this in the active components array */
+	$bp->active_components[$bp->example->slug] = $bp->example->id;
 }
 add_action( 'plugins_loaded', 'bp_example_setup_globals', 5 );	
-add_action( 'admin_menu', 'bp_example_setup_globals', 1 );
-
+add_action( 'admin_menu', 'bp_example_setup_globals', 2 );
 
 /**
  * bp_example_check_installed()
@@ -184,11 +185,15 @@ function bp_example_check_installed() {
 	if ( !is_site_admin() )
 		return false;
 	
-	/***
-	 * If you call your admin functionality here, it will only be loaded when the user is in the
-	 * wp-admin area, not on every page load.
+	/**
+	 * Add the component's administration tab under the "BuddyPress" menu for site administrators
+	 *
+	 * Use 'bp-general-settings' as the first parameter to add your submenu to the "BuddyPress" menu.
+	 * Use 'wpmu-admin.php' if you want it under the "Site Admin" menu.
 	 */
 	require ( WP_PLUGIN_DIR . '/bp-example/bp-example-admin.php' );
+
+	add_submenu_page( 'bp-general-settings', __( 'Example Admin', 'bp-example' ), __( 'Example Admin', 'bp-example' ), 'manage-options', 'bp-example-settings', 'bp_example_admin' );	
 
 	/* Need to check db tables exist, activate hook no-worky in mu-plugins folder. */
 	if ( get_site_option('bp-example-db-version') < BP_EXAMPLE_DB_VERSION )
@@ -205,43 +210,48 @@ add_action( 'admin_menu', 'bp_example_check_installed' );
  */
 function bp_example_setup_nav() {
 	global $bp;
-	
+
 	/* Add 'Example' to the main navigation */
-	bp_core_add_nav_item( 
-		__( 'Example', 'bp-example' ), /* The display name */ 
-		$bp->example->slug /* The slug */
-	);
-	
-	/* Set a specific sub nav item as the default when the top level item is clicked */
-	bp_core_add_nav_default( 
-		$bp->example->slug, /* The slug of the parent nav item */ 
-		'bp_example_screen_one', /* The function to run when clicked */ 
-		'screen-one' /* The slug of the sub nav item to make default */ 
-	);
+	bp_core_new_nav_item( array(
+		'name' => __( 'Example', 'bp-example' ),
+		'slug' => $bp->example->slug,
+		'position' => 80,
+		'screen_function' => 'bp_example_screen_one',
+		'default_subnav_slug' => 'screen-one'
+	) );
 	
 	$example_link = $bp->loggedin_user->domain . $bp->example->slug . '/';
 	
 	/* Create two sub nav items for this component */
-	bp_core_add_subnav_item( 
-		$bp->example->slug, /* The slug of the parent */ 
-		'screen-one', /* The slug for the sub nav item */ 
-		__( 'Screen One', 'bp-example' ), /* The display name for the sub nav item */ 
-		$example_link, /* The URL of the parent */ 
-		'bp_example_screen_one' /* The function to run when clicked */
-	);
+	bp_core_new_subnav_item( array(
+		'name' => __( 'Screen One', 'bp-example' ),
+		'slug' => 'screen-one',
+		'parent_slug' => $bp->example->slug,
+		'parent_url' => $example_link,
+		'screen_function' => 'bp_example_screen_one',
+		'position' => 10
+	) );
 	
-	bp_core_add_subnav_item( 
-		$bp->example->slug, 
-		'screen-two', 
-		__( 'Screen Two', 'bp-example' ), 
-		$example_link, 
-		'bp_example_screen_two', 
-		false, /* We don't need to set a custom css ID for this sub nav item */ 
-		bp_is_home() /* We DO want to restrict only the logged in user to this sub nav item */
-	);
-	
+	bp_core_new_subnav_item( array(
+		'name' => __( 'Screen Two', 'bp-example' ),
+		'slug' => 'screen-two',
+		'parent_slug' => $bp->example->slug,
+		'parent_url' => $example_link,
+		'screen_function' => 'bp_example_screen_two',
+		'position' => 20,
+		'user_has_access' => bp_is_home() // Only the logged in user can access this on his/her profile
+	) );
+
 	/* Add a nav item for this component under the settings nav item. See bp_example_screen_settings_menu() for more info */
-	bp_core_add_subnav_item( 'settings', 'example-admin', __( 'Example', 'bp-example' ), $bp->loggedin_user->domain . 'settings/', 'bp_example_screen_settings_menu', false, bp_is_home() );	
+	bp_core_new_subnav_item( array(
+		'name' => __( 'Example', 'bp-example' ),
+		'slug' => 'example-admin',
+		'parent_slug' => $bp->settings->slug,
+		'parent_url' => $bp->loggedin_user->domain . $bp->settings->slug . '/',
+		'screen_function' => 'bp_example_screen_settings_menu',
+		'position' => 40,
+		'user_has_access' => bp_is_home() // Only the logged in user can access this on his/her profile
+	) );
 	
 	/* Only execute the following code if we are actually viewing this component (e.g. http://example.org/example) */
 	if ( $bp->current_component == $bp->example->slug ) {
@@ -250,7 +260,7 @@ function bp_example_setup_nav() {
 			$bp->bp_options_title = __( 'My Example', 'bp-example' );
 		} else {
 			/* If the user is viewing someone elses profile area, set the title to "[user fullname]" */
-			$bp->bp_options_avatar = bp_core_get_avatar( $bp->displayed_user->id, 1 );
+			$bp->bp_options_avatar = bp_core_fetch_avatar( array( 'item_id' => $bp->displayed_user->id, 'type' => 'thumb' ) );
 			$bp->bp_options_title = $bp->displayed_user->fullname;
 		}
 	}
@@ -259,11 +269,14 @@ add_action( 'wp', 'bp_example_setup_nav', 2 );
 add_action( 'admin_menu', 'bp_example_setup_nav', 2 );
 
 
-/**
- * The following functions are "Screen" functions. This means that they will be run when their
- * corresponding navigation menu item is clicked, they should therefore pass through to a template
- * file to display output to the user.
+/********************************************************************************
+ * Screen Functions
+ *
+ * Screen functions are the controllers of BuddyPress. They will execute when their
+ * specific URL is caught. They will first save or manipulate data using business
+ * functions, then pass on the user to a template file.
  */
+
 
 /**
  * bp_example_screen_one()
@@ -487,7 +500,10 @@ function bp_example_screen_two() {
 function bp_example_screen_settings_menu() {
 	global $bp, $current_user, $bp_settings_updated, $pass_error;
 
-	if ( isset( $_POST['submit'] ) && check_admin_referer('bp-example-admin') ) {
+	if ( isset( $_POST['submit'] ) ) {
+		/* Check the nonce */
+		check_admin_referer('bp-example-admin');
+		
 		$bp_settings_updated = true;
 
 		/** 
@@ -536,6 +552,14 @@ function bp_example_screen_settings_menu() {
 		</form>
 	<?php
 	}
+
+
+/********************************************************************************
+ * Activity & Notification Functions
+ *
+ * These functions handle the recording, deleting and formatting of activity and
+ * notifications for the user and for this specific component.
+ */
 
 
 /**
@@ -605,21 +629,42 @@ add_action( 'bp_notification_settings', 'bp_example_screen_notification_settings
  * You must pass the function an associated array of arguments:
  *
  *     $args = array( 
- *       'item_id' => The ID of the main piece of data being recorded, for example a group_id, user_id, forum_post_id
+ *		 'content' => The content of the activity stream item
+ *		 'primary_link' => The link for the title of the item when appearing in RSS feeds
  *       'component_name' => The slug of the component.
  *       'component_action' => The action being carried out, for example 'new_friendship', 'joined_group'. You will use this to format activity.
- *		 'is_private' => Boolean. Should this not be shown publicly?
- *       'user_id' => The user_id of the person you are recording this activity stream item for.
- *		 'secondary_item_id' => (optional) If the activity is more complex you may need a second ID. For example a group forum post needs the group_id AND the forum_post_id.
- *       'secondary_user_id' => (optional) If this activity applies to two users, provide the second user_id. Eg, Andy and John are now friends should show on both users streams
+ *
+ *		 OPTIONAL PARAMS 
+ *       'item_id' => The ID of the main piece of data being recorded, for example a group_id, user_id, forum_post_id - useful for filtering and deleting later on.
+ *		 'user_id' => The ID of the user that this activity is being recorded for. Pass false if it's not for a user.
  *		 'recorded_time' => (optional) The time you want to set as when the activity was carried out (defaults to now)
+ *		 'hide_sitewide' => Should this activity item appear on the site wide stream?
+ *		 'secondary_item_id' => (optional) If the activity is more complex you may need a second ID. For example a group forum post may need the group_id AND the forum_post_id.
  *     )
  */
-function bp_example_record_activity( $args ) {
-	if ( function_exists('bp_activity_record') ) {
-		extract( (array)$args );
-		bp_activity_record( $item_id, $component_name, $component_action, $is_private, $secondary_item_id, $user_id, $secondary_user_id, $recorded_time );
-	}
+function bp_example_record_activity( $args = '' ) {
+	global $bp;
+	
+	if ( !function_exists( 'bp_activity_add' ) )
+		return false;
+		
+	$defaults = array(
+		'content' => false,
+		'primary_link' => false,
+		'component_name' => $bp->example->id,
+		'component_action' => false,
+		
+		'recorded_time' => time(), // Optional
+		'hide_sitewide' => false, // Optional
+		'user_id' => $bp->loggedin_user->id, // Optional		
+		'item_id' => false, // Optional
+		'secondary_item_id' => false, // Optional
+	);
+
+	$r = wp_parse_args( $args, $defaults );
+	extract( $r, EXTR_SKIP );	
+	
+	return bp_activity_add( array( 'content' => $content, 'primary_link' => $primary_link, 'component_name' => $component_name, 'component_action' => $component_action, 'user_id' => $user_id, 'item_id' => $item_id, 'secondary_item_id' => $secondary_item_id, 'recorded_time' => $recorded_time, 'hide_sitewide' => $hide_sitewide ) );
 }
 
 /**
@@ -633,93 +678,41 @@ function bp_example_record_activity( $args ) {
  * or they delete it. You'll want to remove it from the activity stream, otherwise you will get out of sync and
  * bad links.
  */
-function bp_example_delete_activity( $args ) {
-	if ( function_exists('bp_activity_delete') ) {
-		extract( (array)$args );
-		bp_activity_delete( $item_id, $component_name, $component_action, $user_id, $secondary_item_id );
-	}
-}
-
-/**
- * bp_example_format_activity()
- *
- * Formatting your activity items is the other important step in adding your custom component activity into
- * activity streams.
- *
- * The bp_example_record_activity() function simply records ID's that are needed to fetch information about
- * the activity. The bp_example_format_activity() will take those ID's and make something that is human readable.
- *
- * You'll notice in the function bp_example_setup_globals() we set up a global called 'format_activity_function'.
- * This is the function name that the activity component will look at to format your component's activity when needed.
- * 
- * This is where the 'component_action' variable set in bp_example_record_activity() comes into play. For each
- * one of those actions, you will need to define how that activity action is rendered.
- * 
- * You do not have to call this function anywhere, or pass any parameters, the activity component will handle it.
- */
-function bp_example_format_activity( $item_id, $user_id, $action, $secondary_item_id = false, $for_secondary_user = false ) {
+function bp_example_delete_activity( $args = true ) {
 	global $bp;
 	
-	/* $action is the 'component_action' variable set in the record function. */
-	switch( $action ) {
-		case 'accepted_terms':
-			/* In this case, $item_id is the user ID of the user who accepted the terms. */
-			$user_link = bp_core_get_userlink( $item_id );
-			
-			if ( !$user_link )
-				return false;
-			
-			/***
-			 * We return activity items as an array. The 'primary_link' is for RSS feeds, so when the reader clicks
-			 * a new item header, it will go to this link (sometimes there is more than one link in an activity item).
-			 */
-			return array( 
-				'primary_link' => $user_link,
-				'content' => apply_filters( 'bp_example_accepted_terms_activity', sprintf( __( '%s accepted the really exciting terms and conditions!', 'bp-example' ), $user_link ) . ' <span class="time-since">%s</span>', $user_link )
-			);				
-		break;
-		case 'rejected_terms':
-			$user_link = bp_core_get_userlink( $item_id );
-			
-			if ( !$user_link )
-				return false;
+	if ( function_exists('bp_activity_delete_by_item_id') ) {
+		$defaults = array(
+			'item_id' => false,
+			'component_name' => $bp->example->id,
+			'component_action' => false,
+			'user_id' => false,
+			'secondary_item_id' => false
+		);
 
-			return array( 
-				'primary_link' => $user_link,
-				'content' => apply_filters( 'bp_example_rejected_terms_activity', sprintf( __( '%s rejected the really exciting terms and conditions.', 'bp-example' ), $user_link ) . ' <span class="time-since">%s</span>', $user_link )
-			);				
-		break;
-		case 'new_high_five':
-			/* In this case, $item_id is the user ID of the user who recieved the high five. */
-			$to_user_link = bp_core_get_userlink( $item_id );
-			$from_user_link = bp_core_get_userlink( $user_id );
-			
-			if ( !$to_user_link || !$from_user_link )
-				return false;
+		$r = wp_parse_args( $args, $defaults );
+		extract( $r, EXTR_SKIP );			
 
-			return array( 
-				'primary_link' => $to_user_link,
-				'content' => apply_filters( 'bp_example_new_high_five_activity', sprintf( __( '%s high-fived %s!', 'bp-example' ), $from_user_link, $to_user_link ) . ' <span class="time-since">%s</span>', $from_user_link, $to_user_link )
-			);				
-		break;
+		bp_activity_delete_by_item_id( array( 
+			'item_id' => $item_id, 
+			'component_name' => $component_name,
+			
+			'component_action' => $component_action, // optional
+			'user_id' => $user_id, // optional
+			'secondary_item_id' => $secondary_item_id // optional
+		) );
 	}
-	
-	/* By adding a do_action here, people can extend your component with new activity items. */
-	do_action( 'bp_example_format_activity', $action, $item_id, $user_id, $action, $secondary_item_id, $for_secondary_user );
-	
-	return false;
 }
 
 /**
  * bp_example_format_notifications()
  *
- * Formatting notifications works in very much the same way as formatting activity items.
- * 
- * These notifications are "screen" notifications, that is, they appear on the notifications menu
- * in the site wide navigation bar. They are not for email notifications.
+ * The format notification function will take DB entries for notifications and format them
+ * so that they can be displayed and read on the screen.
  *
- * You do not need to make a specific notification recording function for your component because the 
- * notification recorded functions are bundled in the core, which is required.
+ * Notifications are "screen" notifications, that is, they appear on the notifications menu
+ * in the site wide navigation bar. They are not for email notifications.
+ * 
  *
  * The recording is done by using bp_core_add_notification() which you can search for in this file for
  * examples of usage.
@@ -785,40 +778,24 @@ function bp_example_accept_terms() {
 	 * action. Remember the wp_nonce_url() call? The second parameter is what
 	 * you need to check for.
 	 */
-	if ( !check_admin_referer( 'bp_example_accept_terms' ) ) 
-		return false;
+	check_admin_referer( 'bp_example_accept_terms' );
 
 	/***
 	 * Here is a good example of where we can post something to a users activity stream.
 	 * The user has excepted the terms on screen two, and now we want to post
 	 * "Andy accepted the really exciting terms and conditions!" to the stream.
 	 */
-	bp_example_record_activity( 
-		array( 
-			'item_id' => $bp->loggedin_user->id,
-			'user_id' => $bp->loggedin_user->id,
-			'component_name' => $bp->example->slug, 
-			'component_action' => 'accepted_terms', 
-			'is_private' => 0
-		)
-	);
+	$user_link = bp_core_get_userlink( $bp->loggedin_user->id );
+	
+	bp_example_record_activity( array(
+		'content' => apply_filters( 'bp_example_accepted_terms_activity', sprintf( __( '%s accepted the really exciting terms and conditions!', 'bp-example' ), $user_link ), $user_link ),
+		'primary_link' => apply_filters( 'bp_example_accepted_terms_activity_primary_link', $user_link ),
+		'component_action' => 'accepted_terms',	
+		'item_id' => $bp->loggedin_user->id,
+	) );
 	
 	/* See bp_example_reject_terms() for an explanation of deleting activity items */
-	bp_example_delete_activity( 
-		array( 
-			'item_id' => $bp->loggedin_user->id,
-			'user_id' => $bp->loggedin_user->id,
-			'component_name' => $bp->example->slug,
-			'component_action' => 'rejected_terms'
-		)
-	);
-	
-	/***
-	 * Remember, even though we have recorded the activity, we still need to tell
-	 * the activity component how to format that activity item into something readable.
-	 * In the bp_example_format_activity() function, we need to make an entry for
-	 * 'accepted_terms'
-	 */
+	bp_example_delete_activity( array( 'item_id' => $bp->loggedin_user->id, 'component_action' => 'rejected_terms' ) );
 	
 	/* Add a do_action here so other plugins can hook in */
 	do_action( 'bp_example_accept_terms', $bp->loggedin_user->id );
@@ -840,8 +817,7 @@ function bp_example_accept_terms() {
 function bp_example_reject_terms() {
 	global $bp;
 	
-	if ( !check_admin_referer( 'bp_example_reject_terms' ) ) 
-		return false;
+	check_admin_referer( 'bp_example_reject_terms' );
 	
 	/***
 	 * In this example component, the user can reject the terms even after they have
@@ -853,26 +829,18 @@ function bp_example_reject_terms() {
 	 * A real world example of this would be a user deleting a published blog post.
 	 */
 	
-	/* Delete any accepted_terms activity items for the user */
-	bp_example_delete_activity( 
-		array( 
-			'item_id' => $bp->loggedin_user->id,
-			'user_id' => $bp->loggedin_user->id,
-			'component_name' => $bp->example->slug,
-			'component_action' => 'accepted_terms'
-		)
-	);
+	$user_link = bp_core_get_userlink( $bp->loggedin_user->id );
 	
 	/* Now record the new 'rejected' activity item */
-	bp_example_record_activity( 
-		array( 
-			'item_id' => $bp->loggedin_user->id,
-			'user_id' => $bp->loggedin_user->id,
-			'component_name' => $bp->example->slug, 
-			'component_action' => 'rejected_terms', 
-			'is_private' => 0
-		)
-	);
+	bp_example_record_activity( array( 
+		'content' => apply_filters( 'bp_example_rejected_terms_activity', sprintf( __( '%s rejected the really exciting terms and conditions.', 'bp-example' ), $user_link ), $user_link ),
+		'primary_link' => apply_filters( 'bp_example_rejected_terms_activity_primary_link', $user_link ),
+		'component_action' => 'rejected_terms',	
+		'item_id' => $bp->loggedin_user->id,
+	) );
+
+	/* Delete any accepted_terms activity items for the user */
+	bp_example_delete_activity( array( 'item_id' => $bp->loggedin_user->id, 'component_action' => 'accepted_terms' ) );
 
 	do_action( 'bp_example_reject_terms', $bp->loggedin_user->id );
 	
@@ -890,8 +858,7 @@ function bp_example_reject_terms() {
 function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 	global $bp;
 	
-	if ( !check_admin_referer( 'bp_example_send_high_five' ) ) 
-		return false;
+	check_admin_referer( 'bp_example_send_high_five' );
 	
 	/**
 	 * We'll store high-fives as usermeta, so we don't actually need
@@ -926,15 +893,15 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 	bp_core_add_notification( $from_user_id, $to_user_id, $bp->example->slug, 'new_high_five' );
 
 	/* Now record the new 'new_high_five' activity item */
-	bp_example_record_activity( 
-		array( 
-			'item_id' => $to_user_id,
-			'user_id' => $from_user_id,
-			'component_name' => $bp->example->slug, 
-			'component_action' => 'new_high_five', 
-			'is_private' => 0
-		)
-	);
+	$to_user_link = bp_core_get_userlink( $to_user_id );
+	$from_user_link = bp_core_get_userlink( $from_user_id );
+			
+	bp_example_record_activity( array( 
+		'content' => apply_filters( 'bp_example_new_high_five_activity', sprintf( __( '%s high-fived %s!', 'bp-example' ), $from_user_link, $to_user_link ), $from_user_link, $to_user_link ),
+		'primary_link' => apply_filters( 'bp_example_new_high_five_activity_primary_link', $to_user_link ),
+		'item_id' => $to_user_id,
+		'component_action' => 'rejected_terms'
+	) );
 
 	/* We'll use this do_action call to send the email notification. See bp-example-notifications.php */
 	do_action( 'bp_example_send_high_five', $to_user_id, $from_user_id );
@@ -957,7 +924,9 @@ function bp_example_get_highfives_for_user( $user_id ) {
 }
 
 /**
- * 
+ * bp_example_remove_screen_notifications()
+ *
+ * Remove a screen notification for a user.
  */
 function bp_example_remove_screen_notifications() {
 	global $bp;
@@ -988,36 +957,6 @@ function bp_example_remove_data( $user_id ) {
 }
 add_action( 'wpmu_delete_user', 'bp_example_remove_data', 1 );
 add_action( 'delete_user', 'bp_example_remove_data', 1 );
-
-/**
- * bp_example_load_buddypress()
- *
- * When we activate the component, we must make sure BuddyPress is loaded first (if active)
- * If it's not active, then the plugin should not be activated.
- */
-function bp_example_load_buddypress() {
-	if ( function_exists( 'bp_core_setup_globals' ) )
-		return true;
-	
-	/* Get the list of active sitewide plugins */
-	$active_sitewide_plugins = maybe_unserialize( get_site_option( 'active_sitewide_plugins' ) );
-	if ( isset( $active_sidewide_plugins['buddypress/bp-loader.php'] ) && !function_exists( 'bp_core_setup_globals' ) ) {
-		require_once( WP_PLUGIN_DIR . '/buddypress/bp-loader.php' );
-		return true;
-	}
-	
-	/* If we get to here, BuddyPress is not active, so we need to deactive the plugin and redirect. */
-	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-	if ( file_exists( ABSPATH . 'wp-admin/includes/mu.php' ) )
-		require_once( ABSPATH . 'wp-admin/includes/mu.php' );
-
-	deactivate_plugins( basename(__FILE__), true );
-	if ( function_exists( 'deactivate_sitewide_plugin') )
-		deactivate_sitewide_plugin( basename(__FILE__), true );
-		
-	wp_redirect( get_blog_option( BP_ROOT_BLOG, 'home' ) . '/wp-admin/plugins.php' );
-}
-add_action( 'plugins_loaded', 'bp_example_load_buddypress', 11 );
 
 /***
  * Object Caching Support ----
