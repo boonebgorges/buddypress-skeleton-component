@@ -15,27 +15,27 @@
  *
  * Checks for form submission, saves component settings and outputs admin screen HTML.
  */
-function bp_example_admin() { 
-	global $bp, $bbpress_live;
-		
+function bp_example_admin() {
+	global $bp;
+
 	/* If the form has been submitted and the admin referrer checks out, save the settings */
 	if ( isset( $_POST['submit'] ) && check_admin_referer('example-settings') ) {
-		update_option( 'example-setting-one', $_POST['example-setting-one'] ); 
+		update_option( 'example-setting-one', $_POST['example-setting-one'] );
 		update_option( 'example-setting-two', $_POST['example-setting-two'] );
-		
+
 		$updated = true;
 	}
-	
+
 	$setting_one = get_option( 'example-setting-one' );
 	$setting_two = get_option( 'example-setting-two' );
 ?>
 	<div class="wrap">
 		<h2><?php _e( 'Example Admin', 'bp-example' ) ?></h2>
 		<br />
-		
+
 		<?php if ( isset($updated) ) : ?><?php echo "<div id='message' class='updated fade'><p>" . __( 'Settings Updated.', 'bp-example' ) . "</p></div>" ?><?php endif; ?>
-			
-		<form action="<?php echo site_url() . '/wp-admin/admin.php?page=bp-example-settings' ?>" name="example-settings-form" id="example-settings-form" method="post">				
+
+		<form action="<?php echo site_url() . '/wp-admin/admin.php?page=bp-example-settings' ?>" name="example-settings-form" id="example-settings-form" method="post">
 
 			<table class="form-table">
 				<tr valign="top">
@@ -53,8 +53,8 @@ function bp_example_admin() {
 			<p class="submit">
 				<input type="submit" name="submit" value="<?php _e( 'Save Settings', 'bp-example' ) ?>"/>
 			</p>
-			
-			<?php 
+
+			<?php
 			/* This is very important, don't leave it out. */
 			wp_nonce_field( 'example-settings' );
 			?>

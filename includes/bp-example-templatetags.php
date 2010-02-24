@@ -43,7 +43,7 @@ class BP_Example_Template {
 	var $pag_num;
 	var $pag_links;
 
-	function bp_example_template( $user_id, $type, $per_page, $max ) {
+	function bp_example_template( $user_id, $type, $page, $per_page, $max ) {
 		global $bp;
 
 		if ( !$user_id )
@@ -53,13 +53,9 @@ class BP_Example_Template {
 		 * If you want to make parameters that can be passed, then append a
 		 * character or two to "page" like this: $_REQUEST['xpage']
 		 * You can add more than a single letter.
-		 *
-		 * The "x" in "xpage" should be changed to something unique so as not to conflict with
-		 * BuddyPress core components which use the unique characters "b", "g", "u", "w",
-		 * "ac", "fr", "gr", "ml", "mr" with "page".
 		 */
 
-		$this->pag_page = isset( $_REQUEST['xpage'] ) ? intval( $_REQUEST['xpage'] ) : 1;
+		$this->pag_page = isset( $_REQUEST['xpage'] ) ? intval( $_REQUEST['xpage'] ) : $page;
 		$this->pag_num = isset( $_GET['num'] ) ? intval( $_GET['num'] ) : $per_page;
 		$this->user_id = $user_id;
 
@@ -107,8 +103,8 @@ class BP_Example_Template {
 			'format' => '',
 			'total' => ceil( (int) $this->total_item_count / (int) $this->pag_num ),
 			'current' => (int) $this->pag_page,
-			'prev_text' => '&laquo;',
-			'next_text' => '&raquo;',
+			'prev_text' => '&larr;',
+			'next_text' => '&rarr;',
 			'mid_size' => 1
 		));
 	}
@@ -138,7 +134,7 @@ class BP_Example_Template {
 		if ( $this->current_item + 1 < $this->item_count ) {
 			return true;
 		} elseif ( $this->current_item + 1 == $this->item_count ) {
-			do_action('loop_end');
+			do_action('bp_example_loop_end');
 			// Do some cleaning up after the loop
 			$this->rewind_items();
 		}
@@ -154,7 +150,7 @@ class BP_Example_Template {
 		$this->item = $this->next_item();
 
 		if ( 0 == $this->current_item ) // loop has just started
-			do_action('loop_start');
+			do_action('bp_example_loop_start');
 	}
 }
 
@@ -176,6 +172,7 @@ function bp_example_has_items( $args = '' ) {
 	 */
 	$defaults = array(
 		'user_id' => false,
+		'page' => 1,
 		'per_page' => 10,
 		'max' => false,
 		'type' => 'newest'
@@ -188,7 +185,7 @@ function bp_example_has_items( $args = '' ) {
 	$r = wp_parse_args( $args, $defaults );
 	extract( $r, EXTR_SKIP );
 
-	$items_template = new BP_Example_Template( $user_id, $type, $per_page, $max );
+	$items_template = new BP_Example_Template( $user_id, $type, $page, $per_page, $max );
 
 	return $items_template->has_items();
 }

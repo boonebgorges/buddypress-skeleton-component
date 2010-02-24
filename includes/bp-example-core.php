@@ -1,48 +1,10 @@
 <?php
-/*
-Plugin Name: BuddyPress Skeleton Component
-Plugin URI: http://example.org/my/awesome/bp/component
-Description: This BuddyPress component is the greatest thing since sliced bread.
-Version: 1.3.1
-Revision Date: MMMM DD, YYYY
-Requires at least: What WPMU version, what BuddyPress version? ( Example: WPMU 2.8.4, BuddyPress 1.1 )
-Tested up to: What WPMU version, what BuddyPress version?
-License: (Example: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html)
-Author: Dr. Jan Itor
-Author URI: http://example.org/some/cool/developer
-Site Wide Only: true
-*/
-
-/*************************************************************************************************************
- --- SKELETON COMPONENT V1.3 ---
-
- Contributors: apeatling, jeffsayre
-
- This is a bare-bones component that should provide a good starting block to building your own custom BuddyPress
- component.
-
- It includes some of the functions that will make it easy to get your component registering activity stream
- items, posting notifications, setting up widgets, adding AJAX functionality and also structuring your
- component in a standardized way.
-
- It is by no means the letter of the law. You can go about writing your component in any style you like, that's
- one of the best (and worst!) features of a PHP based platform.
-
- I would recommend reading some of the comments littered throughout, as they will provide insight into how
- things tick within BuddyPress.
-
- You should replace all references to the word 'example' with something more suitable for your component.
-
- IMPORTANT: DO NOT configure your component so that it has to run in the /plugins/buddypress/ directory. If you
- do this, whenever the user auto-upgrades BuddyPress - your custom component will be deleted automatically. Design
- your component to run in the /wp-content/plugins/ directory
- *************************************************************************************************************/
 
 /* Define a constant that can be checked to see if the component is installed or not. */
 define ( 'BP_EXAMPLE_IS_INSTALLED', 1 );
 
 /* Define a constant that will hold the current version number of the component */
-define ( 'BP_EXAMPLE_VERSION', '1.3' );
+define ( 'BP_EXAMPLE_VERSION', '1.4' );
 
 /* Define a constant that will hold the database version number that can be used for upgrading the DB
  *
@@ -81,8 +43,8 @@ if ( !defined( 'BP_EXAMPLE_SLUG' ) )
  * _e( 'This text will be translatable', 'bp-example' ); // Echos the first parameter value
  */
 
-if ( file_exists( WP_PLUGIN_DIR . '/bp-example/languages/' . get_locale() . '.mo' ) )
-	load_textdomain( 'bp-example', WP_PLUGIN_DIR . '/bp-example/languages/' . get_locale() . '.mo' );
+if ( file_exists( dirname( __FILE__ ) . '/languages/' . get_locale() . '.mo' ) )
+	load_textdomain( 'bp-example', dirname( __FILE__ ) . '/bp-example/languages/' . get_locale() . '.mo' );
 
 /**
  * The next step is to include all the files you need for your component.
@@ -90,67 +52,25 @@ if ( file_exists( WP_PLUGIN_DIR . '/bp-example/languages/' . get_locale() . '.mo
  */
 
 /* The classes file should hold all database access classes and functions */
-require ( WP_PLUGIN_DIR . '/bp-example/bp-example-classes.php' );
+require ( dirname( __FILE__ ) . '/bp-example-classes.php' );
 
 /* The ajax file should hold all functions used in AJAX queries */
-require ( WP_PLUGIN_DIR . '/bp-example/bp-example-ajax.php' );
+require ( dirname( __FILE__ ) . '/bp-example-ajax.php' );
 
 /* The cssjs file should set up and enqueue all CSS and JS files used by the component */
-require ( WP_PLUGIN_DIR . '/bp-example/bp-example-cssjs.php' );
+require ( dirname( __FILE__ ) . '/bp-example-cssjs.php' );
 
 /* The templatetags file should contain classes and functions designed for use in template files */
-require ( WP_PLUGIN_DIR . '/bp-example/bp-example-templatetags.php' );
+require ( dirname( __FILE__ ) . '/bp-example-templatetags.php' );
 
 /* The widgets file should contain code to create and register widgets for the component */
-require ( WP_PLUGIN_DIR . '/bp-example/bp-example-widgets.php' );
+require ( dirname( __FILE__ ) . '/bp-example-widgets.php' );
 
 /* The notifications file should contain functions to send email notifications on specific user actions */
-require ( WP_PLUGIN_DIR . '/bp-example/bp-example-notifications.php' );
+require ( dirname( __FILE__ ) . '/bp-example-notifications.php' );
 
 /* The filters file should create and apply filters to component output functions. */
-require ( WP_PLUGIN_DIR . '/bp-example/bp-example-filters.php' );
-
-/**
- * bp_example_install()
- *
- * Installs and/or upgrades the database tables for your component
- */
-function bp_example_install() {
-	global $wpdb, $bp;
-
-	if ( !empty($wpdb->charset) )
-		$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
-
-	/**
-	 * You'll need to write your table definition below, if you want to
-	 * install database tables for your component. You can define multiple
-	 * tables by adding SQL to the $sql array.
-	 *
-	 * Creating multiple tables:
-	 * $bp->xxx->table_name is defined in bp_example_setup_globals() below.
-	 *
-	 * You will need to define extra table names in that function to create multiple tables.
-	 */
-	$sql[] = "CREATE TABLE {$bp->example->table_name} (
-		  		id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-		  		field_1 bigint(20) NOT NULL,
-		  		field_2 bigint(20) NOT NULL,
-		  		field_3 bool DEFAULT 0,
-			    KEY field_1 (field_1),
-			    KEY field_2 (field_2)
-		 	   ) {$charset_collate};";
-
-	require_once( ABSPATH . 'wp-admin/upgrade-functions.php' );
-
-	/**
-	 * The dbDelta call is commented out so the example table is not installed.
-	 * Once you define the SQL for your new table, uncomment this line to install
-	 * the table. (Make sure you increment the BP_EXAMPLE_DB_VERSION constant though).
-	 */
-	// dbDelta($sql);
-
-	update_site_option( 'bp-example-db-version', BP_EXAMPLE_DB_VERSION );
-}
+require ( dirname( __FILE__ ) . '/bp-example-filters.php' );
 
 /**
  * bp_example_setup_globals()
@@ -170,48 +90,42 @@ function bp_example_setup_globals() {
 	/* Register this in the active components array */
 	$bp->active_components[$bp->example->slug] = $bp->example->id;
 }
-add_action( 'plugins_loaded', 'bp_example_setup_globals', 5 );
+/***
+ * In versions of BuddyPress 1.2.2 and newer you will be able to use:
+ * add_action( 'bp_setup_globals', 'bp_example_setup_globals' );
+ */
+add_action( 'wp', 'bp_example_setup_globals', 2 );
 add_action( 'admin_menu', 'bp_example_setup_globals', 2 );
 
 /**
- * bp_example_check_installed()
+ * bp_example_add_admin_menu()
  *
- * Checks to see if the DB tables exist or if you are running an old version
- * of the component. If it matches, it will run the installation function.
+ * This function will add a WordPress wp-admin admin menu for your component under the
+ * "BuddyPress" menu.
  */
-function bp_example_check_installed() {
-	global $wpdb, $bp;
+function bp_example_add_admin_menu() {
+	global $bp;
 
-	if ( !is_site_admin() )
+	if ( !$bp->loggedin_user->is_site_admin )
 		return false;
 
-	/**
-	 * Add the component's administration tab under the "BuddyPress" menu for site administrators
-	 *
-	 * Use 'bp-general-settings' as the first parameter to add your submenu to the "BuddyPress" menu.
-	 * Use 'wpmu-admin.php' if you want it under the "Site Admin" menu.
-	 */
-	require ( WP_PLUGIN_DIR . '/bp-example/bp-example-admin.php' );
+	require ( dirname( __FILE__ ) . '/bp-example-admin.php' );
 
-	add_submenu_page( 'bp-general-settings', __( 'Example Admin', 'bp-example' ), __( 'Example Admin', 'bp-example' ), 'manage-options', 'bp-example-settings', 'bp_example_admin' );
-
-	/* Need to check db tables exist, activate hook no-worky in mu-plugins folder. */
-	if ( get_site_option('bp-example-db-version') < BP_EXAMPLE_DB_VERSION )
-		bp_example_install();
+	add_submenu_page( 'bp-general-settings', __( 'Example Admin', 'bp-example' ), __( 'Example Admin', 'bp-example' ), 'manage_options', 'bp-example-settings', 'bp_example_admin' );
 }
-add_action( 'admin_menu', 'bp_example_check_installed' );
+add_action( 'admin_menu', 'bp_example_add_admin_menu' );
 
 /**
  * bp_example_setup_nav()
  *
- * Sets up the navigation items for the component. This adds the top level nav
+ * Sets up the user profile navigation items for the component. This adds the top level nav
  * item and all the sub level nav items to the navigation array. This is then
  * rendered in the template.
  */
 function bp_example_setup_nav() {
 	global $bp;
 
-	/* Add 'Example' to the main navigation */
+	/* Add 'Example' to the main user profile navigation */
 	bp_core_new_nav_item( array(
 		'name' => __( 'Example', 'bp-example' ),
 		'slug' => $bp->example->slug,
@@ -239,7 +153,7 @@ function bp_example_setup_nav() {
 		'parent_url' => $example_link,
 		'screen_function' => 'bp_example_screen_two',
 		'position' => 20,
-		'user_has_access' => bp_is_home() // Only the logged in user can access this on his/her profile
+		'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
 	) );
 
 	/* Add a nav item for this component under the settings nav item. See bp_example_screen_settings_menu() for more info */
@@ -250,23 +164,52 @@ function bp_example_setup_nav() {
 		'parent_url' => $bp->loggedin_user->domain . $bp->settings->slug . '/',
 		'screen_function' => 'bp_example_screen_settings_menu',
 		'position' => 40,
-		'user_has_access' => bp_is_home() // Only the logged in user can access this on his/her profile
+		'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
 	) );
-
-	/* Only execute the following code if we are actually viewing this component (e.g. http://example.org/example) */
-	if ( $bp->current_component == $bp->example->slug ) {
-		if ( bp_is_home() ) {
-			/* If the user is viewing their own profile area set the title to "My Example" */
-			$bp->bp_options_title = __( 'My Example', 'bp-example' );
-		} else {
-			/* If the user is viewing someone elses profile area, set the title to "[user fullname]" */
-			$bp->bp_options_avatar = bp_core_fetch_avatar( array( 'item_id' => $bp->displayed_user->id, 'type' => 'thumb' ) );
-			$bp->bp_options_title = $bp->displayed_user->fullname;
-		}
-	}
 }
+
+/***
+ * In versions of BuddyPress 1.2.2 and newer you will be able to use:
+ * add_action( 'bp_setup_nav', 'bp_example_setup_nav' );
+ */
 add_action( 'wp', 'bp_example_setup_nav', 2 );
 add_action( 'admin_menu', 'bp_example_setup_nav', 2 );
+
+/**
+ * bp_example_load_template_filter()
+ *
+ * You can define a custom load template filter for your component. This will allow
+ * you to store and load template files from your plugin directory.
+ *
+ * This will also allow users to override these templates in their active theme and
+ * replace the ones that are stored in the plugin directory.
+ *
+ * If you're not interested in using template files, then you don't need this function.
+ *
+ * This will become clearer in the function bp_example_screen_one() when you want to load
+ * a template file.
+ */
+function bp_example_load_template_filter( $found_template, $templates ) {
+	global $bp;
+
+	/**
+	 * Only filter the template location when we're on the example component pages.
+	 */
+	if ( $bp->current_component != $bp->example->slug )
+		return $found_template;
+
+	foreach ( (array) $templates as $template ) {
+		if ( file_exists( STYLESHEETPATH . '/' . $template ) )
+			$filtered_templates[] = STYLESHEETPATH . '/' . $template;
+		else
+			$filtered_templates[] = dirname( __FILE__ ) . '/templates/' . $template;
+	}
+
+	$found_template = $filtered_templates[0];
+
+	return apply_filters( 'bp_example_load_template_filter', $found_template );
+}
+add_filter( 'bp_located_template', 'bp_example_load_template_filter', 10, 2 );
 
 
 /********************************************************************************
@@ -276,7 +219,6 @@ add_action( 'admin_menu', 'bp_example_setup_nav', 2 );
  * specific URL is caught. They will first save or manipulate data using business
  * functions, then pass on the user to a template file.
  */
-
 
 /**
  * bp_example_screen_one()
@@ -321,7 +263,7 @@ function bp_example_screen_one() {
 	 */
 	if ( $bp->current_component == $bp->example->slug && 'screen-one' == $bp->current_action && 'send-h5' == $bp->action_variables[0] ) {
 		/* The logged in user has clicked on the 'send high five' link */
-		if ( bp_is_home() ) {
+		if ( bp_is_my_profile() ) {
 			/* Don't let users high five themselves */
 			bp_core_add_message( __( 'No self-fives! :)', 'bp-example' ), 'error' );
 		} else {
@@ -337,46 +279,50 @@ function bp_example_screen_one() {
 	/* Add a do action here, so your component can be extended by others. */
 	do_action( 'bp_example_screen_one' );
 
-	/**
-	 * Finally, load the template file. In this example it would load:
-	 *    "wp-content/bp-themes/[active-member-theme]/example/screen-one.php"
-	 *
-	 * The filter gives theme designers the ability to override template names
-	 * and define their own theme filenames and structure
+	/****
+	 * Displaying Content
 	 */
+
+	/****
+	 * OPTION 1:
+	 * You've got a few options for displaying content. Your first option is to bundle template files
+	 * with your plugin that will be used to output content.
+	 *
+	 * In an earlier function bp_example_load_template_filter() we set up a filter on the core BP template
+	 * loading function that will make it first look in the plugin directory for template files.
+	 * If it doesn't find any matching templates it will look in the active theme directory.
+	 *
+	 * This example component comes bundled with a template for screen one, so we can load that
+	 * template to display what we need. If you copied this template from the plugin into your theme
+	 * then it would load that one instead. This allows users to override templates in their theme.
+	 */
+
+	/* This is going to look in wp-content/plugins/[plugin-name]/includes/templates/ first */
 	bp_core_load_template( apply_filters( 'bp_example_template_screen_one', 'example/screen-one' ) );
 
-	/* ---- OR ----- */
+	/****
+	 * OPTION 2 (NOT USED FOR THIS SCREEN):
+	 * If your component is simple, and you just want to insert some HTML into the user's active theme
+	 * then you can use the bundle plugin template.
+	 *
+	 * There are two actions you need to hook into. One for the title, and one for the content.
+	 * The functions you hook these into should simply output the content you want to display on the
+	 * page.
+	 *
+	 * The follow lines are commented out because we are not using this method for this screen.
+	 * You'd want to remove the OPTION 1 parts above and uncomment these lines if you want to use
+	 * this option instead.
+ 	 */
 
-	/**
-	 * However, by loading a template the above way you will need to bundle template files with your component.
-	 * This is fine for a more complex component, but if your component is simple, you may want to
-	 * rely on the "plugin-template.php" file bundled with every member theme.
-	 */
+//	add_action( 'bp_template_title', 'bp_example_screen_one_title' );
+//	add_action( 'bp_template_content', 'bp_example_screen_one_content' );
 
-	 /**
-	  * To get content into the template file without editing it, we use actions.
-	  * There are three actions in the template file, the first is for header text where you can
-	  * place nav items if needed. The second is the page title, and the third is the body content
-	  * of the page.
-	  */
-	 add_action( 'bp_template_content_header', 'bp_example_screen_one_header' );
-	 add_action( 'bp_template_title', 'bp_example_screen_one_title' );
-	 add_action( 'bp_template_content', 'bp_example_screen_one_content' );
-
-	/* Finally load the plugin template file. */
-	bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'plugin-template' ) );
+//	bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
 }
-
 	/***
 	 * The second argument of each of the above add_action() calls is a function that will
 	 * display the corresponding information. The functions are presented below:
 	 */
-
-	function bp_example_screen_one_header() {
-		_e( 'Screen One Header', 'bp-example' );
-	}
-
 	function bp_example_screen_one_title() {
 		_e( 'Screen One', 'bp-example' );
 	}
@@ -393,18 +339,16 @@ function bp_example_screen_one() {
 		 */
 		$send_link = wp_nonce_url( $bp->displayed_user->domain . $bp->current_component . '/screen-one/send-h5', 'bp_example_send_high_five' );
 	?>
-		<?php do_action( 'template_notices' ) // (error/success feedback) ?>
-
-		<h3><?php _e( 'Welcome to Screen One', 'bp-example' ) ?></h3>
+		<h4><?php _e( 'Welcome to Screen One', 'bp-example' ) ?></h4>
 		<p><?php printf( __( 'Send %s a <a href="%s" title="Send high-five!">high-five!</a>', 'bp-example' ), $bp->displayed_user->fullname, $send_link ) ?></p>
 
 		<?php if ( $high_fives ) : ?>
-			<h3><?php _e( 'Received High Fives!', 'bp-example' ) ?></h3>
+			<h4><?php _e( 'Received High Fives!', 'bp-example' ) ?></h4>
 
 			<table id="high-fives">
 				<?php foreach ( $high_fives as $user_id ) : ?>
 				<tr>
-					<td><?php echo bp_core_get_avatar( $user_id, 1, 25, 25 ) ?></td>
+					<td width="1%"><?php echo bp_core_fetch_avatar( array( 'item_id' => $user_id, 'width' => 25, 'height' => 25 ) ) ?></td>
 					<td>&nbsp; <?php echo bp_core_get_userlink( $user_id ) ?></td>
 	 			</tr>
 				<?php endforeach; ?>
@@ -465,17 +409,12 @@ function bp_example_screen_two() {
 	 */
 	do_action( 'bp_example_screen_two' );
 
-	add_action( 'bp_template_content_header', 'bp_example_screen_two_header' );
 	add_action( 'bp_template_title', 'bp_example_screen_two_title' );
 	add_action( 'bp_template_content', 'bp_example_screen_two_content' );
 
 	/* Finally load the plugin template file. */
-	bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'plugin-template' ) );
+	bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
 }
-
-	function bp_example_screen_two_header() {
-		_e( 'Screen Two Header', 'bp-example' );
-	}
 
 	function bp_example_screen_two_title() {
 		_e( 'Screen Two', 'bp-example' );
@@ -483,8 +422,6 @@ function bp_example_screen_two() {
 
 	function bp_example_screen_two_content() {
 		global $bp; ?>
-
-		<?php do_action( 'template_notices' ) ?>
 
 		<h4><?php _e( 'Welcome to Screen Two', 'bp-example' ) ?></h4>
 
@@ -629,18 +566,26 @@ add_action( 'bp_notification_settings', 'bp_example_screen_notification_settings
  * You must pass the function an associated array of arguments:
  *
  *     $args = array(
- *		 'content' => The content of the activity stream item
- *		 'primary_link' => The link for the title of the item when appearing in RSS feeds
- *       'component_name' => The slug of the component.
- *       'component_action' => The action being carried out, for example 'new_friendship', 'joined_group'. You will use this to format activity.
+ *	 	 REQUIRED PARAMS
+ *		 'action' => For example: "Andy high-fived John", "Andy posted a new update".
+ *       'type' => The type of action being carried out, for example 'new_friendship', 'joined_group'. This should be unique within your component.
  *
  *		 OPTIONAL PARAMS
+ *		 'id' => The ID of an existing activity item that you want to update.
+ * 		 'content' => The content of your activity, if it has any, for example a photo, update content or blog post excerpt.
+ *       'component' => The slug of the component.
+ *		 'primary_link' => The link for the title of the item when appearing in RSS feeds (defaults to the activity permalink)
  *       'item_id' => The ID of the main piece of data being recorded, for example a group_id, user_id, forum_post_id - useful for filtering and deleting later on.
  *		 'user_id' => The ID of the user that this activity is being recorded for. Pass false if it's not for a user.
  *		 'recorded_time' => (optional) The time you want to set as when the activity was carried out (defaults to now)
  *		 'hide_sitewide' => Should this activity item appear on the site wide stream?
  *		 'secondary_item_id' => (optional) If the activity is more complex you may need a second ID. For example a group forum post may need the group_id AND the forum_post_id.
  *     )
+ *
+ * Example usage would be:
+ *
+ *   bp_example_record_activity( array( 'type' => 'new_highfive', 'action' => 'Andy high-fived John', 'user_id' => $bp->loggedin_user->id, 'item_id' => $bp->displayed_user->id ) );
+ *
  */
 function bp_example_record_activity( $args = '' ) {
 	global $bp;
@@ -649,59 +594,23 @@ function bp_example_record_activity( $args = '' ) {
 		return false;
 
 	$defaults = array(
-		'content' => false,
-		'primary_link' => false,
-		'component_name' => $bp->example->id,
-		'component_action' => false,
-
-		'recorded_time' => time(), // Optional
-		'hide_sitewide' => false, // Optional
-		'user_id' => $bp->loggedin_user->id, // Optional
-		'item_id' => false, // Optional
-		'secondary_item_id' => false, // Optional
+		'id' => false,
+		'user_id' => $bp->loggedin_user->id,
+		'action' => '',
+		'content' => '',
+		'primary_link' => '',
+		'component' => $bp->example->id,
+		'type' => false,
+		'item_id' => false,
+		'secondary_item_id' => false,
+		'recorded_time' => gmdate( "Y-m-d H:i:s" ),
+		'hide_sitewide' => false
 	);
 
 	$r = wp_parse_args( $args, $defaults );
-	extract( $r, EXTR_SKIP );
+	extract( $r );
 
-	return bp_activity_add( array( 'content' => $content, 'primary_link' => $primary_link, 'component_name' => $component_name, 'component_action' => $component_action, 'user_id' => $user_id, 'item_id' => $item_id, 'secondary_item_id' => $secondary_item_id, 'recorded_time' => $recorded_time, 'hide_sitewide' => $hide_sitewide ) );
-}
-
-/**
- * bp_example_delete_activity()
- *
- * If the activity stream component is installed, this function will delete activity items for your
- * component.
- *
- * You should use this when items are deleted, to keep the activity stream in sync. For example if a user
- * publishes a new blog post, it would record it in the activity stream. However, if they then make it private
- * or they delete it. You'll want to remove it from the activity stream, otherwise you will get out of sync and
- * bad links.
- */
-function bp_example_delete_activity( $args = true ) {
-	global $bp;
-
-	if ( function_exists('bp_activity_delete_by_item_id') ) {
-		$defaults = array(
-			'item_id' => false,
-			'component_name' => $bp->example->id,
-			'component_action' => false,
-			'user_id' => false,
-			'secondary_item_id' => false
-		);
-
-		$r = wp_parse_args( $args, $defaults );
-		extract( $r, EXTR_SKIP );
-
-		bp_activity_delete_by_item_id( array(
-			'item_id' => $item_id,
-			'component_name' => $component_name,
-
-			'component_action' => $component_action, // optional
-			'user_id' => $user_id, // optional
-			'secondary_item_id' => $secondary_item_id // optional
-		) );
-	}
+	return bp_activity_add( array( 'id' => $id, 'user_id' => $user_id, 'action' => $action, 'content' => $content, 'primary_link' => $primary_link, 'component' => $component, 'type' => $type, 'item_id' => $item_id, 'secondary_item_id' => $secondary_item_id, 'recorded_time' => $recorded_time, 'hide_sitewide' => $hide_sitewide ) );
 }
 
 /**
@@ -788,14 +697,13 @@ function bp_example_accept_terms() {
 	$user_link = bp_core_get_userlink( $bp->loggedin_user->id );
 
 	bp_example_record_activity( array(
-		'content' => apply_filters( 'bp_example_accepted_terms_activity', sprintf( __( '%s accepted the really exciting terms and conditions!', 'bp-example' ), $user_link ), $user_link ),
-		'primary_link' => apply_filters( 'bp_example_accepted_terms_activity_primary_link', $user_link ),
-		'component_action' => 'accepted_terms',
-		'item_id' => $bp->loggedin_user->id,
+		'type' => 'accepted_terms',
+		'action' => apply_filters( 'bp_example_accepted_terms_activity_action', sprintf( __( '%s accepted the really exciting terms and conditions!', 'bp-example' ), $user_link ), $user_link ),
 	) );
 
 	/* See bp_example_reject_terms() for an explanation of deleting activity items */
-	bp_example_delete_activity( array( 'item_id' => $bp->loggedin_user->id, 'component_action' => 'rejected_terms' ) );
+	if ( function_exists( 'bp_activity_delete') )
+		bp_activity_delete( array( 'type' => 'rejected_terms', 'user_id' => $bp->loggedin_user->id ) );
 
 	/* Add a do_action here so other plugins can hook in */
 	do_action( 'bp_example_accept_terms', $bp->loggedin_user->id );
@@ -833,14 +741,13 @@ function bp_example_reject_terms() {
 
 	/* Now record the new 'rejected' activity item */
 	bp_example_record_activity( array(
-		'content' => apply_filters( 'bp_example_rejected_terms_activity', sprintf( __( '%s rejected the really exciting terms and conditions.', 'bp-example' ), $user_link ), $user_link ),
-		'primary_link' => apply_filters( 'bp_example_rejected_terms_activity_primary_link', $user_link ),
-		'component_action' => 'rejected_terms',
-		'item_id' => $bp->loggedin_user->id,
+		'type' => 'rejected_terms',
+		'action' => apply_filters( 'bp_example_rejected_terms_activity_action', sprintf( __( '%s rejected the really exciting terms and conditions.', 'bp-example' ), $user_link ), $user_link ),
 	) );
 
 	/* Delete any accepted_terms activity items for the user */
-	bp_example_delete_activity( array( 'item_id' => $bp->loggedin_user->id, 'component_action' => 'accepted_terms' ) );
+	if ( function_exists( 'bp_activity_delete') )
+		bp_activity_delete( array( 'type' => 'accepted_terms', 'user_id' => $bp->loggedin_user->id ) );
 
 	do_action( 'bp_example_reject_terms', $bp->loggedin_user->id );
 
@@ -897,10 +804,9 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 	$from_user_link = bp_core_get_userlink( $from_user_id );
 
 	bp_example_record_activity( array(
-		'content' => apply_filters( 'bp_example_new_high_five_activity', sprintf( __( '%s high-fived %s!', 'bp-example' ), $from_user_link, $to_user_link ), $from_user_link, $to_user_link ),
-		'primary_link' => apply_filters( 'bp_example_new_high_five_activity_primary_link', $to_user_link ),
+		'type' => 'rejected_terms',
+		'action' => apply_filters( 'bp_example_new_high_five_activity_action', sprintf( __( '%s high-fived %s!', 'bp-example' ), $from_user_link, $to_user_link ), $from_user_link, $to_user_link ),
 		'item_id' => $to_user_id,
-		'component_action' => 'rejected_terms'
 	) );
 
 	/* We'll use this do_action call to send the email notification. See bp-example-notifications.php */
