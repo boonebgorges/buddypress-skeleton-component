@@ -16,7 +16,7 @@ function bp_example_send_high_five_notification( $to_user_id, $from_user_id ) {
 	$reciever_name = bp_core_get_user_displayname( $to_user_id, false );
 
 	/* We need to check to see if the recipient has opted not to recieve high-five emails */
-	if ( 'no' == get_usermeta( (int)$to_user_id, 'notification_example_new_high_five' ) )
+	if ( 'no' == get_user_meta( (int)$to_user_id, 'notification_example_new_high_five', true ) )
 		return false;
 	
 	/* Get the userdata for the reciever and sender, this will include usernames and emails that we need. */

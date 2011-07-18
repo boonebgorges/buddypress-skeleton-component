@@ -90,12 +90,7 @@ function bp_example_setup_globals() {
 	/* Register this in the active components array */
 	$bp->active_components[$bp->example->slug] = $bp->example->id;
 }
-/***
- * In versions of BuddyPress 1.2.2 and newer you will be able to use:
- * add_action( 'bp_setup_globals', 'bp_example_setup_globals' );
- */
-add_action( 'wp', 'bp_example_setup_globals', 2 );
-add_action( 'admin_menu', 'bp_example_setup_globals', 2 );
+add_action( 'bp_setup_globals', 'bp_example_setup_globals' );
 
 /**
  * bp_example_add_admin_menu()
@@ -106,14 +101,15 @@ add_action( 'admin_menu', 'bp_example_setup_globals', 2 );
 function bp_example_add_admin_menu() {
 	global $bp;
 
-	if ( !$bp->loggedin_user->is_site_admin )
+	if ( !is_super_admin() )
 		return false;
 
 	require ( dirname( __FILE__ ) . '/bp-example-admin.php' );
 
 	add_submenu_page( 'bp-general-settings', __( 'Example Admin', 'bp-example' ), __( 'Example Admin', 'bp-example' ), 'manage_options', 'bp-example-settings', 'bp_example_admin' );
 }
-add_action( 'admin_menu', 'bp_example_add_admin_menu' );
+// The admin menu should be added to the Network Admin screen when Multisite is enabled
+add_action( is_multisite() ? 'network_admin_menu' : 'admin_menu', 'bp_example_add_admin_menu' );
 
 /**
  * bp_example_setup_nav()
@@ -167,13 +163,7 @@ function bp_example_setup_nav() {
 		'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
 	) );
 }
-
-/***
- * In versions of BuddyPress 1.2.2 and newer you will be able to use:
- * add_action( 'bp_setup_nav', 'bp_example_setup_nav' );
- */
-add_action( 'wp', 'bp_example_setup_nav', 2 );
-add_action( 'admin_menu', 'bp_example_setup_nav', 2 );
+add_action( 'bp_setup_nav', 'bp_example_setup_nav' );
 
 /**
  * bp_example_load_template_filter()
@@ -312,6 +302,9 @@ function bp_example_screen_one() {
 	 * The follow lines are commented out because we are not using this method for this screen.
 	 * You'd want to remove the OPTION 1 parts above and uncomment these lines if you want to use
 	 * this option instead.
+	 *
+	 * Generally, this method of adding content is preferred, as it makes your plugin
+	 * work better with a wider variety of themes.
  	 */
 
 //	add_action( 'bp_template_title', 'bp_example_screen_one_title' );
@@ -447,14 +440,14 @@ function bp_example_screen_settings_menu() {
 		 * This is when the user has hit the save button on their settings.
 		 * The best place to store these settings is in wp_usermeta.
 		 */
-		update_usermeta( $bp->loggedin_user->id, 'bp-example-option-one', attribute_escape( $_POST['bp-example-option-one'] ) );
+		update_user_meta( $bp->loggedin_user->id, 'bp-example-option-one', attribute_escape( $_POST['bp-example-option-one'] ) );
 	}
 
 	add_action( 'bp_template_content_header', 'bp_example_screen_settings_menu_header' );
 	add_action( 'bp_template_title', 'bp_example_screen_settings_menu_title' );
 	add_action( 'bp_template_content', 'bp_example_screen_settings_menu_content' );
 
-	bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'plugin-template' ) );
+	bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
 }
 
 	function bp_example_screen_settings_menu_header() {
@@ -476,7 +469,7 @@ function bp_example_screen_settings_menu() {
 
 		<form action="<?php echo $bp->loggedin_user->domain . 'settings/example-admin'; ?>" name="bp-example-admin-form" id="account-delete-form" class="bp-example-admin-form" method="post">
 
-			<input type="checkbox" name="bp-example-option-one" id="bp-example-option-one" value="1"<?php if ( '1' == get_usermeta( $bp->loggedin_user->id, 'bp-example-option-one' ) ) : ?> checked="checked"<?php endif; ?> /> <?php _e( 'Do you love clicking checkboxes?', 'bp-example' ); ?>
+			<input type="checkbox" name="bp-example-option-one" id="bp-example-option-one" value="1"<?php if ( '1' == get_user_meta( $bp->loggedin_user->id, 'bp-example-option-one', true ) ) : ?> checked="checked"<?php endif; ?> /> <?php _e( 'Do you love clicking checkboxes?', 'bp-example' ); ?>
 			<p class="submit">
 				<input type="submit" value="<?php _e( 'Save Settings', 'bp-example' ) ?> &raquo;" id="submit" name="submit" />
 			</p>
@@ -524,7 +517,7 @@ function bp_example_screen_notification_settings() {
 	  * For example, notifications[notification_friends_friendship_accepted] could be
 	  * used like this:
 	  *
-	  * if ( 'no' == get_usermeta( $bp['loggedin_userid], 'notification_friends_friendship_accepted' ) )
+	  * if ( 'no' == get_user_meta( $bp->displayed_user->id, 'notification_friends_friendship_accepted', true ) )
 	  *		// don't send the email notification
 	  *	else
 	  *		// send the email notification.
@@ -532,26 +525,33 @@ function bp_example_screen_notification_settings() {
 
 	?>
 	<table class="notification-settings" id="bp-example-notification-settings">
+		
+		<thead>
 		<tr>
 			<th class="icon"></th>
 			<th class="title"><?php _e( 'Example', 'bp-example' ) ?></th>
 			<th class="yes"><?php _e( 'Yes', 'bp-example' ) ?></th>
 			<th class="no"><?php _e( 'No', 'bp-example' )?></th>
 		</tr>
+		</thead>
+		
+		<tbody>
 		<tr>
 			<td></td>
 			<td><?php _e( 'Action One', 'bp-example' ) ?></td>
-			<td class="yes"><input type="radio" name="notifications[notification_example_action_one]" value="yes" <?php if ( !get_usermeta( $current_user->id,'notification_example_action_one') || 'yes' == get_usermeta( $current_user->id,'notification_example_action_one') ) { ?>checked="checked" <?php } ?>/></td>
-			<td class="no"><input type="radio" name="notifications[notification_example_action_one]" value="no" <?php if ( get_usermeta( $current_user->id,'notification_example_action_one') == 'no' ) { ?>checked="checked" <?php } ?>/></td>
+			<td class="yes"><input type="radio" name="notifications[notification_example_action_one]" value="yes" <?php if ( !get_user_meta( $current_user->id, 'notification_example_action_one', true ) || 'yes' == get_user_meta( $current_user->id, 'notification_example_action_one', true ) ) { ?>checked="checked" <?php } ?>/></td>
+			<td class="no"><input type="radio" name="notifications[notification_example_action_one]" value="no" <?php if ( get_user_meta( $current_user->id, 'notification_example_action_one') == 'no' ) { ?>checked="checked" <?php } ?>/></td>
 		</tr>
 		<tr>
 			<td></td>
 			<td><?php _e( 'Action Two', 'bp-example' ) ?></td>
-			<td class="yes"><input type="radio" name="notifications[notification_example_action_two]" value="yes" <?php if ( !get_usermeta( $current_user->id,'notification_example_action_two') || 'yes' == get_usermeta( $current_user->id,'notification_example_action_two') ) { ?>checked="checked" <?php } ?>/></td>
-			<td class="no"><input type="radio" name="notifications[notification_example_action_two]" value="no" <?php if ( 'no' == get_usermeta( $current_user->id,'notification_example_action_two') ) { ?>checked="checked" <?php } ?>/></td>
+			<td class="yes"><input type="radio" name="notifications[notification_example_action_two]" value="yes" <?php if ( !get_user_meta( $current_user->id, 'notification_example_action_two', true ) || 'yes' == get_user_meta( $current_user->id, 'notification_example_action_two', true ) ) { ?>checked="checked" <?php } ?>/></td>
+			<td class="no"><input type="radio" name="notifications[notification_example_action_two]" value="no" <?php if ( 'no' == get_user_meta( $current_user->id, 'notification_example_action_two', true ) ) { ?>checked="checked" <?php } ?>/></td>
 		</tr>
 
 		<?php do_action( 'bp_example_notification_settings' ); ?>
+		
+		</tbody>
 	</table>
 <?php
 }
@@ -775,7 +775,7 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 	 */
 
 	/* Get existing fives */
-	$existing_fives = maybe_unserialize( get_usermeta( $to_user_id, 'high-fives' ) );
+	$existing_fives = maybe_unserialize( get_user_meta( $to_user_id, 'high-fives', true ) );
 
 	/* Check to see if the user has already high-fived. That's okay, but lets not
 	 * store duplicate high-fives in the database. What's the point, right?
@@ -784,7 +784,7 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 		$existing_fives[] = (int)$from_user_id;
 
 		/* Now wrap it up and fire it back to the database overlords. */
-		update_usermeta( $to_user_id, 'high-fives', serialize( $existing_fives ) );
+		update_user_meta( $to_user_id, 'high-fives', serialize( $existing_fives ) );
 	}
 
 	/***
@@ -826,7 +826,7 @@ function bp_example_get_highfives_for_user( $user_id ) {
 	if ( !$user_id )
 		return false;
 
-	return maybe_unserialize( get_usermeta( $user_id, 'high-fives' ) );
+	return maybe_unserialize( get_user_meta( $user_id, 'high-fives', true ) );
 }
 
 /**
@@ -857,7 +857,7 @@ function bp_example_remove_data( $user_id ) {
 	   for this $user_id */
 
 	/* Remember to remove usermeta for this component for the user being deleted */
-	delete_usermeta( $user_id, 'bp_example_some_setting' );
+	delete_user_meta( $user_id, 'bp_example_some_setting' );
 
 	do_action( 'bp_example_remove_data', $user_id );
 }

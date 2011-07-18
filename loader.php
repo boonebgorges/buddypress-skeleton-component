@@ -16,7 +16,7 @@ Site Wide Only: true
 /*************************************************************************************************************
  --- SKELETON COMPONENT V1.4 ---
 
- Contributors: apeatling, jeffsayre
+ Contributors: apeatling, jeffsayre, boonebgorges
 
  This is a bare-bones component that should provide a good starting block to building your own custom BuddyPress
  component.
