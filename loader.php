@@ -42,7 +42,7 @@ Site Wide Only: true
 function bp_example_init() {
 	require( dirname( __FILE__ ) . '/includes/bp-example-core.php' );
 }
-add_action( 'bp_init', 'bp_example_init' );
+add_action( 'bp_include', 'bp_example_init' );
 
 /* Put setup procedures to be run when the plugin is activated in the following function */
 function bp_example_activate() {
