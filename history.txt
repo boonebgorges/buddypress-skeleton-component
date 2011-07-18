@@ -1,3 +1,11 @@
+Version 1.5 ( July 18, 2011 )
+--------------------------------------------------------------
+- Updated for BuddyPress 1.2.9
+- Replaced deprecated _usermeta() functions
+- Corrected template name in bp_example_screen_settings_menu()
+- Fixed markup on notifications settings page
+- Switched the loader function to hook to bp_include
+
 Version 1.4 ( February 23, 2009 )
 --------------------------------------------------------------
 - Updated for BuddyPress 1.2

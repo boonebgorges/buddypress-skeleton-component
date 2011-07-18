@@ -4,7 +4,7 @@
 define ( 'BP_EXAMPLE_IS_INSTALLED', 1 );
 
 /* Define a constant that will hold the current version number of the component */
-define ( 'BP_EXAMPLE_VERSION', '1.4' );
+define ( 'BP_EXAMPLE_VERSION', '1.5' );
 
 /* Define a constant that will hold the database version number that can be used for upgrading the DB
  *

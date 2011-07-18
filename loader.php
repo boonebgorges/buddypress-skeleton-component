@@ -3,9 +3,9 @@
 Plugin Name: BuddyPress Skeleton Component
 Plugin URI: http://example.org/my/awesome/bp/component
 Description: This BuddyPress component is the greatest thing since sliced bread.
-Version: 1.4
+Version: 1.5
 Revision Date: MMMM DD, YYYY
-Requires at least: What WP version, what BuddyPress version? ( Example: WP 2.9.2, BuddyPress 1.2.1 )
+Requires at least: What WP version, what BuddyPress version? ( Example: WP 3.2.1, BuddyPress 1.2.9 )
 Tested up to: What WP version, what BuddyPress version?
 License: (Example: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html)
 Author: Dr. Jan Itor
@@ -14,7 +14,7 @@ Site Wide Only: true
 */
 
 /*************************************************************************************************************
- --- SKELETON COMPONENT V1.4 ---
+ --- SKELETON COMPONENT V1.5 ---
 
  Contributors: apeatling, jeffsayre, boonebgorges
 
