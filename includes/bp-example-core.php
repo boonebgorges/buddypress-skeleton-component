@@ -134,40 +134,75 @@ class BP_Example_Component extends BP_Component {
 	 * Setup your plugin's globals
 	 *
 	 * Use the parent::setup_globals() method to set up the key global data for your plugin:
-	 *   - 'slug'
-	 *   - 'root_slug'
-	 *   - 'has_directory'
-	 *   - 'notification_callback'
-	 *   - 'search_string'
-	 *   - 'global_tables'
+	 *   - 'slug'			- This is the string used to create URLs when your component
+	 *				  adds navigation underneath profile URLs. For example,
+	 *				  in the URL http://testbp.com/members/boone/example, the
+	 *				  'example' portion of the URL is formed by the 'slug'.
+	 *				  Site admins can customize this value by defining
+	 *				  BP_EXAMPLE_SLUG in their wp-config.php or bp-custom.php
+	 *				  files.
+	 *   - 'root_slug'		- This is the string used to create URLs when your component
+	 *				  adds navigation to the root of the site. In other words,
+	 *				  you only need to define root_slug if your component is a
+	 *				  "root component". Eg, in:
+	 *				    http://testbp.com/example/test
+	 *				  'example' is a root slug. This should always be defined
+	 *				  in terms of $bp->pages; see the example below. Site admins
+	 *				  can customize this value by changing the permalink of the
+	 *				  corresponding WP page in the Dashboard. NOTE:
+	 *				  'root_slug' requires that 'has_directory' is true.
+	 *   - 'has_directory'		- Set this to true if your component requires a top-level
+	 *				  directory, such as http://testbp.com/example. When
+	 *				  'has_directory' is true, BP will require that site admins
+	 *				  associate a WordPress page with your component. NOTE:
+	 *				  When 'has_directory' is true, you must also define your
+	 *				  component's 'root_slug'; see previous item. Defaults to
+	 *				  false.
+	 *   - 'notification_callback'  - The name of the function that is used to format BP
+	 *				  admin bar notifications for your component.
+	 *   - 'search_string'		- If your component is a root component (has_directory),
+	 *				  you can provide a custom string that will be used as the
+	 *				  default text in the directory search box.
+	 *   - 'global_tables'		- If your component creates custom database tables, store
+	 *				  the names of the tables in a $global_tables array, so that
+	 *				  they are available to other BP functions.
 	 *
-	 * @since 1.5
-	 * @global obj $bp
+	 * You can also use this function to put data directly into the $bp global.
+	 *
+	 * @package BuddyPress_Skeleton_Component
+	 * @since 1.6
+	 *
+	 * @global obj $bp BuddyPress's global object
 	 */
 	function setup_globals() {
 		global $bp;
 
-		// Define a slug, if necessary
+		// Defining the slug in this way makes it possible for site admins to override it
 		if ( !defined( 'BP_EXAMPLE_SLUG' ) )
 			define( 'BP_EXAMPLE_SLUG', $this->id );
 
-		// Global tables for the example component
+		// Global tables for the example component. Build your table names using
+		// $bp->table_prefix (instead of hardcoding 'wp_') to ensure that your component
+		// works with $wpdb, multisite, and custom table prefixes.
 		$global_tables = array(
 			'table_name'      => $bp->table_prefix . 'bp_example'
 		);
 
-		// All globals for messaging component.
-		// Note that global_tables is included in this array.
+		// Set up the $globals array to be passed along to parent::setup_globals()
 		$globals = array(
 			'slug'                  => BP_EXAMPLE_SLUG,
-			'root_slug'             => isset( $bp->pages->example->slug ) ? $bp->pages->example->slug : BP_EXAMPLE_SLUG,
-			'has_directory'         => true,
+			'root_slug'             => isset( $bp->pages->{$this->id}->slug ) ? $bp->pages->{$this->id}->slug : BP_EXAMPLE_SLUG,
+			'has_directory'         => true, // Set to false if not required
 			'notification_callback' => 'bp_example_format_notifications',
 			'search_string'         => __( 'Search Examples...', 'buddypress' ),
 			'global_tables'         => $global_tables
 		);
 
+		// Let BP_Component::setup_globals() do its work.
 		parent::setup_globals( $globals );
+
+		// If your component requires any other data in the $bp global, put it there now.
+		$bp->{$this->id}->misc_data = '123';
 	}
 
 }
