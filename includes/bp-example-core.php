@@ -132,7 +132,6 @@ class BP_Example_Component extends BP_Component {
 	 *   - -functions.php     - Miscellaneous utility functions required by your component.
 	 *   - -notifications.php - Functions related to email notification, as well as the
 	 *			    BuddyPress notifications that show up in the admin bar.
-	 *   - -admin.php	  - Functions used on the WordPress Dashboard.
 	 *   - -widgets.php       - If your plugin includes any sidebar widgets, define them in this
 	 *			    file.
 	 *   - -buddybar.php	  - Functions related to the BuddyBar.
@@ -155,13 +154,18 @@ class BP_Example_Component extends BP_Component {
 			'includes/bp-example-template.php',
 			'includes/bp-example-functions.php',
 			'includes/bp-example-notifications.php',
-			'includes/bp-example-admin.php',
 			'includes/bp-example-widgets.php',
 			'includes/bp-example-cssjs.php',
 			'includes/bp-example-ajax.php'
 		);
 
 		parent::includes( $includes );
+
+		// As an example of how you might do it manually, let's include the functions used
+		// on the WordPress Dashboard conditionally:
+		if ( is_admin() || is_network_admin() ) {
+			include( BP_EXAMPLE_PLUGIN_DIR . '/includes/bp-example-admin.php' );
+		}
 	}
 
 	/**
@@ -325,26 +329,6 @@ function bp_example_tester() {
 	var_dump( $bp );
 }
 //add_action( 'bp_init', 'bp_example_tester' );
-
-
-/**
- * bp_example_add_admin_menu()
- *
- * This function will add a WordPress wp-admin admin menu for your component under the
- * "BuddyPress" menu.
- */
-function bp_example_add_admin_menu() {
-	global $bp;
-
-	if ( !is_super_admin() )
-		return false;
-
-	require ( dirname( __FILE__ ) . '/bp-example-admin.php' );
-
-	add_submenu_page( 'bp-general-settings', __( 'Example Admin', 'bp-example' ), __( 'Example Admin', 'bp-example' ), 'manage_options', 'bp-example-settings', 'bp_example_admin' );
-}
-// The admin menu should be added to the Network Admin screen when Multisite is enabled
-add_action( is_multisite() ? 'network_admin_menu' : 'admin_menu', 'bp_example_add_admin_menu' );
 
 
 

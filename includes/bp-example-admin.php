@@ -11,6 +11,24 @@
  */
 
 /**
+ * bp_example_add_admin_menu()
+ *
+ * This function will add a WordPress wp-admin admin menu for your component under the
+ * "BuddyPress" menu.
+ */
+function bp_example_add_admin_menu() {
+	global $bp;
+
+	if ( !is_super_admin() )
+		return false;
+
+	add_submenu_page( 'bp-general-settings', __( 'Example Admin', 'bp-example' ), __( 'Example Admin', 'bp-example' ), 'manage_options', 'bp-example-settings', 'bp_example_admin' );
+}
+// The bp_core_admin_hook() function returns the correct hook (admin_menu or network_admin_menu),
+// depending on how WordPress and BuddyPress are configured
+add_action( bp_core_admin_hook(), 'bp_example_add_admin_menu' );
+
+/**
  * bp_example_admin()
  *
  * Checks for form submission, saves component settings and outputs admin screen HTML.
@@ -41,12 +59,12 @@ function bp_example_admin() {
 				<tr valign="top">
 					<th scope="row"><label for="target_uri"><?php _e( 'Option One', 'bp-example' ) ?></label></th>
 					<td>
-						<input name="example-setting-one" type="text" id="example-setting-one" value="<?php echo attribute_escape( $setting_one ); ?>" size="60" />
+						<input name="example-setting-one" type="text" id="example-setting-one" value="<?php echo esc_attr( $setting_one ); ?>" size="60" />
 					</td>
 				</tr>
 					<th scope="row"><label for="target_uri"><?php _e( 'Option Two', 'bp-example' ) ?></label></th>
 					<td>
-						<input name="example-setting-two" type="text" id="example-setting-two" value="<?php echo attribute_escape( $setting_two ); ?>" size="60" />
+						<input name="example-setting-two" type="text" id="example-setting-two" value="<?php echo esc_attr( $setting_two ); ?>" size="60" />
 					</td>
 				</tr>
 			</table>
