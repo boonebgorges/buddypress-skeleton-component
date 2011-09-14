@@ -35,7 +35,7 @@ class BP_Example_Component extends BP_Component {
 
 		/**
 		 * BuddyPress-dependent plugins are loaded too late to depend on BP_Component's
-		 * hooks, so we must define our own
+		 * hooks, so we must call the function directly.
 		 */
 		 $this->includes();
 	}
@@ -129,6 +129,47 @@ class BP_Example_Component extends BP_Component {
 
 		parent::includes( $includes );
 	}
+
+	/**
+	 * Setup your plugin's globals
+	 *
+	 * Use the parent::setup_globals() method to set up the key global data for your plugin:
+	 *   - 'slug'
+	 *   - 'root_slug'
+	 *   - 'has_directory'
+	 *   - 'notification_callback'
+	 *   - 'search_string'
+	 *   - 'global_tables'
+	 *
+	 * @since 1.5
+	 * @global obj $bp
+	 */
+	function setup_globals() {
+		global $bp;
+
+		// Define a slug, if necessary
+		if ( !defined( 'BP_EXAMPLE_SLUG' ) )
+			define( 'BP_EXAMPLE_SLUG', $this->id );
+
+		// Global tables for the example component
+		$global_tables = array(
+			'table_name'      => $bp->table_prefix . 'bp_example'
+		);
+
+		// All globals for messaging component.
+		// Note that global_tables is included in this array.
+		$globals = array(
+			'slug'                  => BP_EXAMPLE_SLUG,
+			'root_slug'             => isset( $bp->pages->example->slug ) ? $bp->pages->example->slug : BP_EXAMPLE_SLUG,
+			'has_directory'         => true,
+			'notification_callback' => 'bp_example_format_notifications',
+			'search_string'         => __( 'Search Examples...', 'buddypress' ),
+			'global_tables'         => $global_tables
+		);
+
+		parent::setup_globals( $globals );
+	}
+
 }
 
 /**
