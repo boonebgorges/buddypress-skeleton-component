@@ -1,9 +1,13 @@
 <?php
 
 /**
- * In this file you should define template tag functions that end users can add to their template files.
- * Each template tag function should echo the final data so that it will output the required information
- * just by calling the function name.
+ * In this file you should define template tag functions that end users can add to their template
+ * files.
+ *
+ * It's a general practice in WordPress that template tag functions have two versions, one that
+ * returns the requested value, and one that echoes the value of the first function. The naming
+ * convention is usually something like 'bp_example_get_item_name()' for the function that returns
+ * the value, and 'bp_example_item_name()' for the function that echoes.
  */
 
 /**
@@ -216,6 +220,25 @@ function bp_example_item_pagination() {
 		global $items_template;
 		return apply_filters( 'bp_example_get_item_pagination', $items_template->pag_links );
 	}
+
+/**
+ * Is this page part of the Example component?
+ *
+ * Having a special function just for this purpose makes our code more readable elsewhere, and also
+ * allows us to place filter 'bp_is_example_component' for other components to interact with.
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ *
+ * @uses bp_is_current_component()
+ * @uses apply_filters() to allow this value to be filtered
+ * @return bool True if it's the example component, false otherwise
+ */
+function bp_is_example_component() {
+	$is_example_component = bp_is_current_component( 'example' );
+
+	return apply_filters( 'bp_is_example_component', $is_example_component );
+}
 
 /**
  * Echo the component's slug
