@@ -10,7 +10,7 @@ Tested up to: What WP version, what BuddyPress version?
 License: (Example: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html)
 Author: Dr. Jan Itor
 Author URI: http://example.org/some/cool/developer
-Site Wide Only: true
+Network: true
 */
 
 /*************************************************************************************************************
