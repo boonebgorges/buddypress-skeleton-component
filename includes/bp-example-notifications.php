@@ -75,6 +75,25 @@ function bp_example_screen_notification_settings() {
 }
 add_action( 'bp_notification_settings', 'bp_example_screen_notification_settings' );
 
+
+/**
+ * bp_example_remove_screen_notifications()
+ *
+ * Remove a screen notification for a user.
+ */
+function bp_example_remove_screen_notifications() {
+	global $bp;
+
+	/**
+	 * When clicking on a screen notification, we need to remove it from the menu.
+	 * The following command will do so.
+ 	 */
+	bp_core_delete_notifications_for_user_by_type( $bp->loggedin_user->id, $bp->example->slug, 'new_high_five' );
+}
+add_action( 'bp_example_screen_one', 'bp_example_remove_screen_notifications' );
+add_action( 'xprofile_screen_display_profile', 'bp_example_remove_screen_notifications' );
+
+
 /**
  * bp_example_format_notifications()
  *
