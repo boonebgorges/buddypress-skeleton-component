@@ -61,7 +61,7 @@ define ( 'BP_EXAMPLE_DB_VERSION', '1' );
 
 /* Only load the component if BuddyPress is loaded and initialized. */
 function bp_example_init() {
-	require( dirname( __FILE__ ) . '/includes/bp-example-core.php' );
+	require( dirname( __FILE__ ) . '/includes/bp-example-loader.php' );
 }
 add_action( 'bp_include', 'bp_example_init' );
 
