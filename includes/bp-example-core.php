@@ -1,26 +1,160 @@
 <?php
 
-/* Define a constant that can be checked to see if the component is installed or not. */
-define ( 'BP_EXAMPLE_IS_INSTALLED', 1 );
+// Exit if accessed directly
+// It's a good idea to include this in each of your plugin files, for increased security on
+// improperly configured servers
+if ( !defined( 'ABSPATH' ) ) exit;
 
-/* Define a constant that will hold the current version number of the component */
-define ( 'BP_EXAMPLE_VERSION', '1.5' );
+class BP_Example_Component extends BP_Component {
 
-/* Define a constant that will hold the database version number that can be used for upgrading the DB
+	/**
+	 * Constructor method
+	 *
+	 * You can do all sorts of stuff in your constructor, but it's recommended that, at the
+	 * very least, you call the parent::start() function. This tells the parent BP_Component
+	 * to begin its setup routine.
+	 *
+	 * BP_Component::start() takes three parameters:
+	 *   (1) $id   - A unique identifier for the component. Letters, numbers, and underscores
+	 *		 only.
+	 *   (2) $name - This is a translatable name for your component, which will be used in
+	 *               various places through the BuddyPress admin screens to identify it.
+	 *   (3) $path - The path to your plugin directory. Primarily, this is used by
+	 *		 BP_Component::includes(), to include your plugin's files. See loader.php
+	 *		 to see how BP_EXAMPLE_PLUGIN_DIR was defined.
+	 *
+	 * @package BuddyPress_Skeleton_Component
+	 * @since 1.6
+	 */
+	function __construct() {
+		parent::start(
+			'example',
+			__( 'Example', 'bp-example' ),
+			BP_EXAMPLE_PLUGIN_DIR
+		);
+
+		/**
+		 * BuddyPress-dependent plugins are loaded too late to depend on BP_Component's
+		 * hooks, so we must define our own
+		 */
+		 $this->includes();
+	}
+
+	/**
+	 * Include your component's files
+	 *
+	 * BP_Component has a method called includes(), which will automatically load your plugin's
+	 * files, as long as they are properly named and arranged. BP_Component::includes() loops
+	 * through the $includes array, defined below, and for each $file in the array, it tries
+	 * to load files in the following locations:
+	 *   (1) $this->path . '/' . $file - For example, if your $includes array is defined as
+	 *           $includes = array( 'notifications.php', 'filters.php' );
+	 *       BP_Component::includes() will try to load these files (assuming a typical WP
+	 *       setup):
+	 *           /wp-content/plugins/bp-example/notifications.php
+	 *           /wp-content/plugins/bp-example/filters.php
+	 *       Our includes function, listed below, uses a variation on this method, by specifying
+	 *       the 'includes' directory in our $includes array.
+	 *   (2) $this->path . '/bp-' . $this->id . '/' . $file - Assuming the same $includes array
+	 *       as above, BP will look for the following files:
+	 *           /wp-content/plugins/bp-example/bp-example/notifications.php
+	 *           /wp-content/plugins/bp-example/bp-example/filters.php
+	 *   (3) $this->path . '/bp-' . $this->id . '/' . 'bp-' . $this->id . '-' . $file . '.php' -
+	 *       This is the format that BuddyPress core components use to load their files. Given
+	 *       an $includes array like
+	 *           $includes = array( 'notifications', 'filters' );
+	 *       BP looks for files at:
+	 *           /wp-content/plugins/bp-example/bp-example/bp-example-notifications.php
+	 *           /wp-content/plugins/bp-example/bp-example/bp-example-filters.php
+	 *
+	 * If you'd prefer not to use any of these naming or organizational schemas, you are not
+	 * required to use parent::includes(); your own includes() method can require the files
+	 * manually. For example:
+	 *    require( $this->path . '/includes/notifications.php' );
+	 *    require( $this->path . '/includes/filters.php' );
+	 *
+	 * Notice that this method is called directly in $this->__construct(). While this step is
+	 * not necessary for BuddyPress core components, plugins are loaded later, and thus their
+	 * includes() method must be invoked manually.
+	 *
+	 * Our example component includes a fairly large number of files. Your component may not
+	 * need to have versions of all of these files. What follows is a short description of
+	 * what each file does; for more details, open the file itself and see its inline docs.
+	 *   - -actions.php       - Functions hooked to bp_actions, mainly used to catch action
+	 *			    requests (save, delete, etc)
+	 *   - -screens.php       - Functions hooked to bp_screens. These are the screen functions
+	 *			    responsible for the display of your plugin's content.
+	 *   - -filters.php	  - Functions that are hooked via apply_filters()
+	 *   - -classes.php	  - Your plugin's classes. Depending on how you organize your
+	 *			    plugin, this could mean: a database query class, a custom post
+	 *			    type data schema, and so forth
+	 *   - -activity.php      - Functions related to the BP Activity Component. This is where
+	 *			    you put functions responsible for creating, deleting, and
+	 *			    modifying activity items related to your component
+	 *   - -template.php	  - Template tags. These are functions that are called from your
+	 *			    templates, or from your screen functions. If your plugin
+	 *			    contains its own version of the WordPress Loop (such as
+	 *			    bp_example_has_items()), those functions should go in this file.
+	 *   - -functions.php     - Miscellaneous utility functions required by your component.
+	 *   - -notifications.php - Functions related to email notification, as well as the
+	 *			    BuddyPress notifications that show up in the admin bar.
+	 *   - -admin.php	  - Functions used on the WordPress Dashboard.
+	 *   - -widgets.php       - If your plugin includes any sidebar widgets, define them in this
+	 *			    file.
+	 *   - -buddybar.php	  - Functions related to the BuddyBar.
+	 *   - -adminbar.php      - Functions related to the WordPress Admin Bar.
+	 *   - -cssjs.php	  - Here is where you set up and enqueue your CSS and JS.
+	 *   - -ajax.php	  - Functions used in the process of AJAX requests.
+	 *
+	 * @package BuddyPress_Skeleton_Component
+	 * @since 1.6
+	 */
+	function includes() {
+
+		// Files to include
+		$includes = array(
+			'includes/bp-example-actions.php',
+			'includes/bp-example-screens.php',
+			'includes/bp-example-filters.php',
+			'includes/bp-example-classes.php',
+			'includes/bp-example-activity.php',
+			'includes/bp-example-template.php',
+			'includes/bp-example-functions.php',
+			'includes/bp-example-notifications.php',
+			'includes/bp-example-admin.php',
+			'includes/bp-example-widgets.php',
+			'includes/bp-example-cssjs.php',
+			'includes/bp-example-ajax.php'
+		);
+
+		parent::includes( $includes );
+	}
+}
+
+/**
+ * Loads your component into the $bp global
  *
- * NOTE: When table defintions change and you need to upgrade,
- * make sure that you increment this constant so that it runs the install function again.
+ * This function loads your component into the $bp global. By hooking to bp_loaded, we ensure that
+ * BP_Example_Component is loaded after BuddyPress's core components. This is a good thing because
+ * it gives us access to those components' functions and data, should our component interact with
+ * them.
  *
- * Also, if you have errors when testing the component for the first time, make sure that you check to
- * see if the table(s) got created. If not, you'll most likely need to increment this constant as
- * BP_EXAMPLE_DB_VERSION was written to the wp_usermeta table and the install function will not be
- * triggered again unless you increment the version to a number higher than stored in the meta data.
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
  */
-define ( 'BP_EXAMPLE_DB_VERSION', '1' );
+function bp_example_load_core_component() {
+	global $bp;
 
-/* Define a slug constant that will be used to view this components pages (http://example.org/SLUG) */
-if ( !defined( 'BP_EXAMPLE_SLUG' ) )
-	define ( 'BP_EXAMPLE_SLUG', 'example' );
+	$bp->example = new BP_Example_Component;
+}
+add_action( 'bp_loaded', 'bp_example_load_core_component' );
+
+
+function bp_example_tester() {
+	global $bp;
+	var_dump( $bp );
+}
+add_action( 'bp_init', 'bp_example_tester' );
 
 /*
  * If you want the users of your component to be able to change the values of your other custom constants,
@@ -51,26 +185,7 @@ if ( file_exists( dirname( __FILE__ ) . '/languages/' . get_locale() . '.mo' ) )
  * You should remove or comment out any files that you don't need.
  */
 
-/* The classes file should hold all database access classes and functions */
-require ( dirname( __FILE__ ) . '/bp-example-classes.php' );
 
-/* The ajax file should hold all functions used in AJAX queries */
-require ( dirname( __FILE__ ) . '/bp-example-ajax.php' );
-
-/* The cssjs file should set up and enqueue all CSS and JS files used by the component */
-require ( dirname( __FILE__ ) . '/bp-example-cssjs.php' );
-
-/* The templatetags file should contain classes and functions designed for use in template files */
-require ( dirname( __FILE__ ) . '/bp-example-templatetags.php' );
-
-/* The widgets file should contain code to create and register widgets for the component */
-require ( dirname( __FILE__ ) . '/bp-example-widgets.php' );
-
-/* The notifications file should contain functions to send email notifications on specific user actions */
-require ( dirname( __FILE__ ) . '/bp-example-notifications.php' );
-
-/* The filters file should create and apply filters to component output functions. */
-require ( dirname( __FILE__ ) . '/bp-example-filters.php' );
 
 /**
  * bp_example_setup_globals()
@@ -525,7 +640,7 @@ function bp_example_screen_notification_settings() {
 
 	?>
 	<table class="notification-settings" id="bp-example-notification-settings">
-		
+
 		<thead>
 		<tr>
 			<th class="icon"></th>
@@ -534,7 +649,7 @@ function bp_example_screen_notification_settings() {
 			<th class="no"><?php _e( 'No', 'bp-example' )?></th>
 		</tr>
 		</thead>
-		
+
 		<tbody>
 		<tr>
 			<td></td>
@@ -550,7 +665,7 @@ function bp_example_screen_notification_settings() {
 		</tr>
 
 		<?php do_action( 'bp_example_notification_settings' ); ?>
-		
+
 		</tbody>
 	</table>
 <?php
