@@ -61,6 +61,8 @@ class BP_Example_Component extends BP_Component {
 	 * @since 1.6
 	 */
 	function __construct() {
+		global $bp;
+
 		parent::start(
 			'example',
 			__( 'Example', 'bp-example' ),
@@ -72,6 +74,14 @@ class BP_Example_Component extends BP_Component {
 		 * hooks, so we must call the function directly.
 		 */
 		 $this->includes();
+
+		/**
+		 * Put your component into the active components array, so that
+		 *   bp_is_active( 'example' );
+		 * returns true when appropriate. We have to do this manually, because non-core
+		 * components are not saved as active components in the database.
+		 */
+		$bp->active_components[$this->id] = '1';
 	}
 
 	/**

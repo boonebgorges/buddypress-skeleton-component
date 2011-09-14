@@ -9,6 +9,28 @@
  */
 
 /**
+ * If your component uses a top-level directory, this function will catch the requests and load
+ * the index page.
+ *
+ * @package BuddyPress_Template_Pack
+ * @since 1.6
+ */
+function bp_example_directory_setup() {
+	if ( bp_is_example_component() && !bp_current_action() && !bp_current_item() ) {
+		// This wrapper function sets the $bp->is_directory flag to true, which help other
+		// content to display content properly on your directory.
+		bp_update_is_directory( true, 'example' );
+
+		// Add an action so that plugins can add content or modify behavior
+		do_action( 'bp_example_directory_setup' );
+
+		bp_core_load_template( apply_filters( 'example_directory_template', 'example/index' ) );
+	}
+}
+add_action( 'bp_screens', 'bp_example_directory_setup' );
+
+
+/**
  * bp_example_screen_one()
  *
  * Sets up and displays the screen output for the sub nav item "example/screen-one"
