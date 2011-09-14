@@ -5,6 +5,40 @@
 // improperly configured servers
 if ( !defined( 'ABSPATH' ) ) exit;
 
+/*
+ * If you want the users of your component to be able to change the values of your other custom constants,
+ * you can use this code to allow them to add new definitions to the wp-config.php file and set the value there.
+ *
+ *
+ *	if ( !defined( 'BP_EXAMPLE_CONSTANT' ) )
+ *		define ( 'BP_EXAMPLE_CONSTANT', 'some value' // or some value without quotes if integer );
+ */
+
+/**
+ * You should try hard to support translation in your component. It's actually very easy.
+ * Make sure you wrap any rendered text in __() or _e() and it will then be translatable.
+ *
+ * You must also provide a text domain, so translation files know which bits of text to translate.
+ * Throughout this example the text domain used is 'bp-example', you can use whatever you want.
+ * Put the text domain as the second parameter:
+ *
+ * __( 'This text will be translatable', 'bp-example' ); // Returns the first parameter value
+ * _e( 'This text will be translatable', 'bp-example' ); // Echos the first parameter value
+ */
+
+if ( file_exists( dirname( __FILE__ ) . '/languages/' . get_locale() . '.mo' ) )
+	load_textdomain( 'bp-example', dirname( __FILE__ ) . '/bp-example/languages/' . get_locale() . '.mo' );
+
+/**
+ * Implementation of BP_Component
+ *
+ * BP_Component is the base class that all BuddyPress components use to set up their basic
+ * structure, including global data, navigation elements, and admin bar information. If there's
+ * a particular aspect of this class that is not relevant to your plugin, just leave it out.
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ */
 class BP_Example_Component extends BP_Component {
 
 	/**
@@ -131,7 +165,7 @@ class BP_Example_Component extends BP_Component {
 	}
 
 	/**
-	 * Setup your plugin's globals
+	 * Set up your plugin's globals
 	 *
 	 * Use the parent::setup_globals() method to set up the key global data for your plugin:
 	 *   - 'slug'			- This is the string used to create URLs when your component
@@ -205,6 +239,66 @@ class BP_Example_Component extends BP_Component {
 		$bp->{$this->id}->misc_data = '123';
 	}
 
+	/**
+	 * Set up your component's navigation.
+	 *
+	 * The navigation elements created here are responsible for the main site navigation (eg
+	 * Profile > Activity > Mentions), as well as the navigation in the BuddyBar. WP Admin Bar
+	 * navigation is broken out into a separate method; see
+	 * BP_Example_Component::setup_admin_bar().
+	 *
+	 * @global obj $bp
+	 */
+	function setup_nav() {
+		// Add 'Example' to the main navigation
+		$main_nav = array(
+			'name' 		      => __( 'Example', 'bp-example' ),
+			'slug' 		      => bp_get_example_slug(),
+			'position' 	      => 80,
+			'screen_function'     => 'bp_example_screen_one',
+			'default_subnav_slug' => 'screen-one'
+		);
+
+		$example_link = trailingslashit( bp_loggedin_user_domain() . bp_get_example_slug() );
+
+		// Add a few subnav items under the main Example tab
+		$sub_nav[] = array(
+			'name'            =>  __( 'Screen One', 'bp-example' ),
+			'slug'            => 'screen-one',
+			'parent_url'      => $example_link,
+			'parent_slug'     => bp_get_example_slug(),
+			'screen_function' => 'bp_example_screen_one',
+			'position'        => 10
+		);
+
+		// Add the subnav items to the friends nav item
+		$sub_nav[] = array(
+			'name'            =>  __( 'Screen Two', 'bp-example' ),
+			'slug'            => 'screen-two',
+			'parent_url'      => $example_link,
+			'parent_slug'     => bp_get_example_slug(),
+			'screen_function' => 'bp_example_screen_two',
+			'position'        => 20
+		);
+
+		parent::setup_nav( $main_nav, $sub_nav );
+
+		// If your component needs additional navigation menus that are not handled by
+		// BP_Component::setup_nav(), you can register them manually here. For example,
+		// if your component needs a subsection under a user's Settings menu, add
+		// it like this. See bp_example_screen_settings_menu() for more info
+		bp_core_new_subnav_item( array(
+			'name' 		  => __( 'Example', 'bp-example' ),
+			'slug' 		  => 'example-admin',
+			'parent_slug'     => bp_get_settings_slug(),
+			'parent_url' 	  => trailingslashit( bp_loggedin_user_domain() . bp_get_settings_slug() ),
+			'screen_function' => 'bp_example_screen_settings_menu',
+			'position' 	  => 40,
+			'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
+		) );
+	}
+
+
 }
 
 /**
@@ -230,58 +324,8 @@ function bp_example_tester() {
 	global $bp;
 	var_dump( $bp );
 }
-add_action( 'bp_init', 'bp_example_tester' );
+//add_action( 'bp_init', 'bp_example_tester' );
 
-/*
- * If you want the users of your component to be able to change the values of your other custom constants,
- * you can use this code to allow them to add new definitions to the wp-config.php file and set the value there.
- *
- *
- *	if ( !defined( 'BP_EXAMPLE_CONSTANT' ) )
- *		define ( 'BP_EXAMPLE_CONSTANT', 'some value' // or some value without quotes if integer );
- */
-
-/**
- * You should try hard to support translation in your component. It's actually very easy.
- * Make sure you wrap any rendered text in __() or _e() and it will then be translatable.
- *
- * You must also provide a text domain, so translation files know which bits of text to translate.
- * Throughout this example the text domain used is 'bp-example', you can use whatever you want.
- * Put the text domain as the second parameter:
- *
- * __( 'This text will be translatable', 'bp-example' ); // Returns the first parameter value
- * _e( 'This text will be translatable', 'bp-example' ); // Echos the first parameter value
- */
-
-if ( file_exists( dirname( __FILE__ ) . '/languages/' . get_locale() . '.mo' ) )
-	load_textdomain( 'bp-example', dirname( __FILE__ ) . '/bp-example/languages/' . get_locale() . '.mo' );
-
-/**
- * The next step is to include all the files you need for your component.
- * You should remove or comment out any files that you don't need.
- */
-
-
-
-/**
- * bp_example_setup_globals()
- *
- * Sets up global variables for your component.
- */
-function bp_example_setup_globals() {
-	global $bp, $wpdb;
-
-	/* For internal identification */
-	$bp->example->id = 'example';
-
-	$bp->example->table_name = $wpdb->base_prefix . 'bp_example';
-	$bp->example->format_notification_function = 'bp_example_format_notifications';
-	$bp->example->slug = BP_EXAMPLE_SLUG;
-
-	/* Register this in the active components array */
-	$bp->active_components[$bp->example->slug] = $bp->example->id;
-}
-add_action( 'bp_setup_globals', 'bp_example_setup_globals' );
 
 /**
  * bp_example_add_admin_menu()
@@ -302,59 +346,7 @@ function bp_example_add_admin_menu() {
 // The admin menu should be added to the Network Admin screen when Multisite is enabled
 add_action( is_multisite() ? 'network_admin_menu' : 'admin_menu', 'bp_example_add_admin_menu' );
 
-/**
- * bp_example_setup_nav()
- *
- * Sets up the user profile navigation items for the component. This adds the top level nav
- * item and all the sub level nav items to the navigation array. This is then
- * rendered in the template.
- */
-function bp_example_setup_nav() {
-	global $bp;
 
-	/* Add 'Example' to the main user profile navigation */
-	bp_core_new_nav_item( array(
-		'name' => __( 'Example', 'bp-example' ),
-		'slug' => $bp->example->slug,
-		'position' => 80,
-		'screen_function' => 'bp_example_screen_one',
-		'default_subnav_slug' => 'screen-one'
-	) );
-
-	$example_link = $bp->loggedin_user->domain . $bp->example->slug . '/';
-
-	/* Create two sub nav items for this component */
-	bp_core_new_subnav_item( array(
-		'name' => __( 'Screen One', 'bp-example' ),
-		'slug' => 'screen-one',
-		'parent_slug' => $bp->example->slug,
-		'parent_url' => $example_link,
-		'screen_function' => 'bp_example_screen_one',
-		'position' => 10
-	) );
-
-	bp_core_new_subnav_item( array(
-		'name' => __( 'Screen Two', 'bp-example' ),
-		'slug' => 'screen-two',
-		'parent_slug' => $bp->example->slug,
-		'parent_url' => $example_link,
-		'screen_function' => 'bp_example_screen_two',
-		'position' => 20,
-		'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
-	) );
-
-	/* Add a nav item for this component under the settings nav item. See bp_example_screen_settings_menu() for more info */
-	bp_core_new_subnav_item( array(
-		'name' => __( 'Example', 'bp-example' ),
-		'slug' => 'example-admin',
-		'parent_slug' => $bp->settings->slug,
-		'parent_url' => $bp->loggedin_user->domain . $bp->settings->slug . '/',
-		'screen_function' => 'bp_example_screen_settings_menu',
-		'position' => 40,
-		'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
-	) );
-}
-add_action( 'bp_setup_nav', 'bp_example_setup_nav' );
 
 /**
  * bp_example_load_template_filter()
