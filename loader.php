@@ -67,40 +67,7 @@ add_action( 'bp_include', 'bp_example_init' );
 
 /* Put setup procedures to be run when the plugin is activated in the following function */
 function bp_example_activate() {
-	global $wpdb;
 
-	if ( !empty($wpdb->charset) )
-		$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
-
-	/**
-	 * If you want to create new tables you'll need to install them on
-	 * activation.
-	 *
-	 * You should try your best to use existing tables if you can. The
-	 * activity stream and meta tables are very flexible.
-	 *
-	 * Write your table definition below, you can define multiple
-	 * tables by adding SQL to the $sql array.
-	 */
-	$sql[] = "CREATE TABLE {$wpdb->base_prefix}bp_example (
-		  		id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-		  		field_1 bigint(20) NOT NULL,
-		  		field_2 bigint(20) NOT NULL,
-		  		field_3 bool DEFAULT 0,
-			    KEY field_1 (field_1),
-			    KEY field_2 (field_2)
-		 	   ) {$charset_collate};";
-
-	require_once( ABSPATH . 'wp-admin/upgrade-functions.php' );
-
-	/**
-	 * The dbDelta call is commented out so the example table is not installed.
-	 * Once you define the SQL for your new table, uncomment this line to install
-	 * the table. (Make sure you increment the BP_EXAMPLE_DB_VERSION constant though).
-	 */
-	// dbDelta($sql);
-
-	update_site_option( 'bp-example-db-version', BP_EXAMPLE_DB_VERSION );
 }
 register_activation_hook( __FILE__, 'bp_example_activate' );
 

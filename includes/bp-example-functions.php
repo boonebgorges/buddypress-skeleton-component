@@ -174,6 +174,15 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 
 		/* Now wrap it up and fire it back to the database overlords. */
 		update_user_meta( $to_user_id, 'high-fives', serialize( $existing_fives ) );
+
+		// Let's also record it in our custom database tables
+		$db_args = array(
+			'recipient_id'  => (int)$to_user_id,
+			'high_fiver_id' => (int)$from_user_id
+		);
+
+		$high_five = new BP_Example_Highfive( $db_args );
+		$high_five->save();
 	}
 
 	/***

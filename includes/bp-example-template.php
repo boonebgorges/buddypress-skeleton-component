@@ -300,4 +300,12 @@ function bp_example_root_slug() {
 		return apply_filters( 'bp_get_example_root_slug', $example_root_slug );
 	}
 
+function bp_example_get_total_high_five_count() {
+	return 8;
+}
+
+function bp_example_get_total_high_five_count_for_user() {
+	return 4;
+}
+
 ?>

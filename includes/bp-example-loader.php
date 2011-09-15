@@ -82,6 +82,13 @@ class BP_Example_Component extends BP_Component {
 		 * components are not saved as active components in the database.
 		 */
 		$bp->active_components[$this->id] = '1';
+
+		/**
+		 * Hook the register_post_types() method. If you're using custom post types to store
+		 * data (which is recommended), you will need to hook your function manually to
+		 * 'init'.
+		 */
+		add_action( 'init', array( &$this, 'register_post_types' ) );
 	}
 
 	/**
@@ -312,6 +319,44 @@ class BP_Example_Component extends BP_Component {
 		) );
 	}
 
+	/**
+	 * If your component needs to store data, it is highly recommended that you use WordPress
+	 * custom post types for that data, instead of creating custom database tables.
+	 *
+	 * In the future, BuddyPress will have its own bp_register_post_types hook. For the moment,
+	 * hook to init. See BP_Example_Component::__construct().
+	 *
+	 * @package BuddyPress_Skeleton_Component
+	 * @since 1.6
+	 * @see http://codex.wordpress.org/Function_Reference/register_post_type
+	 */
+	function register_post_types() {
+		// Set up some labels for the post type
+		$labels = array(
+			'name'	   => __( 'High Fives', 'bp-example' ),
+			'singular' => __( 'High Five', 'bp-example' )
+		);
+
+		// Set up the argument array for register_post_type()
+		$args = array(
+			'label'	=> __( 'High Fives', 'bp-example' ),
+			'labels' => $labels,
+			'public' => false,
+			'show_ui' => true
+		);
+
+		// Register the post type.
+		// Here we are using $this->id ('example') as the name of the post type. You may
+		// choose to use a different name for the post type; if you register more than one,
+		// you will have to declare more names.
+		register_post_type( $this->id, $args );
+
+		parent::register_post_types();
+	}
+
+	function register_taxonomies() {
+
+	}
 
 }
 
