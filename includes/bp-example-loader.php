@@ -339,10 +339,11 @@ class BP_Example_Component extends BP_Component {
 
 		// Set up the argument array for register_post_type()
 		$args = array(
-			'label'	=> __( 'High Fives', 'bp-example' ),
-			'labels' => $labels,
-			'public' => false,
-			'show_ui' => true
+			'label'	   => __( 'High Fives', 'bp-example' ),
+			'labels'   => $labels,
+			'public'   => false,
+			'show_ui'  => true,
+			'supports' => array( 'title' )
 		);
 
 		// Register the post type.

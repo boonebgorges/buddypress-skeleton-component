@@ -96,39 +96,36 @@ class BP_Example_Highfive {
 		do_action( 'bp_example_data_before_save', $this );
 
 		if ( $this->id ) {
-			// Update
-			$result = $wpdb->query( $wpdb->prepare(
-					"UPDATE {$bp->example->table_name} SET
-						high_fiver_id = %d,
-						recipient_id = %d,
-						date = %s
-					WHERE id = %d",
-						$this->high_fiver_id,
-						$this->recipient_id,
-						$this->date,
-						$this->id
-					) );
+			// Set up the arguments for wp_insert_post()
+			$wp_update_post_args = array(
+				'ID'		=> $this->id,
+				'post_author'	=> $this->high_fiver_id,
+				'post_title'	=> sprintf( __( '%1$s high-fives %2$s', 'bp-example' ), bp_core_get_user_displayname( $this->high_fiver_id ), bp_core_get_user_displayname( $this->recipient_id ) )
+			);
+
+			// Save the post
+			$result = wp_update_post( $wp_update_post_args );
+
+			// We'll store the reciever's ID as postmeta
+			if ( $result ) {
+				update_post_meta( $result, 'bp_example_recipient_id', $this->recipient_id );
+			}
 		} else {
-			// Save
-			$result = $wpdb->query( $wpdb->prepare(
-					"INSERT INTO {$bp->example->table_name} (
-						high_fiver_id,
-						recipient_id,
-						date
-					) VALUES (
-						%d, %d, %s
-					)",
-						$this->high_fiver_id,
-						$this->recipient_id,
-						$this->date
-					) );
-		}
+			// Set up the arguments for wp_insert_post()
+			$wp_insert_post_args = array(
+				'post_status'	=> 'publish',
+				'post_type'	=> 'example',
+				'post_author'	=> $this->high_fiver_id,
+				'post_title'	=> sprintf( __( '%1$s high-fives %2$s', 'bp-example' ), bp_core_get_user_displayname( $this->high_fiver_id ), bp_core_get_user_displayname( $this->recipient_id ) )
+			);
 
-		if ( !$result )
-			return false;
+			// Save the post
+			$result = wp_insert_post( $wp_insert_post_args );
 
-		if ( !$this->id ) {
-			$this->id = $wpdb->insert_id;
+			// We'll store the reciever's ID as postmeta
+			if ( $result ) {
+				update_post_meta( $result, 'bp_example_recipient_id', $this->recipient_id );
+			}
 		}
 
 		/* Add an after save action here */
@@ -143,9 +140,7 @@ class BP_Example_Highfive {
 	 * This method will delete the corresponding row for an object from the database.
 	 */
 	function delete() {
-		global $wpdb, $bp;
-
-		return $wpdb->query( $wpdb->prepare( "DELETE FROM {$bp->example->table_name} WHERE id = %d", $this->id ) );
+		return wp_trash_post( $this->id );
 	}
 
 	/* Static Functions */

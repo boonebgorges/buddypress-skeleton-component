@@ -162,7 +162,7 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 	 * in a custom DB table, we'd want to reference a function in
 	 * bp-example-classes.php that would run the SQL query.
 	 */
-
+	delete_user_meta( $to_user_id, 'high-fives' );
 	/* Get existing fives */
 	$existing_fives = maybe_unserialize( get_user_meta( $to_user_id, 'high-fives', true ) );
 
