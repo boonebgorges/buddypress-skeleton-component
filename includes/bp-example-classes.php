@@ -8,6 +8,13 @@
  *
  * By doing this you can easily save, update and delete records using the class, you're also
  * abstracting database access.
+ *
+ * This function uses WP_Query and wp_insert_post() to fetch and store data, using WordPress custom
+ * post types. This method for data storage is highly recommended, as it assures that your data
+ * will be maximally compatible with WordPress's security and performance optimization features, in
+ * addition to making your plugin easier to extend for other developers. The suggested
+ * implementation here (where the WP_Query object is set as the query property on the
+ * BP_Example_Highfive object in get()) is one suggested implementation.
  */
 
 class BP_Example_Highfive {

@@ -33,11 +33,16 @@
  *
  * Obviously, you'd want to be more specific than the word 'item'.
  *
+ * In our example here, we've used a custom post type for storing and fetching our content. Though
+ * the custom post type method is recommended, you can also create custom database tables for this
+ * purpose. See bp-example-classes.php for more details.
+ *
  */
 
 function bp_example_has_items( $args = '' ) {
 	global $bp, $items_template;
 
+	// This keeps us from firing the query more than once
 	if ( empty( $items_template ) ) {
 		/***
 		 * This function should accept arguments passes as a string, just the same
