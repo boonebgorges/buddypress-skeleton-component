@@ -15,6 +15,7 @@ class BP_Example_Highfive {
 	var $high_fiver_id;
 	var $recipient_id;
 	var $date;
+	var $query;
 
 	/**
 	 * bp_example_tablename()
@@ -132,6 +133,75 @@ class BP_Example_Highfive {
 		do_action( 'bp_example_data_after_save', $this );
 
 		return $result;
+	}
+
+	/**
+	 * Fire the WP_Query
+	 *
+	 * @package BuddyPress_Skeleton_Component
+	 * @since 1.6
+	 */
+	function get( $args = array() ) {
+		// Only run the query once
+		if ( empty( $this->query ) ) {
+			$defaults = array(
+				'high_fiver_id'	=> 0,
+				'recipient_id'	=> 0,
+				'per_page'	=> 10,
+				'paged'		=> 1
+			);
+
+			$r = wp_parse_args( $args, $defaults );
+			extract( $r );
+
+			$query_args = array(
+				'post_status'	 => 'publish',
+				'post_type'	 => 'example',
+				'posts_per_page' => $per_page,
+				'paged'		 => $paged,
+				'meta_query'	 => array()
+			);
+
+			// Some optional query args
+			// Note that some values are cast as arrays. This allows you to query for multiple
+			// authors/recipients at a time
+			if ( $high_fiver_id ) {
+				$query_args['author'] = (array)$high_fiver_id;
+			}
+
+			// We can filter by postmeta by adding a meta_query argument. Note that
+			if ( $recipient_id ) {
+				$query_args['meta_query'][] = array(
+					'key'	  => 'bp_example_recipient_id',
+					'value'	  => (array)$recipient_id,
+					'compare' => 'IN' // Allows $recipient_id to be an array
+				);
+			}
+
+			// Run the query, and store as an object property, so we can access from other
+			// methods
+			$this->query = new WP_Query( $query_args );
+		}
+	}
+
+	/**
+	 * Part of our bp_example_has_high_fives() loop
+	 *
+	 * @package BuddyPress_Skeleton_Component
+	 * @since 1.6
+	 */
+	function have_posts() {
+		return $this->query->have_posts();
+	}
+
+	/**
+	 * Part of our bp_example_has_high_fives() loop
+	 *
+	 * @package BuddyPress_Skeleton_Component
+	 * @since 1.6
+	 */
+	function the_post() {
+		return $this->query->the_post();
 	}
 
 	/**

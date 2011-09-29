@@ -175,11 +175,10 @@ function bp_example_has_items( $args = '' ) {
 	 * function call
 	 */
 	$defaults = array(
-		'user_id' => false,
-		'page' => 1,
-		'per_page' => 10,
-		'max' => false,
-		'type' => 'newest'
+		'high_fiver_id' => 0,
+		'recipient_id'  => 0,
+		'per_page'      => 10,
+		'paged'		=> 1
 	);
 
 	/***
@@ -189,14 +188,10 @@ function bp_example_has_items( $args = '' ) {
 	$r = wp_parse_args( $args, $defaults );
 	extract( $r, EXTR_SKIP );
 
-	$items_template = new BP_Example_Template( $user_id, $type, $page, $per_page, $max );
+	$items_template = new BP_Example_Highfive();
+	$items_template->get( $r );
 
-	return $items_template->has_items();
-}
-
-function bp_example_the_item() {
-	global $items_template;
-	return $items_template->the_item();
+	return $items_template->have_posts();
 }
 
 function bp_example_items() {
@@ -300,12 +295,69 @@ function bp_example_root_slug() {
 		return apply_filters( 'bp_get_example_root_slug', $example_root_slug );
 	}
 
-function bp_example_get_total_high_five_count() {
-	return 8;
+/**
+ * Echo the total of all high-fives across the site
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ */
+function bp_example_total_high_five_count() {
+	echo bp_example_get_total_high_five_count();
 }
+	/**
+	 * Return the total of all high-fives across the site
+	 *
+	 * The most straightforward way to get a post count is to run a WP_Query. In your own plugin
+	 * you might consider storing data like this with update_option(), incrementing each time
+	 * a new item is published.
+	 *
+	 * @package BuddyPress_Skeleton_Component
+	 * @since 1.6
+	 *
+	 * @return int
+	 */
+	function bp_example_get_total_high_five_count() {
+		$high_fives = new BP_Example_Highfive();
+		$high_fives->get();
 
-function bp_example_get_total_high_five_count_for_user() {
-	return 4;
+		return apply_filters( 'bp_example_get_total_high_five_count', $high_fives->query->found_posts, $high_fives );
+	}
+
+/**
+ * Echo the total of all high-fives given to a particular user
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ */
+function bp_example_total_high_five_count_for_user( $user_id = false ) {
+	echo bp_example_get_total_high_five_count_for_user( $user_id = false );
 }
+	/**
+	 * Return the total of all high-fives given to a particular user
+	 *
+	 * The most straightforward way to get a post count is to run a WP_Query. In your own plugin
+	 * you might consider storing data like this with update_option(), incrementing each time
+	 * a new item is published.
+	 *
+	 * @package BuddyPress_Skeleton_Component
+	 * @since 1.6
+	 *
+	 * @return int
+	 */
+	function bp_example_get_total_high_five_count_for_user( $user_id = false ) {
+		// If no explicit user id is passed, fall back on the loggedin user
+		if ( !$user_id ) {
+			$user_id = bp_loggedin_user_id();
+		}
+
+		if ( !$user_id ) {
+			return 0;
+		}
+
+		$high_fives = new BP_Example_Highfive();
+		$high_fives->get( array( 'recipient_id' => $user_id ) );
+
+		return apply_filters( 'bp_example_get_total_high_five_count', $high_fives->query->found_posts, $high_fives );
+	}
 
 ?>

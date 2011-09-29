@@ -25,7 +25,7 @@
 
 			<?php do_action( 'template_notices' ); ?>
 
-			<div class="item-list-tabs" role="navigation">
+			<div class="item-list-tabs no-ajax" role="navigation">
 				<ul>
 					<li class="selected" id="groups-all"><a href="<?php echo trailingslashit( bp_get_root_domain() . '/' . bp_get_example_root_slug() ); ?>"><?php printf( __( 'All High Fives <span>%s</span>', 'buddypress' ), bp_example_get_total_high_five_count() ); ?></a></li>
 
@@ -42,7 +42,7 @@
 
 			<div id="example-dir-list" class="example dir-list">
 
-				<?php locate_template( array( 'example/example-loop.php' ), true ); ?>
+				<?php bp_core_load_template( 'example/example-loop' ); ?>
 
 			</div><!-- #examples-dir-list -->
 
