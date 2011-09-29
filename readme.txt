@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: apeatling, jeffsayre, boonebgorges
 Tags: buddypress
-Requires at least: WordPress 3.1, BuddyPress 1.2.6
-Tested up to: WordPress 3.2.1 / BuddyPress 1.2.9
-Stable tag: 1.5
+Requires at least: WordPress 3.2, BuddyPress 1.5
+Tested up to: WordPress 3.2.1 / BuddyPress 1.5
+Stable tag: 1.6
 
 This is a bare-bones component that should provide a good starting block to building your own custom BuddyPress component.
 
@@ -14,6 +14,8 @@ This is a bare-bones component that should provide a good starting block to buil
 It includes some of the functions that will make it easy to get your component registering activity stream items, posting notifications, setting up widgets, adding AJAX functionality and also structuring your component in a standardized way.
 
 This plugin is not designed for functional use, it is designed as an educational starting point.
+
+Please note that this plugin has been updated for BuddyPress 1.5, and uses features of BP 1.5 (in particular, BP_Component) that are not available in earlier versions of BuddyPress.
 
 == Installation ==
 

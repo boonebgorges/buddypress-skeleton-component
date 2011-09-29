@@ -1,3 +1,10 @@
+Version 1.6 ( September 29, 2011 )
+--------------------------------------------------------------
+- Updated for BuddyPress 1.5
+- Updated to use BP_Component core class
+- Refactored to store and retrieve data using WP custom post types rather than custom database tables
+- Added a sitewide directory
+
 Version 1.5 ( July 18, 2011 )
 --------------------------------------------------------------
 - Updated for BuddyPress 1.2.9

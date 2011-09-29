@@ -30,7 +30,7 @@ class BP_Example_Widget extends WP_Widget {
 
 		echo $before_widget;
 		echo $before_title .
-			 $widget_name .
+		     $widget_name .
 		     $after_title; ?>
 
 	<?php

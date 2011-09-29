@@ -3,18 +3,18 @@
 Plugin Name: BuddyPress Skeleton Component
 Plugin URI: http://example.org/my/awesome/bp/component
 Description: This BuddyPress component is the greatest thing since sliced bread.
-Version: 1.5
+Version: 1.6
 Revision Date: MMMM DD, YYYY
 Requires at least: What WP version, what BuddyPress version? ( Example: WP 3.2.1, BuddyPress 1.2.9 )
 Tested up to: What WP version, what BuddyPress version?
 License: (Example: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html)
 Author: Dr. Jan Itor
 Author URI: http://example.org/some/cool/developer
-Site Wide Only: true
+Network: true
 */
 
 /*************************************************************************************************************
- --- SKELETON COMPONENT V1.5 ---
+ --- SKELETON COMPONENT V1.6 ---
 
  Contributors: apeatling, jeffsayre, boonebgorges
 
@@ -38,48 +38,39 @@ Site Wide Only: true
  your component to run in the /wp-content/plugins/ directory
  *************************************************************************************************************/
 
+// Define a constant that can be checked to see if the component is installed or not.
+define( 'BP_EXAMPLE_IS_INSTALLED', 1 );
+
+// Define a constant that will hold the current version number of the component
+// This can be useful if you need to run update scripts or do compatibility checks in the future
+define( 'BP_EXAMPLE_VERSION', '1.6' );
+
+// Define a constant that we can use to construct file paths throughout the component
+define( 'BP_EXAMPLE_PLUGIN_DIR', dirname( __FILE__ ) );
+
+/* Define a constant that will hold the database version number that can be used for upgrading the DB
+ *
+ * NOTE: When table defintions change and you need to upgrade,
+ * make sure that you increment this constant so that it runs the install function again.
+ *
+ * Also, if you have errors when testing the component for the first time, make sure that you check to
+ * see if the table(s) got created. If not, you'll most likely need to increment this constant as
+ * BP_EXAMPLE_DB_VERSION was written to the wp_usermeta table and the install function will not be
+ * triggered again unless you increment the version to a number higher than stored in the meta data.
+ */
+define ( 'BP_EXAMPLE_DB_VERSION', '1' );
+
 /* Only load the component if BuddyPress is loaded and initialized. */
 function bp_example_init() {
-	require( dirname( __FILE__ ) . '/includes/bp-example-core.php' );
+	// Because our loader file uses BP_Component, it requires BP 1.5 or greater.
+	if ( version_compare( BP_VERSION, '1.3', '>' ) )
+		require( dirname( __FILE__ ) . '/includes/bp-example-loader.php' );
 }
 add_action( 'bp_include', 'bp_example_init' );
 
 /* Put setup procedures to be run when the plugin is activated in the following function */
 function bp_example_activate() {
-	global $wpdb;
 
-	if ( !empty($wpdb->charset) )
-		$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
-
-	/**
-	 * If you want to create new tables you'll need to install them on
-	 * activation.
-	 *
-	 * You should try your best to use existing tables if you can. The
-	 * activity stream and meta tables are very flexible.
-	 *
-	 * Write your table definition below, you can define multiple
-	 * tables by adding SQL to the $sql array.
-	 */
-	$sql[] = "CREATE TABLE {$wpdb->base_prefix}bp_example (
-		  		id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-		  		field_1 bigint(20) NOT NULL,
-		  		field_2 bigint(20) NOT NULL,
-		  		field_3 bool DEFAULT 0,
-			    KEY field_1 (field_1),
-			    KEY field_2 (field_2)
-		 	   ) {$charset_collate};";
-
-	require_once( ABSPATH . 'wp-admin/upgrade-functions.php' );
-
-	/**
-	 * The dbDelta call is commented out so the example table is not installed.
-	 * Once you define the SQL for your new table, uncomment this line to install
-	 * the table. (Make sure you increment the BP_EXAMPLE_DB_VERSION constant though).
-	 */
-	// dbDelta($sql);
-
-	update_site_option( 'bp-example-db-version', BP_EXAMPLE_DB_VERSION );
 }
 register_activation_hook( __FILE__, 'bp_example_activate' );
 
