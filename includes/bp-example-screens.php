@@ -164,7 +164,7 @@ function bp_example_screen_two() {
 	 * and a "Reject" link (directs to http://example.org/members/andy/example/screen-two/reject)
 	 */
 
-	if ( $bp->current_component == $bp->example->slug && 'screen-two' == $bp->current_action && 'accept' == $bp->action_variables[0] ) {
+	if ( bp_is_example_component() && bp_is_current_action( 'screen-two' ) && bp_is_action_variable( 'accept', 0 ) ) {
 		if ( bp_example_accept_terms() ) {
 			/* Add a success message, that will be displayed in the template on the next page load */
 			bp_core_add_message( __( 'Terms were accepted!', 'bp-example' ) );
@@ -177,10 +177,10 @@ function bp_example_screen_two() {
 		 * Now redirect back to the page without any actions set, so the user can't carry out actions multiple times
 		 * just by refreshing the browser.
 		 */
-		bp_core_redirect( $bp->loggedin_user->domain . $bp->current_component );
+		bp_core_redirect( bp_loggedin_user_domain() . bp_get_example_slug() );
 	}
 
-	if ( $bp->current_component == $bp->example->slug && 'screen-two' == $bp->current_action && 'reject' == $bp->action_variables[0] ) {
+	if ( bp_is_example_component() && bp_is_current_action( 'screen-two' ) && bp_is_action_variable( 'reject', 0 ) ) {
 		if ( bp_example_reject_terms() ) {
 			/* Add a success message, that will be displayed in the template on the next page load */
 			bp_core_add_message( __( 'Terms were rejected!', 'bp-example' ) );
@@ -193,7 +193,7 @@ function bp_example_screen_two() {
 		 * Now redirect back to the page without any actions set, so the user can't carry out actions multiple times
 		 * just by refreshing the browser.
 		 */
-		bp_core_redirect( $bp->loggedin_user->domain . $bp->current_component );
+		bp_core_redirect( bp_loggedin_user_domain() . bp_get_example_slug() );
 	}
 
 	/**

@@ -29,12 +29,6 @@
 				<ul>
 					<li class="selected" id="groups-all"><a href="<?php echo trailingslashit( bp_get_root_domain() . '/' . bp_get_example_root_slug() ); ?>"><?php printf( __( 'All High Fives <span>%s</span>', 'buddypress' ), bp_example_get_total_high_five_count() ); ?></a></li>
 
-					<?php if ( is_user_logged_in() && bp_example_get_total_high_five_count_for_user( bp_loggedin_user_id() ) ) : ?>
-
-						<li id="groups-personal"><a href="<?php echo trailingslashit( bp_loggedin_user_domain() . bp_get_example_slug() . '/screen-two' ); ?>"><?php printf( __( 'My High Fives <span>%s</span>', 'bp-example' ), bp_example_get_total_high_five_count_for_user( bp_loggedin_user_id() ) ); ?></a></li>
-
-					<?php endif; ?>
-
 					<?php do_action( 'bp_example_directory_example_filter' ); ?>
 
 				</ul>
