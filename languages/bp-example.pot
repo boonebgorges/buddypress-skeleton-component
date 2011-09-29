@@ -1,0 +1,249 @@
+# Copyright (C) 2010 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/buddypress-skeleton-"
+"component\n"
+"POT-Creation-Date: 2011-09-29 16:11:57+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: includes/bp-example-template.php:113
+msgid "Viewing page %1$s of %2$s"
+msgstr ""
+
+#: includes/bp-example-template.php:194
+msgid "%1$s gave %2$s a high-five!"
+msgstr ""
+
+#: includes/bp-example-widgets.php:23
+msgid "Example Widget"
+msgstr ""
+
+#: includes/bp-example-widgets.php:65
+msgid "Number of Items Per Page:"
+msgstr ""
+
+#: includes/bp-example-widgets.php:66
+msgid "Max items to show:"
+msgstr ""
+
+#: includes/bp-example-loader.php:68 includes/bp-example-loader.php:276
+#: includes/bp-example-loader.php:312 includes/bp-example-notifications.php:50
+msgid "Example"
+msgstr ""
+
+#: includes/bp-example-loader.php:252
+msgid "Search Examples..."
+msgstr ""
+
+#: includes/bp-example-loader.php:287 includes/bp-example-screens.php:120
+msgid "Screen One"
+msgstr ""
+
+#: includes/bp-example-loader.php:297 includes/bp-example-screens.php:213
+msgid "Screen Two"
+msgstr ""
+
+#: includes/bp-example-loader.php:336 includes/bp-example-loader.php:342
+msgid "High Fives"
+msgstr ""
+
+#: includes/bp-example-loader.php:337
+msgid "High Five"
+msgstr ""
+
+#: includes/bp-example-actions.php:21
+msgid "No self-fives! :)"
+msgstr ""
+
+#: includes/bp-example-actions.php:24
+msgid "High-five sent!"
+msgstr ""
+
+#: includes/bp-example-actions.php:26
+msgid "High-five could not be sent."
+msgstr ""
+
+#: includes/templates/example/example-loop.php:77
+msgid "There were no high-fives found."
+msgstr ""
+
+#: includes/templates/example/screen-one.php:26
+#: includes/bp-example-screens.php:135
+msgid "Welcome to Screen One"
+msgstr ""
+
+#: includes/templates/example/screen-one.php:27
+#: includes/bp-example-screens.php:136
+msgid "Send %s a <a href=\"%s\" title=\"Send high-five!\">high-five!</a>"
+msgstr ""
+
+#: includes/templates/example/screen-one.php:30
+#: includes/bp-example-screens.php:139
+msgid "Received High Fives!"
+msgstr ""
+
+#: includes/templates/example/index.php:22
+msgid "High Fives Directory"
+msgstr ""
+
+#: includes/templates/example/index.php:30
+msgid "All High Fives <span>%s</span>"
+msgstr ""
+
+#: includes/bp-example-functions.php:90
+msgid "%s accepted the really exciting terms and conditions!"
+msgstr ""
+
+#: includes/bp-example-functions.php:134
+msgid "%s rejected the really exciting terms and conditions."
+msgstr ""
+
+#: includes/bp-example-functions.php:206
+msgid "%s high-fived %s!"
+msgstr ""
+
+#: includes/bp-example-classes.php:111 includes/bp-example-classes.php:127
+msgid "%1$s high-fives %2$s"
+msgstr ""
+
+#: includes/bp-example-notifications.php:51
+msgid "Yes"
+msgstr ""
+
+#: includes/bp-example-notifications.php:52
+msgid "No"
+msgstr ""
+
+#: includes/bp-example-notifications.php:59
+msgid "Action One"
+msgstr ""
+
+#: includes/bp-example-notifications.php:65
+msgid "Action Two"
+msgstr ""
+
+#: includes/bp-example-notifications.php:123
+msgid "Multiple high-fives"
+msgstr ""
+
+#: includes/bp-example-notifications.php:123
+msgid "%d new high-fives, multi-five!"
+msgstr ""
+
+#: includes/bp-example-notifications.php:127
+msgid "%s sent you a high-five!"
+msgstr ""
+
+#: includes/bp-example-notifications.php:167
+msgid "%s high-fived you!"
+msgstr ""
+
+#: includes/bp-example-notifications.php:169
+msgid ""
+"%s sent you a high-five! Why not send one back?\n"
+"\n"
+"To see %s's profile: %s\n"
+"\n"
+"To send %s a high five: %s\n"
+"\n"
+"---------------------\n"
+msgstr ""
+
+#: includes/bp-example-notifications.php:179
+msgid "To disable these notifications please log in and go to: %s"
+msgstr ""
+
+#: includes/bp-example-ajax.php:40
+msgid "Friendship could not be canceled."
+msgstr ""
+
+#: includes/bp-example-ajax.php:42
+msgid "Add Friend"
+msgstr ""
+
+#: includes/bp-example-ajax.php:48
+msgid "Friendship could not be requested."
+msgstr ""
+
+#: includes/bp-example-ajax.php:50
+msgid "Friendship Requested"
+msgstr ""
+
+#: includes/bp-example-ajax.php:54
+msgid "Request Pending"
+msgstr ""
+
+#: includes/bp-example-screens.php:170
+msgid "Terms were accepted!"
+msgstr ""
+
+#: includes/bp-example-screens.php:173
+msgid "Terms could not be accepted."
+msgstr ""
+
+#: includes/bp-example-screens.php:186
+msgid "Terms were rejected!"
+msgstr ""
+
+#: includes/bp-example-screens.php:189
+msgid "Terms could not be rejected."
+msgstr ""
+
+#: includes/bp-example-screens.php:219
+msgid "Welcome to Screen Two"
+msgstr ""
+
+#: includes/bp-example-screens.php:222
+msgid "Accept"
+msgstr ""
+
+#: includes/bp-example-screens.php:223
+msgid "Reject"
+msgstr ""
+
+#: includes/bp-example-screens.php:226
+msgid "You must %s or %s the terms of use policy."
+msgstr ""
+
+#: includes/bp-example-screens.php:257
+msgid "Example Settings Header"
+msgstr ""
+
+#: includes/bp-example-screens.php:261
+msgid "Example Settings"
+msgstr ""
+
+#: includes/bp-example-screens.php:269
+msgid "Changes Saved."
+msgstr ""
+
+#: includes/bp-example-screens.php:275
+msgid "Do you love clicking checkboxes?"
+msgstr ""
+
+#: includes/bp-example-screens.php:277 includes/bp-example-admin.php:72
+msgid "Save Settings"
+msgstr ""
+
+#: includes/bp-example-admin.php:25 includes/bp-example-admin.php:51
+msgid "Example Admin"
+msgstr ""
+
+#: includes/bp-example-admin.php:54
+msgid "Settings Updated."
+msgstr ""
+
+#: includes/bp-example-admin.php:60
+msgid "Option One"
+msgstr ""
+
+#: includes/bp-example-admin.php:65
+msgid "Option Two"
+msgstr ""
