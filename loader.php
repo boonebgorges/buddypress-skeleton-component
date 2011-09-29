@@ -3,7 +3,7 @@
 Plugin Name: BuddyPress Skeleton Component
 Plugin URI: http://example.org/my/awesome/bp/component
 Description: This BuddyPress component is the greatest thing since sliced bread.
-Version: 1.5
+Version: 1.6
 Revision Date: MMMM DD, YYYY
 Requires at least: What WP version, what BuddyPress version? ( Example: WP 3.2.1, BuddyPress 1.2.9 )
 Tested up to: What WP version, what BuddyPress version?
@@ -14,7 +14,7 @@ Network: true
 */
 
 /*************************************************************************************************************
- --- SKELETON COMPONENT V1.5 ---
+ --- SKELETON COMPONENT V1.6 ---
 
  Contributors: apeatling, jeffsayre, boonebgorges
 
@@ -42,7 +42,8 @@ Network: true
 define( 'BP_EXAMPLE_IS_INSTALLED', 1 );
 
 // Define a constant that will hold the current version number of the component
-define( 'BP_EXAMPLE_VERSION', '1.5' );
+// This can be useful if you need to run update scripts or do compatibility checks in the future
+define( 'BP_EXAMPLE_VERSION', '1.6' );
 
 // Define a constant that we can use to construct file paths throughout the component
 define( 'BP_EXAMPLE_PLUGIN_DIR', dirname( __FILE__ ) );
