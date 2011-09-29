@@ -178,9 +178,20 @@ class BP_Example_Highfive {
 				);
 			}
 
-			// Run the query, and store as an object property, so we can access from other
-			// methods
+			// Run the query, and store as an object property, so we can access from
+			// other methods
 			$this->query = new WP_Query( $query_args );
+
+			// Let's also set up some pagination
+			$this->pag_links = paginate_links( array(
+				'base' => add_query_arg( 'items_page', '%#%' ),
+				'format' => '',
+				'total' => ceil( (int) $this->query->found_posts / (int) $this->query->query_vars['posts_per_page'] ),
+				'current' => (int) $paged,
+				'prev_text' => '&larr;',
+				'next_text' => '&rarr;',
+				'mid_size' => 1
+			) );
 		}
 	}
 

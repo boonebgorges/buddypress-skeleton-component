@@ -11,53 +11,38 @@
 <?php do_action( 'bp_before_example_loop' ); ?>
 
 <?php if ( bp_example_has_items( bp_ajax_querystring( 'example' ) ) ) : ?>
-
+<?php // global $items_template; var_dump( $items_template ) ?>
 	<div id="pag-top" class="pagination">
 
-		<div class="pag-count" id="group-dir-count-top">
+		<div class="pag-count" id="example-dir-count-top">
 
-			<?php bp_groups_pagination_count(); ?>
+			<?php bp_example_pagination_count(); ?>
 
 		</div>
 
-		<div class="pagination-links" id="group-dir-pag-top">
+		<div class="pagination-links" id="example-dir-pag-top">
 
-			<?php bp_groups_pagination_links(); ?>
+			<?php bp_example_item_pagination(); ?>
 
 		</div>
 
 	</div>
 
-	<?php do_action( 'bp_before_directory_groups_list' ); ?>
+	<?php do_action( 'bp_before_directory_example_list' ); ?>
 
-	<ul id="groups-list" class="item-list" role="main">
+	<ul id="example-list" class="item-list" role="main">
 
 	<?php while ( bp_example_has_items() ) : bp_example_the_item(); ?>
 
 		<li>
 			<div class="item-avatar">
-				<a href="<?php bp_group_permalink(); ?>"><?php bp_group_avatar( 'type=thumb&width=50&height=50' ); ?></a>
+				<?php bp_example_high_fiver_avatar( 'type=thumb&width=50&height=50' ); ?>
 			</div>
 
 			<div class="item">
-				<div class="item-title"><a href="<?php bp_group_permalink(); ?>"><?php bp_group_name(); ?></a></div>
-				<div class="item-meta"><span class="activity"><?php printf( __( 'active %s', 'buddypress' ), bp_get_group_last_active() ); ?></span></div>
+				<div class="item-title"><?php bp_example_high_five_title() ?></div>
 
-				<div class="item-desc"><?php bp_group_description_excerpt(); ?></div>
-
-				<?php do_action( 'bp_directory_groups_item' ); ?>
-
-			</div>
-
-			<div class="action">
-
-				<?php do_action( 'bp_directory_groups_actions' ); ?>
-
-				<div class="meta">
-
-					<?php bp_group_type(); ?> / <?php bp_group_member_count(); ?>
-
-				</div>
+				<?php do_action( 'bp_directory_example_item' ); ?>
 
 			</div>
 
@@ -68,19 +53,19 @@
 
 	</ul>
 
-	<?php do_action( 'bp_after_directory_groups_list' ); ?>
+	<?php do_action( 'bp_after_directory_example_list' ); ?>
 
 	<div id="pag-bottom" class="pagination">
 
-		<div class="pag-count" id="group-dir-count-bottom">
+		<div class="pag-count" id="example-dir-count-bottom">
 
-			<?php bp_groups_pagination_count(); ?>
+			<?php bp_example_pagination_count(); ?>
 
 		</div>
 
-		<div class="pagination-links" id="group-dir-pag-bottom">
+		<div class="pagination-links" id="example-dir-pag-bottom">
 
-			<?php bp_groups_pagination_links(); ?>
+			<?php bp_example_item_pagination(); ?>
 
 		</div>
 
@@ -89,9 +74,9 @@
 <?php else: ?>
 
 	<div id="message" class="info">
-		<p><?php _e( 'There were no groups found.', 'buddypress' ); ?></p>
+		<p><?php _e( 'There were no high-fives found.', 'buddypress' ); ?></p>
 	</div>
 
 <?php endif; ?>
 
-<?php do_action( 'bp_after_groups_loop' ); ?>
+<?php do_action( 'bp_after_example_loop' ); ?>

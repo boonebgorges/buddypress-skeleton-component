@@ -35,168 +35,47 @@
  *
  */
 
-class BP_Example_Template {
-	var $current_item = -1;
-	var $item_count;
-	var $items;
-	var $item;
-
-	var $in_the_loop;
-
-	var $pag_page;
-	var $pag_num;
-	var $pag_links;
-
-	function bp_example_template( $user_id, $type, $page, $per_page, $max ) {
-		global $bp;
-
-		if ( !$user_id )
-			$user_id = $bp->displayed_user->id;
-
-		/***
-		 * If you want to make parameters that can be passed, then append a
-		 * character or two to "page" like this: $_REQUEST['xpage']
-		 * You can add more than a single letter.
-		 */
-
-		$this->pag_page = isset( $_REQUEST['xpage'] ) ? intval( $_REQUEST['xpage'] ) : $page;
-		$this->pag_num = isset( $_GET['num'] ) ? intval( $_GET['num'] ) : $per_page;
-		$this->user_id = $user_id;
-
-		/***
-		 * You can use the "type" variable to fetch different things to output.
-		 * For example on the groups template loop, you can fetch groups by "newest", "active", "alphabetical"
-		 * and more. This would be the "type". You can then call different functions to fetch those
-		 * different results.
-		 */
-
-		// switch ( $type ) {
-		// 	case 'newest':
-		// 		$this->items = bp_example_get_newest( $user_id, $this->pag_num, $this->pag_page );
-		// 		break;
-		//
-		// 	case 'popular':
-		// 		$this->items = bp_example_get_popular( $user_id, $this->pag_num, $this->pag_page );
-		// 		break;
-		//
-		// 	case 'alphabetical':
-		// 		$this->items = bp_example_get_alphabetical( $user_id, $this->pag_num, $this->pag_page );
-		// 		break;
-		// }
-
-		// Item Requests
-		if ( !$max || $max >= (int)$this->items['total'] )
-			$this->total_item_count = (int)$this->items['total'];
-		else
-			$this->total_item_count = (int)$max;
-
-		$this->items = $this->items['items'];
-
-		if ( $max ) {
-			if ( $max >= count($this->items) )
-				$this->item_count = count($this->items);
-			else
-				$this->item_count = (int)$max;
-		} else {
-			$this->item_count = count($this->items);
-		}
-
-		/* Remember to change the "x" in "xpage" to match whatever character(s) you're using above */
-		$this->pag_links = paginate_links( array(
-			'base' => add_query_arg( 'xpage', '%#%' ),
-			'format' => '',
-			'total' => ceil( (int) $this->total_item_count / (int) $this->pag_num ),
-			'current' => (int) $this->pag_page,
-			'prev_text' => '&larr;',
-			'next_text' => '&rarr;',
-			'mid_size' => 1
-		));
-	}
-
-	function has_items() {
-		if ( $this->item_count )
-			return true;
-
-		return false;
-	}
-
-	function next_item() {
-		$this->current_item++;
-		$this->item = $this->items[$this->current_item];
-
-		return $this->item;
-	}
-
-	function rewind_items() {
-		$this->current_item = -1;
-		if ( $this->item_count > 0 ) {
-			$this->item = $this->items[0];
-		}
-	}
-
-	function user_items() {
-		if ( $this->current_item + 1 < $this->item_count ) {
-			return true;
-		} elseif ( $this->current_item + 1 == $this->item_count ) {
-			do_action('bp_example_loop_end');
-			// Do some cleaning up after the loop
-			$this->rewind_items();
-		}
-
-		$this->in_the_loop = false;
-		return false;
-	}
-
-	function the_item() {
-		global $item, $bp;
-
-		$this->in_the_loop = true;
-		$this->item = $this->next_item();
-
-		if ( 0 == $this->current_item ) // loop has just started
-			do_action('bp_example_loop_start');
-	}
-}
-
 function bp_example_has_items( $args = '' ) {
 	global $bp, $items_template;
 
-	/***
-	 * This function should accept arguments passes as a string, just the same
-	 * way a 'query_posts()' call accepts parameters.
-	 * At a minimum you should accept 'per_page' and 'max' parameters to determine
-	 * the number of items to show per page, and the total number to return.
-	 *
-	 * e.g. bp_get_example_has_items( 'per_page=10&max=50' );
-	 */
+	if ( empty( $items_template ) ) {
+		/***
+		 * This function should accept arguments passes as a string, just the same
+		 * way a 'query_posts()' call accepts parameters.
+		 * At a minimum you should accept 'per_page' and 'max' parameters to determine
+		 * the number of items to show per page, and the total number to return.
+		 *
+		 * e.g. bp_get_example_has_items( 'per_page=10&max=50' );
+		 */
 
-	/***
-	 * Set the defaults for the parameters you are accepting via the "bp_get_example_has_items()"
-	 * function call
-	 */
-	$defaults = array(
-		'high_fiver_id' => 0,
-		'recipient_id'  => 0,
-		'per_page'      => 10,
-		'paged'		=> 1
-	);
+		/***
+		 * Set the defaults for the parameters you are accepting via the "bp_get_example_has_items()"
+		 * function call
+		 */
+		$defaults = array(
+			'high_fiver_id' => 0,
+			'recipient_id'  => 0,
+			'per_page'      => 10,
+			'paged'		=> 1
+		);
 
-	/***
-	 * This function will extract all the parameters passed in the string, and turn them into
-	 * proper variables you can use in the code - $per_page, $max
-	 */
-	$r = wp_parse_args( $args, $defaults );
-	extract( $r, EXTR_SKIP );
+		/***
+		 * This function will extract all the parameters passed in the string, and turn them into
+		 * proper variables you can use in the code - $per_page, $max
+		 */
+		$r = wp_parse_args( $args, $defaults );
+		extract( $r, EXTR_SKIP );
 
-	$items_template = new BP_Example_Highfive();
-	$items_template->get( $r );
+		$items_template = new BP_Example_Highfive();
+		$items_template->get( $r );
+	}
 
 	return $items_template->have_posts();
 }
 
-function bp_example_items() {
+function bp_example_the_item() {
 	global $items_template;
-	return $items_template->user_items();
+	return $items_template->query->the_post();
 }
 
 function bp_example_item_name() {
@@ -208,12 +87,108 @@ function bp_example_item_name() {
 		echo apply_filters( 'bp_example_get_item_name', $items_template->item->name ); // Example: $items_template->item->name;
 	}
 
+/**
+ * Echo "Viewing x of y pages"
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ */
+function bp_example_pagination_count() {
+	echo bp_example_get_pagination_count();
+}
+	/**
+	 * Return "Viewing x of y pages"
+	 *
+	 * @package BuddyPress_Skeleton_Component
+	 * @since 1.6
+	 */
+	function bp_example_get_pagination_count() {
+		global $items_template;
+
+		$pagination_count = sprintf( __( 'Viewing page %1$s of %2$s', 'bp-example' ), $items_template->query->query_vars['paged'], $items_template->query->max_num_pages );
+
+		return apply_filters( 'bp_example_get_pagination_count', $pagination_count );
+	}
+
+/**
+ * Echo pagination links
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ */
 function bp_example_item_pagination() {
 	echo bp_example_get_item_pagination();
 }
+	/**
+	 * return pagination links
+	 *
+	 * @package BuddyPress_Skeleton_Component
+	 * @since 1.6
+	 */
 	function bp_example_get_item_pagination() {
 		global $items_template;
 		return apply_filters( 'bp_example_get_item_pagination', $items_template->pag_links );
+	}
+
+/**
+ * Echo the high-fiver avatar (post author)
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ */
+function bp_example_high_fiver_avatar( $args = array() ) {
+	echo bp_example_get_high_fiver_avatar( $args );
+}
+	/**
+	 * Return the high-fiver avatar (the post author)
+	 *
+	 * @package BuddyPress_Skeleton_Component
+	 * @since 1.6
+	 *
+	 * @param mixed $args Accepts WP style arguments - either a string of URL params, or an array
+	 * @return str The HTML for a user avatar
+	 */
+	function bp_example_get_high_fiver_avatar( $args = array() ) {
+		$defaults = array(
+			'item_id' => get_the_author_meta( 'ID' ),
+			'object'  => 'user'
+		);
+
+		$r = wp_parse_args( $args, $defaults );
+
+		return bp_core_fetch_avatar( $r );
+	}
+
+/**
+ * Echo the "title" of the high-five
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ */
+function bp_example_high_five_title() {
+	echo bp_example_get_high_five_title();
+}
+	/**
+	 * Return the "title" of the high-five
+	 *
+	 * We'll assemble the title out of the available information. This way, we can insert
+	 * fancy stuff link links, and secondary avatars.
+	 *
+	 * @package BuddyPress_Skeleton_Component
+	 * @since 1.6
+	 */
+	function bp_example_get_high_five_title() {
+		// First, set up the high fiver's information
+		$high_fiver_link = bp_core_get_userlink( get_the_author_meta( 'ID' ) );
+
+		// Next, get the information for the high five recipient
+		$recipient_id    = get_post_meta( get_the_ID(), 'bp_example_recipient_id', true );
+		$recipient_link  = bp_core_get_userlink( $recipient_id );
+
+		// Use sprintf() to make a translatable message
+		$title 		 = sprintf( __( '%1$s gave %2$s a high-five!', 'bp-example' ), $high_fiver_link, $recipient_link );
+
+		return apply_filters( 'bp_example_get_high_five_title', $title, $high_fiver_link, $recipient_link );
 	}
 
 /**
