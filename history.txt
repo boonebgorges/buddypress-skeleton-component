@@ -1,3 +1,7 @@
+Version 1.6.1 ( October 20, 2011 )
+--------------------------------------------------------------
+- Removed deprecated function bp_core_get_userurl()
+
 Version 1.6 ( September 29, 2011 )
 --------------------------------------------------------------
 - Updated for BuddyPress 1.5
