@@ -27,7 +27,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
  */
 
 if ( file_exists( dirname( __FILE__ ) . '/languages/' . get_locale() . '.mo' ) )
-	load_textdomain( 'bp-example', dirname( __FILE__ ) . '/bp-example/languages/' . get_locale() . '.mo' );
+	load_textdomain( 'bp-example', dirname( __FILE__ ) . '/languages/' . get_locale() . '.mo' );
 
 /**
  * Implementation of BP_Component
