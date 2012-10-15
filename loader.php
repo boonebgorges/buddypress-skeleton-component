@@ -3,9 +3,9 @@
 Plugin Name: BuddyPress Skeleton Component
 Plugin URI: http://example.org/my/awesome/bp/component
 Description: This BuddyPress component is the greatest thing since sliced bread.
-Version: 1.6.1
+Version: 1.6.2
 Revision Date: MMMM DD, YYYY
-Requires at least: What WP version, what BuddyPress version? ( Example: WP 3.2.1, BuddyPress 1.2.9 )
+Requires at least: What WP version, what BuddyPress version? ( Example: WP 3.2.1, BuddyPress 1.5 )
 Tested up to: What WP version, what BuddyPress version?
 License: (Example: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html)
 Author: Dr. Jan Itor
@@ -14,7 +14,7 @@ Network: true
 */
 
 /*************************************************************************************************************
- --- SKELETON COMPONENT V1.6.1 ---
+ --- SKELETON COMPONENT V1.6.2 ---
 
  Contributors: apeatling, jeffsayre, boonebgorges
 
@@ -43,7 +43,7 @@ define( 'BP_EXAMPLE_IS_INSTALLED', 1 );
 
 // Define a constant that will hold the current version number of the component
 // This can be useful if you need to run update scripts or do compatibility checks in the future
-define( 'BP_EXAMPLE_VERSION', '1.6.1' );
+define( 'BP_EXAMPLE_VERSION', '1.6.2' );
 
 // Define a constant that we can use to construct file paths throughout the component
 define( 'BP_EXAMPLE_PLUGIN_DIR', dirname( __FILE__ ) );
@@ -64,7 +64,7 @@ define ( 'BP_EXAMPLE_DB_VERSION', '1' );
 function bp_example_init() {
 	// Because our loader file uses BP_Component, it requires BP 1.5 or greater.
 	if ( version_compare( BP_VERSION, '1.3', '>' ) )
-		require( dirname( __FILE__ ) . '/includes/bp-example-loader.php' );
+		require( BP_EXAMPLE_PLUGIN_DIR . '/includes/bp-example-loader.php' );
 }
 add_action( 'bp_include', 'bp_example_init' );
 

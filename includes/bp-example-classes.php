@@ -114,7 +114,7 @@ class BP_Example_Highfive {
 			// Save the post
 			$result = wp_update_post( $wp_update_post_args );
 
-			// We'll store the reciever's ID as postmeta
+			// We'll store the receiver's ID as postmeta
 			if ( $result ) {
 				update_post_meta( $result, 'bp_example_recipient_id', $this->recipient_id );
 			}
@@ -130,7 +130,7 @@ class BP_Example_Highfive {
 			// Save the post
 			$result = wp_insert_post( $wp_insert_post_args );
 
-			// We'll store the reciever's ID as postmeta
+			// We'll store the receiver's ID as postmeta
 			if ( $result ) {
 				update_post_meta( $result, 'bp_example_recipient_id', $this->recipient_id );
 			}

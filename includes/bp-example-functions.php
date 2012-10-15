@@ -34,7 +34,7 @@ function bp_example_load_template_filter( $found_template, $templates ) {
 		if ( file_exists( STYLESHEETPATH . '/' . $template ) )
 			$filtered_templates[] = STYLESHEETPATH . '/' . $template;
 		else
-			$filtered_templates[] = dirname( __FILE__ ) . '/templates/' . $template;
+			$filtered_templates[] = BP_EXAMPLE_PLUGIN_DIR . '/includes/templates/' . $template;
 	}
 
 	$found_template = $filtered_templates[0];
