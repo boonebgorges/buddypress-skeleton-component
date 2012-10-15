@@ -26,8 +26,8 @@ if ( !defined( 'ABSPATH' ) ) exit;
  * _e( 'This text will be translatable', 'bp-example' ); // Echos the first parameter value
  */
 
-if ( file_exists( dirname( __FILE__ ) . '/languages/' . get_locale() . '.mo' ) )
-	load_textdomain( 'bp-example', dirname( __FILE__ ) . '/languages/' . get_locale() . '.mo' );
+if ( file_exists( BP_EXAMPLE_PLUGIN_DIR . '/languages/' . get_locale() . '.mo' ) )
+	load_textdomain( 'bp-example', BP_EXAMPLE_PLUGIN_DIR . '/languages/' . get_locale() . '.mo' );
 
 /**
  * Implementation of BP_Component
