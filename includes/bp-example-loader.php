@@ -265,7 +265,20 @@ class BP_Example_Component extends BP_Component {
 			'default_subnav_slug' => 'screen-one'
 		);
 
-		$example_link = trailingslashit( bp_loggedin_user_domain() . bp_get_example_slug() );
+		// Stop if there is no user displayed or logged in
+		if ( !is_user_logged_in() && !bp_displayed_user_id() )
+			return;
+
+		// Determine user to use
+		if ( bp_displayed_user_domain() ) {
+			$user_domain = bp_displayed_user_domain();
+		} elseif ( bp_loggedin_user_domain() ) {
+			$user_domain = bp_loggedin_user_domain();
+		} else {
+			return;
+		}
+
+		$example_link = trailingslashit( $user_domain . bp_get_example_slug() );
 
 		// Add a few subnav items under the main Example tab
 		$sub_nav[] = array(
