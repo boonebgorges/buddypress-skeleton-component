@@ -296,7 +296,7 @@ class BP_Example_Component extends BP_Component {
 			'slug'            => 'screen-two',
 			'parent_url'      => $example_link,
 			'parent_slug'     => bp_get_example_slug(),
-			'screen_function' => 'bp_example_screen_two',
+			'screen_function' => array( 'BuddyPress_Skeleton_Screens', 'screen_two' ),
 			'position'        => 20
 		);
 

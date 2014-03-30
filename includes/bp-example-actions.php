@@ -1,6 +1,48 @@
 <?php
 
 /**
+ * Displays a message when terms are accepted or rejected for screen two
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.7.0
+ */
+function bp_example_screen_two_save_terms() {
+
+	if ( bp_is_example_component() && bp_is_current_action( 'screen-two' ) && bp_is_action_variable( 'accept', 0 ) ) {
+		if ( bp_example_accept_terms() ) {
+			/* Add a success message, that will be displayed in the template on the next page load */
+			bp_core_add_message( __( 'Terms were accepted!', 'bp-example' ) );
+		} else {
+			/* Add a failure message if there was a problem */
+			bp_core_add_message( __( 'Terms could not be accepted.', 'bp-example' ), 'error' );
+		}
+
+		/**
+		 * Now redirect back to the page without any actions set, so the user can't carry out actions multiple times
+		 * just by refreshing the browser.
+		 */
+		bp_core_redirect( bp_loggedin_user_domain() . bp_get_example_slug() );
+	}
+
+	if ( bp_is_example_component() && bp_is_current_action( 'screen-two' ) && bp_is_action_variable( 'reject', 0 ) ) {
+		if ( bp_example_reject_terms() ) {
+			/* Add a success message, that will be displayed in the template on the next page load */
+			bp_core_add_message( __( 'Terms were rejected!', 'bp-example' ) );
+		} else {
+			/* Add a failure message if there was a problem */
+			bp_core_add_message( __( 'Terms could not be rejected.', 'bp-example' ), 'error' );
+		}
+
+		/**
+		 * Now redirect back to the page without any actions set, so the user can't carry out actions multiple times
+		 * just by refreshing the browser.
+		 */
+		bp_core_redirect( bp_loggedin_user_domain() . bp_get_example_slug() );
+	}
+}
+add_action( 'bp_example_screen_two', 'bp_example_screen_two_save_terms' );
+
+/**
  * Check to see if a high five is being given, and if so, save it.
  *
  * Hooked to bp_actions, this function will fire before the screen function. We use our function
