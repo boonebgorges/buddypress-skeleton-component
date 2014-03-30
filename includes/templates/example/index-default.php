@@ -36,7 +36,7 @@
 
 			<div id="example-dir-list" class="example dir-list">
 
-				<?php bp_core_load_template( 'example/example-loop' ); ?>
+				<?php bp_get_template_part( 'example/example-loop' ); ?>
 
 			</div><!-- #examples-dir-list -->
 

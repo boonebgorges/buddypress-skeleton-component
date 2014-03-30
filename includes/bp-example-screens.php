@@ -48,8 +48,9 @@ class BuddyPress_Skeleton_Screens {
 	public function setup_globals() {
 		$bp = buddypress();
 
-		$this->template     = '';
-		$this->template_dir = $bp->extend->skeleton->includes_dir . 'templates';
+		$this->template      = '';
+		$this->is_bp_default = in_array( 'bp-default', array( get_template(), get_stylesheet() ) );
+		$this->template_dir  = $bp->extend->skeleton->includes_dir . 'templates';
 	}
 
 	/**
@@ -90,12 +91,28 @@ class BuddyPress_Skeleton_Screens {
 		if ( $bp->theme_compat->use_with_current_theme )
 			return false;
 
+		// Current theme is BP Default or a chilf theme of it
+		if ( $this->is_bp_default && bp_is_directory() ) {
+			
+			foreach ( $templates as $template ) {
+				$bp_default_template = $template;
+
+				if ( 'example/index.php' == $template ){
+					$bp_default_template = str_replace( '.php', '-default.php', $template );
+				}
+
+				if ( file_exists( buddypress()->extend->skeleton->includes_dir . 'templates/' . $bp_default_template ) ){
+					return buddypress()->extend->skeleton->includes_dir . 'templates/' . $bp_default_template;
+				}
+			}
+		}
+
 		// If we're here this means we're probably on the directory in 
 		// a Theme that use it's own BuddyPress support. There's a good
 		// chance as a BuddyPress directory needs a page that the template
 		// loaded is the page.php, so what about filtering the content to 
 		// display a message to help the user to build his template ?
-		if ( bp_is_directory() )
+		if ( bp_is_directory() && ! $this->is_bp_default )
 			add_filter( 'the_content', array( $this, 'template_to_build' ) );
 
 		return apply_filters( 'bp_example_load_template_filter', $found_template );
