@@ -261,7 +261,7 @@ class BP_Example_Component extends BP_Component {
 			'name' 		      => __( 'Example', 'bp-example' ),
 			'slug' 		      => bp_get_example_slug(),
 			'position' 	      => 80,
-			'screen_function'     => 'bp_example_screen_one',
+			'screen_function'     => array( 'BuddyPress_Skeleton_Screens', 'screen_one' ),
 			'default_subnav_slug' => 'screen-one'
 		);
 
@@ -286,7 +286,7 @@ class BP_Example_Component extends BP_Component {
 			'slug'            => 'screen-one',
 			'parent_url'      => $example_link,
 			'parent_slug'     => bp_get_example_slug(),
-			'screen_function' => 'bp_example_screen_one',
+			'screen_function' => array( 'BuddyPress_Skeleton_Screens', 'screen_one' ),
 			'position'        => 10
 		);
 

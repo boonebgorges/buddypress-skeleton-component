@@ -9,6 +9,170 @@
  */
 
 /**
+ * Main Screen Class.
+ *
+ * @since BuddyPress Skeleton Component
+ */
+class BuddyPress_Skeleton_Screens {
+
+	/**
+	 * The constructor
+	 *
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
+	 */
+	public function __construct() {
+		$this->setup_globals();
+		$this->setup_filters();
+	}
+
+	public static function manage_screens() {
+		$bp = buddypress();
+
+		if ( empty( $bp->extend->skeleton->screens ) ) {
+			$bp->extend->skeleton->screens = new self;
+		}
+
+		return $bp->extend->skeleton->screens;
+	}
+
+	/**
+	 * Set some globals
+	 *
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
+	 */
+	public function setup_globals() {
+		$bp = buddypress();
+
+		$this->template     = '';
+		$this->template_dir = $bp->extend->skeleton->includes_dir . 'templates';
+	}
+
+	/**
+	 * Set filters
+	 *
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
+	 */
+	private function setup_filters() {
+		if ( bp_is_current_component( 'example' ) ) {
+			add_filter( 'bp_located_template',   array( $this, 'template_filter' ), 20, 2 );
+			add_filter( 'bp_get_template_stack', array( $this, 'add_to_template_stack' ), 10, 1 );
+		}
+	}
+
+	/**
+	 * Filter the located template
+	 *
+	 * If a template was found, it means the theme added it to his folder
+	 * If the current them uses theme compat, we need to return false so 
+	 * that in the BuddyPress function bp_core_load_template() the action
+	 * bp_setup_theme_compat is fired and allow Theme compatibility to
+	 * manage templates.
+	 * 
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
+	 */
+	public function template_filter( $found_template = '', $templates = array() ) {
+		$bp = buddypress();
+
+		// Bail if theme has it's own template for content.
+		if ( ! empty( $found_template ) )
+			return $found_template;
+
+		// Current theme do use theme compat, no need to carry on
+		if ( $bp->theme_compat->use_with_current_theme )
+			return false;
+
+		return apply_filters( 'bp_example_load_template_filter', $found_template );
+	}
+
+	public function add_to_template_stack( $templates = array() ) {
+		// Adding the plugin's provided template to the end of the stack
+		// So that the theme can override it.
+		return array_merge( $templates, array( buddypress()->extend->skeleton->includes_dir . 'templates' ) );
+	}
+
+	/**
+	 * screen_one()
+	 *
+	 * Sets up and displays the screen output for the sub nav item "example/screen-one"
+	 */
+	public static function screen_one() {
+
+		do_action( 'bp_example_screen_one' );
+
+		self::load_template( 'example/screen-one', 'screen_one' );
+	}
+
+	public static function load_template( $template = '', $screen = '' ) {
+		$bp = buddypress();
+		/****
+		 * Displaying Content
+		 */
+		$bp->extend->skeleton->screens->template = $template;
+		/****
+		 * OPTION 1:
+		 * You've got a few options for displaying content. Your first option is to bundle template files
+		 * with your plugin that will be used to output content.
+		 *
+		 * In an earlier function bp_example_load_template_filter() we set up a filter on the core BP template
+		 * loading function that will make it first look in the plugin directory for template files.
+		 * If it doesn't find any matching templates it will look in the active theme directory.
+		 *
+		 * This example component comes bundled with a template for screen one, so we can load that
+		 * template to display what we need. If you copied this template from the plugin into your theme
+		 * then it would load that one instead. This allows users to override templates in their theme.
+		 */
+		if ( buddypress()->theme_compat->use_with_current_theme && ! empty( $template ) ) {
+			add_filter( 'bp_get_template_part', array( __CLASS__, 'template_part' ), 10, 3 );
+		} else {
+			// You can only use this method for users profile pages
+			if ( ! bp_is_directory() ) {
+				/****
+				 * OPTION 2:
+				 * If your component is simple, and you just want to insert some HTML into the user's active theme
+				 * then you can use the bundle plugin template.
+				 *
+				 * Or you can use this technique as a fallback if the theme does not support theme compat
+				 *
+				 * There are two actions you need to hook into. One for the title, and one for the content.
+				 * The functions you hook these into should simply output the content you want to display on the
+				 * page.
+				 *
+				 * The follow lines are commented out because we are not using this method for this screen.
+				 * You'd want to remove the OPTION 1 parts above and uncomment these lines if you want to use
+				 * this option instead.
+				 *
+				 * Generally, this method of adding content is preferred, as it makes your plugin
+				 * work better with a wider variety of themes.
+			 	 */
+				$bp->extend->skeleton->screens->template = 'members/single/plugins';
+				add_action( 'bp_template_title',   "bp_example_{$screen}_title"   );
+				add_action( 'bp_template_content', "bp_example_{$screen}_content" );
+			}
+		}
+
+		/* This is going to look in wp-content/plugins/[plugin-name]/includes/templates/ first */
+		bp_core_load_template( apply_filters( "bp_example_template_{$screen}", $bp->extend->skeleton->screens->template ) );
+	}
+
+	public static function template_part( $templates, $slug, $name ) {
+		if ( $slug != 'members/single/plugins' ) {
+	        return $templates;
+		}
+	    return array( buddypress()->extend->skeleton->screens->template . '.php' );
+	}
+	
+}
+add_action( 'bp_init', array( 'BuddyPress_Skeleton_Screens', 'manage_screens' ) );
+
+/**
  * If your component uses a top-level directory, this function will catch the requests and load
  * the index page.
  *
