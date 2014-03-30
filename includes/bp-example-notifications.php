@@ -113,25 +113,40 @@ function bp_example_format_notifications( $action, $item_id, $secondary_item_id,
 	switch ( $action ) {
 		case 'new_high_five':
 			/* In this case, $item_id is the user ID of the user who sent the high five. */
+			$user_url = trailingslashit( bp_core_get_user_domain( $item_id ) . $bp->profile->slug );
+			$user_fullname = bp_core_get_user_displayname( $item_id, false );
+			$title = $user_fullname .'\'s profile';
 
 			/***
 			 * We don't want a whole list of similar notifications in a users list, so we group them.
 			 * If the user has more than one action from the same component, they are counted and the
 			 * notification is rendered differently.
 			 */
-			if ( (int)$total_items > 1 ) {
-				return apply_filters( 'bp_example_multiple_new_high_five_notification', '<a href="' . $bp->loggedin_user->domain . $bp->example->slug . '/screen-one/" title="' . __( 'Multiple high-fives', 'bp-example' ) . '">' . sprintf( __( '%d new high-fives, multi-five!', 'bp-example' ), (int)$total_items ) . '</a>', $total_items );
+			if ( (int) $total_items > 1 ) {
+				$user_url = trailingslashit( $bp->loggedin_user->domain . $bp->example->slug . '/screen-one' );
+				$title = __( 'Multiple high-fives', 'bp-example' );
+				$text = sprintf( __( '%d new high-fives, multi-five!', 'bp-example' ), (int) $total_items );
+				$filter = 'bp_example_multiple_new_high_five_notification';
 			} else {
-				$user_fullname = bp_core_get_user_displayname( $item_id, false );
-				$user_url = bp_core_get_user_domain( $item_id );
-				return apply_filters( 'bp_example_single_new_high_five_notification', '<a href="' . $user_url . '?new" title="' . $user_fullname .'\'s profile">' . sprintf( __( '%s sent you a high-five!', 'bp-example' ), $user_fullname ) . '</a>', $user_fullname );
+				$text =  sprintf( __( '%s sent you a high-five!', 'bp-example' ), $user_fullname );
+				$filter = 'bp_example_single_new_high_five_notification';
 			}
+
 		break;
+	}
+
+	if ( 'string' == $format ) {
+		$return = apply_filters( $filter, '<a href="' . esc_url( $user_url ) . '" title="' . esc_attr( $title ) . '">' . esc_html( $text ) . '</a>', $user_url, (int) $total_items, $item_id, $secondary_item_id );
+	} else {
+		$return = apply_filters( $filter, array(
+			'text' => $text,
+			'link' => $user_url
+		), $user_url, (int) $total_items, $item_id, $secondary_item_id );
 	}
 
 	do_action( 'bp_example_format_notifications', $action, $item_id, $secondary_item_id, $total_items );
 
-	return false;
+	return $return;
 }
 
 /**
