@@ -107,7 +107,7 @@ add_action( 'xprofile_screen_display_profile', 'bp_example_remove_screen_notific
  * The recording is done by using bp_core_add_notification() which you can search for in this file for
  * examples of usage.
  */
-function bp_example_format_notifications( $action, $item_id, $secondary_item_id, $total_items ) {
+function bp_example_format_notifications( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' ) {
 	$bp = buddypress();
 
 	switch ( $action ) {
