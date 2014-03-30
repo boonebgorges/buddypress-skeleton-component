@@ -373,23 +373,10 @@ class Skeleton {
 	}
 
 	/**
-	 * Loads the translation files
-	 * 
-	 * You should try hard to support translation in your component. It's actually very easy.
- 	 * Make sure you wrap any rendered text in __() or _e() and it will then be translatable.
- 	 *
- 	 * You must also provide a text domain, so translation files know which bits of text to translate.
- 	 * Throughout this example the text domain used is 'bp-example', you can use whatever you want.
- 	 * Put the text domain as the second parameter:
- 	 *
- 	 * __( 'This text will be translatable', 'bp-example' ); // Returns the first parameter value
- 	 * _e( 'This text will be translatable', 'bp-example' ); // Echos the first parameter value
+	 * Bail if BuddyPress config is different than this plugin
 	 *
 	 * @package BuddyPress Skeleton Component
 	 * @since 1.7.0
-	 * 
-	 * @uses get_locale() to get the language of WordPress config
-	 * @uses load_texdomain() to load the translation if any is available for the language
 	 */
 	public static function bail() {
 		$retval = false;
@@ -404,6 +391,16 @@ class Skeleton {
 
 	/**
 	 * Loads the translation files
+	 * 
+	 * You should try hard to support translation in your component. It's actually very easy.
+ 	 * Make sure you wrap any rendered text in __() or _e() and it will then be translatable.
+ 	 *
+ 	 * You must also provide a text domain, so translation files know which bits of text to translate.
+ 	 * Throughout this example the text domain used is 'bp-example', you can use whatever you want.
+ 	 * Put the text domain as the second parameter:
+ 	 *
+ 	 * __( 'This text will be translatable', 'bp-example' ); // Returns the first parameter value
+ 	 * _e( 'This text will be translatable', 'bp-example' ); // Echos the first parameter value
 	 *
 	 * @package BuddyPress Skeleton Component
 	 * @since 1.7.0
