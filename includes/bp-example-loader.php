@@ -15,21 +15,6 @@ if ( !defined( 'ABSPATH' ) ) exit;
  */
 
 /**
- * You should try hard to support translation in your component. It's actually very easy.
- * Make sure you wrap any rendered text in __() or _e() and it will then be translatable.
- *
- * You must also provide a text domain, so translation files know which bits of text to translate.
- * Throughout this example the text domain used is 'bp-example', you can use whatever you want.
- * Put the text domain as the second parameter:
- *
- * __( 'This text will be translatable', 'bp-example' ); // Returns the first parameter value
- * _e( 'This text will be translatable', 'bp-example' ); // Echos the first parameter value
- */
-
-if ( file_exists( BP_EXAMPLE_PLUGIN_DIR . '/languages/' . get_locale() . '.mo' ) )
-	load_textdomain( 'bp-example', BP_EXAMPLE_PLUGIN_DIR . '/languages/' . get_locale() . '.mo' );
-
-/**
  * Implementation of BP_Component
  *
  * BP_Component is the base class that all BuddyPress components use to set up their basic
@@ -55,7 +40,7 @@ class BP_Example_Component extends BP_Component {
 	 *               various places through the BuddyPress admin screens to identify it.
 	 *   (3) $path - The path to your plugin directory. Primarily, this is used by
 	 *		 BP_Component::includes(), to include your plugin's files. See loader.php
-	 *		 to see how BP_EXAMPLE_PLUGIN_DIR was defined.
+	 *		 to see how buddypress()->extend->skeleton->includes_dir was defined.
 	 *
 	 * @package BuddyPress_Skeleton_Component
 	 * @since 1.6
@@ -66,7 +51,7 @@ class BP_Example_Component extends BP_Component {
 		parent::start(
 			'example',
 			__( 'Example', 'bp-example' ),
-			BP_EXAMPLE_PLUGIN_DIR
+			buddypress()->extend->skeleton->includes_dir
 		);
 
 		/**
@@ -163,17 +148,17 @@ class BP_Example_Component extends BP_Component {
 
 		// Files to include
 		$includes = array(
-			'includes/bp-example-actions.php',
-			'includes/bp-example-screens.php',
-			'includes/bp-example-filters.php',
-			'includes/bp-example-classes.php',
-			'includes/bp-example-activity.php',
-			'includes/bp-example-template.php',
-			'includes/bp-example-functions.php',
-			'includes/bp-example-notifications.php',
-			'includes/bp-example-widgets.php',
-			'includes/bp-example-cssjs.php',
-			'includes/bp-example-ajax.php'
+			'bp-example-actions.php',
+			'bp-example-screens.php',
+			'bp-example-filters.php',
+			'bp-example-classes.php',
+			'bp-example-activity.php',
+			'bp-example-template.php',
+			'bp-example-functions.php',
+			'bp-example-notifications.php',
+			'bp-example-widgets.php',
+			'bp-example-cssjs.php',
+			'bp-example-ajax.php'
 		);
 
 		parent::includes( $includes );
@@ -181,7 +166,7 @@ class BP_Example_Component extends BP_Component {
 		// As an example of how you might do it manually, let's include the functions used
 		// on the WordPress Dashboard conditionally:
 		if ( is_admin() || is_network_admin() ) {
-			include( BP_EXAMPLE_PLUGIN_DIR . '/includes/bp-example-admin.php' );
+			include( buddypress()->extend->skeleton->includes_dir . 'bp-example-admin.php' );
 		}
 	}
 
