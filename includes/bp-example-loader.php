@@ -229,7 +229,7 @@ class BP_Example_Component extends BP_Component {
 		);
 
 		// Set up the $globals array to be passed along to parent::setup_globals()
-		$globals = array(
+		$args = array(
 			'slug'                  => BP_EXAMPLE_SLUG,
 			'root_slug'             => isset( $bp->pages->{$this->id}->slug ) ? $bp->pages->{$this->id}->slug : BP_EXAMPLE_SLUG,
 			'has_directory'         => true, // Set to false if not required
@@ -239,7 +239,7 @@ class BP_Example_Component extends BP_Component {
 		);
 
 		// Let BP_Component::setup_globals() do its work.
-		parent::setup_globals( $globals );
+		parent::setup_globals( $args );
 
 		// If your component requires any other data in the $bp global, put it there now.
 		$bp->{$this->id}->misc_data = '123';
@@ -307,12 +307,12 @@ class BP_Example_Component extends BP_Component {
 		// if your component needs a subsection under a user's Settings menu, add
 		// it like this. See bp_example_screen_settings_menu() for more info
 		bp_core_new_subnav_item( array(
-			'name' 		  => __( 'Example', 'bp-example' ),
-			'slug' 		  => 'example-admin',
+			'name' 		      => __( 'Example', 'bp-example' ),
+			'slug' 		      => 'example-admin',
 			'parent_slug'     => bp_get_settings_slug(),
 			'parent_url' 	  => trailingslashit( bp_loggedin_user_domain() . bp_get_settings_slug() ),
 			'screen_function' => 'bp_example_screen_settings_menu',
-			'position' 	  => 40,
+			'position' 	      => 40,
 			'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
 		) );
 	}
