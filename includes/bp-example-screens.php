@@ -301,7 +301,7 @@ function bp_example_screen_one_title() {
 }
 
 function bp_example_screen_one_content() {
-	global $bp;
+	$bp = buddypress();
 
 	$high_fives = bp_example_get_highfives_for_user( $bp->displayed_user->id );
 
@@ -335,7 +335,7 @@ function bp_example_screen_two_title() {
 }
 
 function bp_example_screen_two_content() {
-	global $bp; ?>
+	$bp = buddypress(); ?>
 
 	<h4><?php _e( 'Welcome to Screen Two', 'bp-example' ) ?></h4>
 
@@ -352,7 +352,8 @@ function bp_example_screen_two_content() {
  * The following screen functions are called when the Settings subpanel for this component is viewed
  */
 function bp_example_screen_settings_menu() {
-	global $bp, $current_user, $bp_settings_updated, $pass_error;
+	global $current_user, $bp_settings_updated, $pass_error;
+	$bp = buddypress();
 
 	if ( isset( $_POST['submit'] ) ) {
 		/* Check the nonce */
@@ -383,7 +384,9 @@ function bp_example_screen_settings_menu() {
 	}
 
 	function bp_example_screen_settings_menu_content() {
-		global $bp, $bp_settings_updated; ?>
+		global $bp_settings_updated; 
+		$bp = buddypress();
+		?>
 
 		<?php if ( $bp_settings_updated ) { ?>
 			<div id="message" class="updated fade">

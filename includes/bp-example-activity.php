@@ -31,7 +31,7 @@
  *
  */
 function bp_example_record_activity( $args = '' ) {
-	global $bp;
+	$bp = buddypress();
 
 	if ( !function_exists( 'bp_activity_add' ) )
 		return false;

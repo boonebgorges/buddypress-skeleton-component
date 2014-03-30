@@ -24,7 +24,7 @@ class BP_Example_Widget extends WP_Widget {
 	}
 
 	function widget( $args, $instance ) {
-		global $bp;
+		$bp = buddypress();
 
 		extract( $args );
 

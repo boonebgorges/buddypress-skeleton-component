@@ -32,7 +32,7 @@
  */
 
 function example_friends_ajax_addremove_friend() {
-	global $bp;
+	$bp = buddypress();
 
 	if ( 'is_friend' == BP_Friends_Friendship::check_is_friend( $bp->loggedin_user->id, $_POST['fid'] ) ) {
 

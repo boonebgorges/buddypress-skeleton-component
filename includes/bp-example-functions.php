@@ -33,7 +33,7 @@
  * Records an activity stream item for the user.
  */
 function bp_example_accept_terms() {
-	global $bp;
+	$bp = buddypress();
 
 	/**
 	 * First check the nonce to make sure that the user has initiated this
@@ -76,7 +76,7 @@ function bp_example_accept_terms() {
  * Records an activity stream item for the user.
  */
 function bp_example_reject_terms() {
-	global $bp;
+	$bp = buddypress();
 
 	check_admin_referer( 'bp_example_reject_terms' );
 
@@ -116,7 +116,7 @@ function bp_example_reject_terms() {
  * Also records an activity stream item saying "User 1 high-fived User 2".
  */
 function bp_example_send_highfive( $to_user_id, $from_user_id ) {
-	global $bp;
+	$bp = buddypress();
 
 	check_admin_referer( 'bp_example_send_high_five' );
 
@@ -183,7 +183,7 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
  * Returns an array of user ID's for users who have high fived the user passed to the function.
  */
 function bp_example_get_highfives_for_user( $user_id ) {
-	global $bp;
+	$bp = buddypress();
 
 	if ( !$user_id )
 		return false;

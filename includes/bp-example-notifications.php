@@ -108,7 +108,7 @@ add_action( 'xprofile_screen_display_profile', 'bp_example_remove_screen_notific
  * examples of usage.
  */
 function bp_example_format_notifications( $action, $item_id, $secondary_item_id, $total_items ) {
-	global $bp;
+	$bp = buddypress();
 
 	switch ( $action ) {
 		case 'new_high_five':
@@ -143,7 +143,7 @@ function bp_example_format_notifications( $action, $item_id, $secondary_item_id,
  */
 
 function bp_example_send_high_five_notification( $to_user_id, $from_user_id ) {
-	global $bp;
+	$bp = buddypress();
 
 	/* Let's grab both user's names to use in the email. */
 	$sender_name = bp_core_get_user_displayname( $from_user_id, false );

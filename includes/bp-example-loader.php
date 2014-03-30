@@ -46,7 +46,7 @@ class BP_Example_Component extends BP_Component {
 	 * @since 1.6
 	 */
 	function __construct() {
-		global $bp;
+		$bp = buddypress();
 
 		parent::start(
 			'example',
@@ -215,7 +215,7 @@ class BP_Example_Component extends BP_Component {
 	 * @global obj $bp BuddyPress's global object
 	 */
 	function setup_globals( $args = array() ) {
-		global $bp;
+		$bp = buddypress();
 
 		// Defining the slug in this way makes it possible for site admins to override it
 		if ( !defined( 'BP_EXAMPLE_SLUG' ) )
@@ -417,7 +417,7 @@ class BP_Example_Component extends BP_Component {
  * will therefore only give you a partial picture of your component. If you need to dump the content
  * of your component for troubleshooting, try doing it at bp_init, ie
  *   function bp_example_var_dump() {
- *   	  global $bp;
+ *   	  $bp = buddypress();
  *	  var_dump( $bp->example );
  *   }
  *   add_action( 'bp_init', 'bp_example_var_dump' );
@@ -427,11 +427,7 @@ class BP_Example_Component extends BP_Component {
  * @since 1.6
  */
 function bp_example_load_core_component() {
-	global $bp;
+	$bp = buddypress();
 
 	$bp->example = new BP_Example_Component;
 }
-add_action( 'bp_loaded', 'bp_example_load_core_component' );
-
-
-?>

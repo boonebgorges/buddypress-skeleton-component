@@ -40,7 +40,8 @@
  */
 
 function bp_example_has_items( $args = '' ) {
-	global $bp, $items_template;
+	global $items_template;
+	$bp = buddypress();
 
 	// This keeps us from firing the query more than once
 	if ( empty( $items_template ) ) {
@@ -237,7 +238,7 @@ function bp_example_slug() {
 	 * @return str $example_slug The slug from $bp->example->slug, if it exists
 	 */
 	function bp_get_example_slug() {
-		global $bp;
+		$bp = buddypress();
 
 		// Avoid PHP warnings, in case the value is not set for some reason
 		$example_slug = isset( $bp->example->slug ) ? $bp->example->slug : '';
@@ -267,7 +268,7 @@ function bp_example_root_slug() {
 	 * @return str $example_root_slug The slug from $bp->example->root_slug, if it exists
 	 */
 	function bp_get_example_root_slug() {
-		global $bp;
+		$bp = buddypress();
 
 		// Avoid PHP warnings, in case the value is not set for some reason
 		$example_root_slug = isset( $bp->example->root_slug ) ? $bp->example->root_slug : '';

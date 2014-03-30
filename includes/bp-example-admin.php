@@ -17,7 +17,7 @@
  * "BuddyPress" menu.
  */
 function bp_example_add_admin_menu() {
-	global $bp;
+	$bp = buddypress();
 
 	if ( !is_super_admin() )
 		return false;
@@ -34,7 +34,7 @@ add_action( bp_core_admin_hook(), 'bp_example_add_admin_menu' );
  * Checks for form submission, saves component settings and outputs admin screen HTML.
  */
 function bp_example_admin() {
-	global $bp;
+	$bp = buddypress();
 
 	/* If the form has been submitted and the admin referrer checks out, save the settings */
 	if ( isset( $_POST['submit'] ) && check_admin_referer('example-settings') ) {
