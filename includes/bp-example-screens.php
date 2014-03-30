@@ -25,6 +25,7 @@ class BuddyPress_Skeleton_Screens {
 	public function __construct() {
 		$this->setup_globals();
 		$this->setup_filters();
+		$this->setup_actions();
 	}
 
 	public static function manage_screens() {
@@ -88,6 +89,14 @@ class BuddyPress_Skeleton_Screens {
 		// Current theme do use theme compat, no need to carry on
 		if ( $bp->theme_compat->use_with_current_theme )
 			return false;
+
+		// If we're here this means we're probably on the directory in 
+		// a Theme that use it's own BuddyPress support. There's a good
+		// chance as a BuddyPress directory needs a page that the template
+		// loaded is the page.php, so what about filtering the content to 
+		// display a message to help the user to build his template ?
+		if ( bp_is_directory() )
+			add_filter( 'the_content', array( $this, 'template_to_build' ) );
 
 		return apply_filters( 'bp_example_load_template_filter', $found_template );
 	}
@@ -181,31 +190,107 @@ class BuddyPress_Skeleton_Screens {
 		}
 	    return array( buddypress()->extend->skeleton->screens->template . '.php' );
 	}
-	
-}
-add_action( 'bp_init', array( 'BuddyPress_Skeleton_Screens', 'manage_screens' ) );
 
-/**
- * If your component uses a top-level directory, this function will catch the requests and load
- * the index page.
- *
- * @package BuddyPress_Template_Pack
- * @since 1.6
- */
-function bp_example_directory_setup() {
-	if ( bp_is_example_component() && !bp_current_action() && !bp_current_item() ) {
-		// This wrapper function sets the $bp->is_directory flag to true, which help other
-		// content to display content properly on your directory.
-		bp_update_is_directory( true, 'example' );
+	private function setup_actions() {
+		add_action( 'bp_screens', array( $this, 'directory_setup' ) );
+		add_action( 'bp_setup_theme_compat', array( $this, 'use_theme_compat' ) );
+	}
 
-		// Add an action so that plugins can add content or modify behavior
-		do_action( 'bp_example_directory_setup' );
+	/**
+	 * If your component uses a top-level directory, this function will catch the requests and load
+	 * the index page.
+	 *
+	 * @package BuddyPress_Template_Pack
+	 * @since 1.6
+	 */
+	public function directory_setup() {
+		if ( bp_is_example_component() && !bp_current_action() && !bp_current_item() ) {
+			// This wrapper function sets the $bp->is_directory flag to true, which help other
+			// content to display content properly on your directory.
+			bp_update_is_directory( true, 'example' );
 
-		bp_core_load_template( apply_filters( 'example_directory_template', 'example/index' ) );
+			// Add an action so that plugins can add content or modify behavior
+			do_action( 'bp_example_directory_setup' );
+
+			self::load_template( 'example/index', 'directory' );
+		}
+	}
+
+	public function use_theme_compat() {
+		if ( ! bp_displayed_user_id() && bp_is_current_component( 'example' ) ) {
+
+			add_action( 'bp_template_include_reset_dummy_post_data', array( $this, 'directory_dummy_post' ) );
+			add_filter( 'bp_replace_the_content',                    array( $this, 'directory_content'    ) );
+
+		}
+	}
+
+	/** Directory *************************************************************/
+
+	/**
+	 * Update the global $post with directory data
+	 *
+	 * @package BuddyPress_Template_Pack
+	 * @subpackage Screens
+	 * @since 1.X.X
+	 *
+	 * @uses bp_theme_compat_reset_post() to reset the post data
+	 */
+	public function directory_dummy_post() {
+
+		bp_theme_compat_reset_post( array(
+			'ID'             => 0,
+			'post_title'     => __( 'High Fives Directory', 'bp-example' ),
+			'post_author'    => 0,
+			'post_date'      => 0,
+			'post_content'   => '',
+			'post_type'      => 'example_directory',
+			'post_status'    => 'publish',
+			'is_page'        => true,
+			'comment_status' => 'closed'
+		) );
+	}
+
+	/**
+	 * Filter the_content with the Example directory template part
+	 *
+	 * @package BuddyPress_Template_Pack
+	 * @subpackage Screens
+	 * @since 1.X.X
+	 *
+	 * @uses bp_buffer_template_part()
+	 */
+	public function directory_content() {		
+		bp_buffer_template_part( apply_filters( 'bp_example_directory_content', 'example/index' ) );
+	}
+
+	public function template_to_build( $content ) {
+		if ( ! current_user_can( 'edit_theme_options' ) )
+			return $content;
+
+		$templates_folder = str_replace( WP_CONTENT_DIR . '/', '', buddypress()->extend->skeleton->includes_dir . 'templates/example' );
+
+		$templates = array( 'index.php', 'example-loop.php' );
+
+		$message  = '<p>' . __( 'Hi Buddy!', 'bp-example' ) . '</p>';
+		$message .= '<p>' . __( 'You are using a theme that requires to build a specific template for this plugin.', 'bp-example' ) .'</p>' ;
+		$message .= '<p>' . __( 'As BuddyPress Standalone themes are using very different markups, it is difficult for the plugin to display the best way.', 'bp-example' ) .'</p>' ;
+		$message .= '<p>' . __( 'We advise you to contact the theme support so that he can help you to build the template for your theme.', 'bp-example' ) .'</p>' ;
+		$message .= '<p>' . sprintf( __( 'The template of the plugin are localized in the %s folder', 'bp-example' ), '<strong>' . $templates_folder . '</strong>' ) . '</p>' ;
+		$message .= '<p>' . __( 'In your theme, you need to create the folder <strong>example</strong> and copy in it these templates:', 'bp-example' ) . '</p>' ;
+
+		$message .= '<ul>';
+		foreach ( $templates as $template ) {
+			$message .= '<li>' . $template . '</li>';
+		}
+		$message .= '</ul>';
+
+		$message .= '<p>' . __( 'Once done, edit the markup to fit to your theme.', 'bp-example' ) . '</p>' ;
+
+		return $message;
 	}
 }
-add_action( 'bp_screens', 'bp_example_directory_setup' );
-
+add_action( 'bp_init', array( 'BuddyPress_Skeleton_Screens', 'manage_screens' ) );
 
 /***
  * The second argument of each of the above add_action() calls is a function that will
