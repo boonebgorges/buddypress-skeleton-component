@@ -318,6 +318,51 @@ class BP_Example_Component extends BP_Component {
 	}
 
 	/**
+	 * Set up the component entries in the WordPress Admin Bar.
+	 *
+	 * @see BP_Component::setup_nav() for a description of the $wp_admin_nav
+	 *      parameter array.
+	 */
+	public function setup_admin_bar( $wp_admin_nav = array() ) {
+		$bp = buddypress();
+
+		// Menus for logged in user
+		if ( is_user_logged_in() ) {
+
+			// Setup the logged in user variables
+			$user_domain   = bp_loggedin_user_domain();
+			$example_link = trailingslashit( $user_domain . bp_get_example_slug() );
+
+			// Add the "Example" sub menu
+			$wp_admin_nav[] = array(
+				'parent' => $bp->my_account_menu_id,
+				'id'     => 'my-account-' . $this->id,
+				'title'  => __( 'Example', 'bp-example' ),
+				'href'   => trailingslashit( $example_link )
+			);
+
+			// Personal
+			$wp_admin_nav[] = array(
+				'parent' => 'my-account-' . $this->id,
+				'id'     => 'my-account-' . $this->id . '-screen-one',
+				'title'  => __( 'Screen One', 'bp-example' ),
+				'href'   => trailingslashit( $example_link . 'screen-one' )
+			);
+
+			// Screen two
+			$wp_admin_nav[] = array(
+				'parent' => 'my-account-' . $this->id,
+				'id'     => 'my-account-' . $this->id . '-screen-two',
+				'title'  => __( 'Screen Two', 'bp-example' ),
+				'href'   => trailingslashit( $example_link . 'screen-two' )
+			);
+
+		}
+
+		parent::setup_admin_bar( $wp_admin_nav );
+	}
+
+	/**
 	 * If your component needs to store data, it is highly recommended that you use WordPress
 	 * custom post types for that data, instead of creating custom database tables.
 	 *
