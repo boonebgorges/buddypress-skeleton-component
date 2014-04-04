@@ -163,7 +163,7 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 		bp_notifications_add_notification( array(
 			'user_id'           => $to_user_id,
 			'item_id'           => $from_user_id,
-			'component_name'    => $bp->example->slug,
+			'component_name'    => $bp->example->id,
 			'component_action'  => 'new_high_five'
 		) );
 	}
