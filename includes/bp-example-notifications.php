@@ -157,29 +157,41 @@ function bp_example_format_notifications( $action, $item_id, $secondary_item_id,
  * You should use your own custom actions to determine when an email notification should be sent.
  */
 
-function bp_example_send_high_five_notification( $to_user_id, $from_user_id ) {
+function bp_example_send_high_five_notification( $to_user_id = 0, $from_user_id = 0 ) {
+	// Bail if we don't have the needed inputs
+	if ( empty( $to_user_id ) || empty( $from_user_id ) )
+		return;
+
 	$bp = buddypress();
+
+	/***
+	 * Post a screen notification to the user's notifications menu.
+	 * Remember, like activity streams we need to tell the activity stream component how to format
+	 * this notification in bp_example_format_notifications() using the 'new_high_five' action.
+	 */
+	bp_notifications_add_notification( array(
+		'user_id'           => $to_user_id,
+		'item_id'           => $from_user_id,
+		'component_name'    => $bp->example->id,
+		'component_action'  => 'new_high_five'
+	) );
 
 	/* Let's grab both user's names to use in the email. */
 	$sender_name = bp_core_get_user_displayname( $from_user_id, false );
 	$receiver_name = bp_core_get_user_displayname( $to_user_id, false );
+	$receiver_email = bp_core_get_user_email( $to_user_id );
 
 	/* We need to check to see if the recipient has opted not to recieve high-five emails */
 	if ( 'no' == get_user_meta( (int)$to_user_id, 'notification_example_new_high_five', true ) )
 		return false;
 
-	/* Get the userdata for the receiver and sender, this will include usernames and emails that we need. */
-	$receiver_ud = get_userdata( $to_user_id );
-	$sender_ud = get_userdata( $from_user_id );
-
 	/* Now we need to construct the URL's that we are going to use in the email */
-	$sender_profile_link = site_url( BP_MEMBERS_SLUG . '/' . $sender_ud->user_login . '/' . $bp->profile->slug );
-	$sender_highfive_link = site_url( BP_MEMBERS_SLUG . '/' . $sender_ud->user_login . '/' . $bp->example->slug . '/screen-one' );
-	$receiver_settings_link = site_url( BP_MEMBERS_SLUG . '/' . $receiver_ud->user_login . '/settings/notifications' );
+	$sender_profile_link = trailingslashit( bp_core_get_user_domain( $from_user_id ) . $bp->profile->slug );
+	$sender_highfive_link = trailingslashit( bp_core_get_user_domain( $from_user_id ) . $bp->example->slug . '/screen-one' );
 
 	/* Set up and send the message */
-	$to = $receiver_ud->user_email;
-	$subject = '[' . get_blog_option( 1, 'blogname' ) . '] ' . sprintf( __( '%s high-fived you!', 'bp-example' ), stripslashes($sender_name) );
+	$to = $receiver_email;
+	$subject = '[' . get_blog_option( 1, 'blogname' ) . '] ' . sprintf( __( '%s high-fived you!', 'bp-example' ), stripslashes( $sender_name ) );
 
 	$message = sprintf( __(
 '%s sent you a high-five! Why not send one back?
@@ -191,7 +203,11 @@ To send %s a high five: %s
 ---------------------
 ', 'bp-example' ), $sender_name, $sender_name, $sender_profile_link, $sender_name, $sender_highfive_link );
 
-	$message .= sprintf( __( 'To disable these notifications please log in and go to: %s', 'bp-example' ), $receiver_settings_link );
+	// Only add the link to email notifications settings if the component is active
+	if ( bp_is_active( 'settings' ) ) {
+		$receiver_settings_link = trailingslashit( bp_core_get_user_domain( $to_user_id ) . bp_get_settings_slug() . '/notifications' );
+		$message .= sprintf( __( 'To disable these notifications please log in and go to: %s', 'bp-example' ), $receiver_settings_link );
+	}
 
 	// Send it!
 	wp_mail( $to, $subject, $message );

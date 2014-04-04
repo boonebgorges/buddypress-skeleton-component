@@ -154,20 +154,6 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 	 * stream magic.
 	 */
 
-	/***
-	 * Post a screen notification to the user's notifications menu.
-	 * Remember, like activity streams we need to tell the activity stream component how to format
-	 * this notification in bp_example_format_notifications() using the 'new_high_five' action.
-	 */
-	if ( bp_is_active( 'notifications' ) ) {
-		bp_notifications_add_notification( array(
-			'user_id'           => $to_user_id,
-			'item_id'           => $from_user_id,
-			'component_name'    => $bp->example->id,
-			'component_action'  => 'new_high_five'
-		) );
-	}
-
 	/* Now record the new 'new_high_five' activity item */
 	$to_user_link = bp_core_get_userlink( $to_user_id );
 	$from_user_link = bp_core_get_userlink( $from_user_id );
@@ -178,7 +164,7 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 		'item_id' => $to_user_id,
 	) );
 
-	/* We'll use this do_action call to send the email notification. See bp-example-notifications.php */
+	/* We'll use this do_action call to send the screen & email notifications. See bp-example-notifications.php */
 	do_action( 'bp_example_send_high_five', $to_user_id, $from_user_id );
 
 	return true;

@@ -155,11 +155,13 @@ class BP_Example_Component extends BP_Component {
 			'bp-example-activity.php',
 			'bp-example-template.php',
 			'bp-example-functions.php',
-			'bp-example-notifications.php',
 			'bp-example-widgets.php',
 			'bp-example-cssjs.php',
 			'bp-example-ajax.php'
 		);
+
+		if ( bp_is_active( 'notifications' ) )
+			$includes[] = 'bp-example-notifications.php';
 
 		parent::includes( $includes );
 
