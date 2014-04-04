@@ -369,20 +369,27 @@ function bp_example_screen_two_content() {
  * The following screen functions are called when the Settings subpanel for this component is viewed
  */
 function bp_example_screen_settings_menu() {
-	global $current_user, $bp_settings_updated, $pass_error;
 	$bp = buddypress();
 
 	if ( isset( $_POST['submit'] ) ) {
 		/* Check the nonce */
 		check_admin_referer('bp-example-admin');
 
-		$bp_settings_updated = true;
+		/**
+		 * You can use buddypress() global to "transport" some vars
+		 */
+		$bp->example->settings_updated = true;
 
 		/**
 		 * This is when the user has hit the save button on their settings.
 		 * The best place to store these settings is in wp_usermeta.
 		 */
-		update_user_meta( $bp->loggedin_user->id, 'bp-example-option-one', attribute_escape( $_POST['bp-example-option-one'] ) );
+		if ( ! empty( $_POST['bp-example-option-one'] ) ) {
+			update_user_meta( bp_loggedin_user_id(), 'bp-example-option-one', esc_attr( $_POST['bp-example-option-one'] ) );
+		// if not defined, user removed the option so let's delete it
+		} else {
+			delete_user_meta( bp_loggedin_user_id(), 'bp-example-option-one' );
+		}
 	}
 
 	add_action( 'bp_template_content_header', 'bp_example_screen_settings_menu_header' );
@@ -401,11 +408,12 @@ function bp_example_screen_settings_menu() {
 	}
 
 	function bp_example_screen_settings_menu_content() {
-		global $bp_settings_updated; 
 		$bp = buddypress();
+
+		$user_setting = get_user_meta( $bp->loggedin_user->id, 'bp-example-option-one', true );
 		?>
 
-		<?php if ( $bp_settings_updated ) { ?>
+		<?php if ( ! empty( $bp->example->settings_updated ) ) { ?>
 			<div id="message" class="updated fade">
 				<p><?php _e( 'Changes Saved.', 'bp-example' ) ?></p>
 			</div>
@@ -413,7 +421,7 @@ function bp_example_screen_settings_menu() {
 
 		<form action="<?php echo $bp->loggedin_user->domain . 'settings/example-admin'; ?>" name="bp-example-admin-form" id="account-delete-form" class="bp-example-admin-form" method="post">
 
-			<input type="checkbox" name="bp-example-option-one" id="bp-example-option-one" value="1"<?php if ( '1' == get_user_meta( $bp->loggedin_user->id, 'bp-example-option-one', true ) ) : ?> checked="checked"<?php endif; ?> /> <?php _e( 'Do you love clicking checkboxes?', 'bp-example' ); ?>
+			<input type="checkbox" name="bp-example-option-one" id="bp-example-option-one" value="1" <?php checked( 1, $user_setting ) ;?> /> <?php _e( 'Do you love clicking checkboxes?', 'bp-example' ); ?>
 			<p class="submit">
 				<input type="submit" value="<?php _e( 'Save Settings', 'bp-example' ) ?> &raquo;" id="submit" name="submit" />
 			</p>

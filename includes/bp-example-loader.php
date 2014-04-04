@@ -314,7 +314,8 @@ class BP_Example_Component extends BP_Component {
 			'parent_url'      => $example_link,
 			'parent_slug'     => bp_get_example_slug(),
 			'screen_function' => array( 'BuddyPress_Skeleton_Screens', 'screen_two' ),
-			'position'        => 20
+			'position'        => 20,
+			'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
 		);
 
 		parent::setup_nav( $main_nav, $sub_nav );
@@ -323,15 +324,18 @@ class BP_Example_Component extends BP_Component {
 		// BP_Component::setup_nav(), you can register them manually here. For example,
 		// if your component needs a subsection under a user's Settings menu, add
 		// it like this. See bp_example_screen_settings_menu() for more info
-		bp_core_new_subnav_item( array(
-			'name' 		      => __( 'Example', 'bp-example' ),
-			'slug' 		      => 'example-admin',
-			'parent_slug'     => bp_get_settings_slug(),
-			'parent_url' 	  => trailingslashit( bp_loggedin_user_domain() . bp_get_settings_slug() ),
-			'screen_function' => 'bp_example_screen_settings_menu',
-			'position' 	      => 40,
-			'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
-		) );
+		// Don't forget to check if the settings component (optional) is active
+		if ( bp_is_active( 'settings' ) ) {
+			bp_core_new_subnav_item( array(
+				'name' 		      => __( 'Example', 'bp-example' ),
+				'slug' 		      => 'example-admin',
+				'parent_slug'     => bp_get_settings_slug(),
+				'parent_url' 	  => trailingslashit( bp_loggedin_user_domain() . bp_get_settings_slug() ),
+				'screen_function' => 'bp_example_screen_settings_menu',
+				'position' 	      => 40,
+				'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
+			) );
+		}
 	}
 
 	/**
