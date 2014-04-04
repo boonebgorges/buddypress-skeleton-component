@@ -1,4 +1,6 @@
 <?php
+// Exit if accessed directly
+if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
  * The -functions.php file is a good place to store miscellaneous functions needed by your plugin.
@@ -33,8 +35,6 @@
  * Records an activity stream item for the user.
  */
 function bp_example_accept_terms() {
-	$bp = buddypress();
-
 	/**
 	 * First check the nonce to make sure that the user has initiated this
 	 * action. Remember the wp_nonce_url() call? The second parameter is what
@@ -42,24 +42,8 @@ function bp_example_accept_terms() {
 	 */
 	check_admin_referer( 'bp_example_accept_terms' );
 
-	/***
-	 * Here is a good example of where we can post something to a users activity stream.
-	 * The user has excepted the terms on screen two, and now we want to post
-	 * "Andy accepted the really exciting terms and conditions!" to the stream.
-	 */
-	$user_link = bp_core_get_userlink( $bp->loggedin_user->id );
-
-	bp_example_record_activity( array(
-		'type' => 'accepted_terms',
-		'action' => apply_filters( 'bp_example_accepted_terms_activity_action', sprintf( __( '%s accepted the really exciting terms and conditions!', 'bp-example' ), $user_link ), $user_link ),
-	) );
-
-	/* See bp_example_reject_terms() for an explanation of deleting activity items */
-	if ( function_exists( 'bp_activity_delete') )
-		bp_activity_delete( array( 'type' => 'rejected_terms', 'user_id' => $bp->loggedin_user->id ) );
-
-	/* Add a do_action here so other plugins can hook in */
-	do_action( 'bp_example_accept_terms', $bp->loggedin_user->id );
+	/* Add a do_action here so we can run the component activity action and let other plugins eventually hook in */
+	do_action( 'bp_example_accept_terms', bp_loggedin_user_id() );
 
 	/***
 	 * You'd want to do something here, like set a flag in the database, or set usermeta.
@@ -76,33 +60,11 @@ function bp_example_accept_terms() {
  * Records an activity stream item for the user.
  */
 function bp_example_reject_terms() {
-	$bp = buddypress();
 
 	check_admin_referer( 'bp_example_reject_terms' );
 
-	/***
-	 * In this example component, the user can reject the terms even after they have
-	 * previously accepted them.
-	 *
-	 * If a user has accepted the terms previously, then this will be in their activity
-	 * stream. We don't want both 'accepted' and 'rejected' in the activity stream, so
-	 * we should remove references to the user accepting from all activity streams.
-	 * A real world example of this would be a user deleting a published blog post.
-	 */
-
-	$user_link = bp_core_get_userlink( $bp->loggedin_user->id );
-
-	/* Now record the new 'rejected' activity item */
-	bp_example_record_activity( array(
-		'type' => 'rejected_terms',
-		'action' => apply_filters( 'bp_example_rejected_terms_activity_action', sprintf( __( '%s rejected the really exciting terms and conditions.', 'bp-example' ), $user_link ), $user_link ),
-	) );
-
-	/* Delete any accepted_terms activity items for the user */
-	if ( function_exists( 'bp_activity_delete') )
-		bp_activity_delete( array( 'type' => 'accepted_terms', 'user_id' => $bp->loggedin_user->id ) );
-
-	do_action( 'bp_example_reject_terms', $bp->loggedin_user->id );
+	/* Add a do_action here so we can run the component activity action and let other plugins eventually hook in */
+	do_action( 'bp_example_reject_terms', bp_loggedin_user_id() );
 
 	return true;
 }
@@ -149,20 +111,16 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 		$high_five->save();
 	}
 
-	/***
+	/**
 	 * Now we've registered the new high-five, lets work on some notification and activity
 	 * stream magic.
+	 * 
+	 * @see in bp-example-notifications.php how bp_example_send_high_five_notification() is
+	 *      hooking the following bp_example_send_high_five "do_action" to create screen &
+	 *      emails notifications 
+	 * @see in bp-example-activity.php how bp_example_record_high_five_activity() is hooking the
+	 *      same action with a higher priority
 	 */
-
-	/* Now record the new 'new_high_five' activity item */
-	$to_user_link = bp_core_get_userlink( $to_user_id );
-	$from_user_link = bp_core_get_userlink( $from_user_id );
-
-	bp_example_record_activity( array(
-		'type' => 'rejected_terms',
-		'action' => apply_filters( 'bp_example_new_high_five_activity_action', sprintf( __( '%s high-fived %s!', 'bp-example' ), $from_user_link, $to_user_link ), $from_user_link, $to_user_link ),
-		'item_id' => $to_user_id,
-	) );
 
 	/* We'll use this do_action call to send the screen & email notifications. See bp-example-notifications.php */
 	do_action( 'bp_example_send_high_five', $to_user_id, $from_user_id );
@@ -239,5 +197,3 @@ add_action( 'delete_user', 'bp_example_remove_data', 1 );
  * If you're still confused, check how it works in other BuddyPress components, or just don't use it,
  * but you should try to if you can (it makes a big difference). :)
  */
-
-?>

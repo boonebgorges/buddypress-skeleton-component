@@ -152,7 +152,6 @@ class BP_Example_Component extends BP_Component {
 			'bp-example-screens.php',
 			'bp-example-filters.php',
 			'bp-example-classes.php',
-			'bp-example-activity.php',
 			'bp-example-template.php',
 			'bp-example-functions.php',
 			'bp-example-widgets.php',
@@ -160,8 +159,24 @@ class BP_Example_Component extends BP_Component {
 			'bp-example-ajax.php'
 		);
 
+		/**
+		 * It can be interesting to only load the file of your
+		 * component that requuired BuddyPress optional components
+		 * only if they are active.
+		 * 
+		 * Then at the place you want to create a notification or
+		 * an activity, you can insert a "do_action" that will be
+		 * hooked from your specific file to create the notification
+		 * or the activity.
+		 * 
+		 * @see do_action( 'bp_example_send_high_five', $to_user_id, $from_user_id ); for an example
+		 */ 
 		if ( bp_is_active( 'notifications' ) )
 			$includes[] = 'bp-example-notifications.php';
+
+		if ( bp_is_active( 'activity' ) )
+			$includes[] = 'bp-example-activity.php';
+
 
 		parent::includes( $includes );
 
