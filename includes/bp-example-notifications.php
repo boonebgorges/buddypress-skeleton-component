@@ -1,9 +1,10 @@
 <?php
-
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 
 /********************************************************************************
- * Activity & Notification Functions
+ * Notification Functions
  *
  * These functions handle the recording, deleting and formatting of activity and
  * notifications for the user and for this specific component.
@@ -214,4 +215,21 @@ To send %s a high five: %s
 }
 add_action( 'bp_example_send_high_five', 'bp_example_send_high_five_notification', 10, 2 );
 
-?>
+/**
+ * Remove a user's notification data.
+ * 
+ * In our example we need to remove the notifications received
+ * for the high fives an "about to be deleted" user sent
+ * In bp_example_send_high_five_notification() the sender is set
+ * as the item_id field of the notification table.
+ */
+function bp_example_remove_notifications_data( $user_id = 0 ) {
+	if ( empty( $user_id ) )
+		return false;
+
+	// delete all notifications user sent to others
+	// Arguments are the user_id being deleted, the component id, the component action
+	bp_notifications_delete_notifications_from_user( $user_id, buddypress()->example->id, 'new_high_five' );
+}
+add_action( 'wpmu_delete_user', 'bp_example_remove_notifications_data', 1 );
+add_action( 'delete_user', 'bp_example_remove_notifications_data', 1 );
