@@ -10,75 +10,111 @@
  * by user basis - it's best to hook into the front end "Settings" menu.
  */
 
-/**
- * bp_example_add_admin_menu()
- *
- * This function will add a WordPress wp-admin admin menu for your component under the
- * "BuddyPress" menu.
- */
-function bp_example_add_admin_menu() {
-	$bp = buddypress();
-
-	if ( !is_super_admin() )
-		return false;
-
-	add_submenu_page( 'bp-general-settings', __( 'Example Admin', 'bp-example' ), __( 'Example Admin', 'bp-example' ), 'manage_options', 'bp-example-settings', 'bp_example_admin' );
-}
-// The bp_core_admin_hook() function returns the correct hook (admin_menu or network_admin_menu),
-// depending on how WordPress and BuddyPress are configured
-add_action( bp_core_admin_hook(), 'bp_example_add_admin_menu' );
 
 /**
- * bp_example_admin()
- *
- * Checks for form submission, saves component settings and outputs admin screen HTML.
+ * bp_example_register_settings()
+ * 
+ * If your plugin has few options, it can be a good idea to add a new section to BuddyPress settings
+ * @see http://codex.buddypress.org/plugindev/taking-benefits-from-buddypress-settings-to-add-your-plugins-options/
  */
-function bp_example_admin() {
-	$bp = buddypress();
+function bp_example_register_settings() {
 
-	/* If the form has been submitted and the admin referrer checks out, save the settings */
-	if ( isset( $_POST['submit'] ) && check_admin_referer('example-settings') ) {
-		update_option( 'example-setting-one', $_POST['example-setting-one'] );
-		update_option( 'example-setting-two', $_POST['example-setting-two'] );
+	$plugin_options = array(
+		array(
+			'option_name'       => 'example-setting-one',
+			'option_title'      => __( 'Option One', 'bp-example' ),
+			'display_function'  => 'bp_example_setting_one_field_callback',
+			'settings_section'  => 'bp_main', // this one will be in BuddyPress main section
+			'validate_function' => 'bp_example_validate_setting',
+		),
+		array(
+			'option_name'       => 'example-setting-two',
+			'option_title'      => __( 'Option Two', 'bp-example' ),
+			'display_function'  => 'bp_example_setting_two_field_callback',
+			'settings_section'  => 'bp_xprofile', // this one will be in xProfile section
+			'validate_function' => 'bp_example_validate_setting',
+		),	
+	);
 
-		$updated = true;
+	foreach ( $plugin_options as $option ) {
+		add_settings_field(
+			/* the option name you want to use for your plugin */
+			$option['option_name'],
+
+	        /* The title for your setting */
+	        $option['option_title'],
+
+	        /* Display function */
+	        $option['display_function'],
+
+	        /* BuddyPress settings */
+	        'buddypress',
+
+	        /* BuddyPress setting section
+	        Here you are adding a field to 'bp_main' section.
+	        As shown on the image, other available sections are :
+	        - if xprofile component is active : 'bp_xprofile',
+	        - if groups component is active : 'bp_groups',
+	        - if legacy forums component is active : 'bp_forums',
+	        - if activity component is active : 'bp_activity'
+	        */
+	        $option['settings_section']
+	    );
+
+	    /* This is where you add your setting to BuddyPress ones */
+	    register_setting(
+	        /* BuddyPress settings */
+	        'buddypress',
+	 
+	        /* the option name you want to use for your plugin */
+	        $option['option_name'],
+	 
+	        /* the validatation function you use before saving your option to the database */
+	        $option['validate_function']
+	    );
 	}
+}
+ 
+add_action( 'bp_register_admin_settings', 'bp_example_register_settings' );
 
-	$setting_one = get_option( 'example-setting-one' );
-	$setting_two = get_option( 'example-setting-two' );
-?>
-	<div class="wrap">
-		<h2><?php _e( 'Example Admin', 'bp-example' ) ?></h2>
-		<br />
 
-		<?php if ( isset($updated) ) : ?><?php echo "<div id='message' class='updated fade'><p>" . __( 'Settings Updated.', 'bp-example' ) . "</p></div>" ?><?php endif; ?>
+/**
+ * bp_example_setting_one_field_callback()
+ * 
+ * This is the display function for option one
+ */
+function bp_example_setting_one_field_callback() {
+    /* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
+    $plugin_option_value = bp_get_option( 'example-setting-one' );
+ 
+    ?>
+    <input id="example-setting-one" name="example-setting-one" type="text" value="<?php echo esc_attr( $plugin_option_value ); ?>" />
+    <?php
+}
 
-		<form action="<?php echo site_url() . '/wp-admin/admin.php?page=bp-example-settings' ?>" name="example-settings-form" id="example-settings-form" method="post">
-
-			<table class="form-table">
-				<tr valign="top">
-					<th scope="row"><label for="target_uri"><?php _e( 'Option One', 'bp-example' ) ?></label></th>
-					<td>
-						<input name="example-setting-one" type="text" id="example-setting-one" value="<?php echo esc_attr( $setting_one ); ?>" size="60" />
-					</td>
-				</tr>
-					<th scope="row"><label for="target_uri"><?php _e( 'Option Two', 'bp-example' ) ?></label></th>
-					<td>
-						<input name="example-setting-two" type="text" id="example-setting-two" value="<?php echo esc_attr( $setting_two ); ?>" size="60" />
-					</td>
-				</tr>
-			</table>
-			<p class="submit">
-				<input type="submit" name="submit" value="<?php _e( 'Save Settings', 'bp-example' ) ?>"/>
-			</p>
-
-			<?php
-			/* This is very important, don't leave it out. */
-			wp_nonce_field( 'example-settings' );
-			?>
-		</form>
-	</div>
-<?php
+/**
+ * bp_example_setting_two_field_callback()
+ * 
+ * This is the display function for option two
+ */
+function bp_example_setting_two_field_callback() {
+    /* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
+    $plugin_option_value = bp_get_option( 'example-setting-two' );
+ 
+    ?>
+    <input id="example-setting-two" name="example-setting-two" type="text" value="<?php echo esc_attr( $plugin_option_value ); ?>" />
+    <?php
+}
+ 
+/**
+ * bp_example_validate_setting()
+ * 
+ * This is validation function for your options
+ */
+function bp_example_validate_setting( $option = '' ) {
+    /* you could directly use 'sanitize_text_field' as your the 3rd argument of the register_setting() function in this case..
+       For the purpose of this example, this specific function illustrates a custom validation function */
+    return sanitize_text_field( $option );
 }
 
 /**
