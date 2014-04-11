@@ -1,5 +1,6 @@
 <?php
-
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
 /********************************************************************************
  * Screen Functions
  *
@@ -11,7 +12,9 @@
 /**
  * Main Screen Class.
  *
- * @since BuddyPress Skeleton Component
+ * @package BuddyPress Skeleton Component
+ * @subpackage Screens
+ * @since 1.7.0
  */
 class BuddyPress_Skeleton_Screens {
 
@@ -28,6 +31,13 @@ class BuddyPress_Skeleton_Screens {
 		$this->setup_actions();
 	}
 
+	/**
+	 * Starts the screens class
+	 * 
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
+	 */
 	public static function manage_screens() {
 		$bp = buddypress();
 
@@ -49,7 +59,11 @@ class BuddyPress_Skeleton_Screens {
 		$bp = buddypress();
 
 		$this->template      = '';
+
+		// Is the current theme BP Default or a child theme of BP Default ?
 		$this->is_bp_default = in_array( 'bp-default', array( get_template(), get_stylesheet() ) );
+
+		// Path to the exemple component templates
 		$this->template_dir  = $bp->extend->skeleton->includes_dir . 'templates';
 	}
 
@@ -61,8 +75,12 @@ class BuddyPress_Skeleton_Screens {
 	 * @since 1.7.0
 	 */
 	private function setup_filters() {
+		// The user is on one of the example component page
 		if ( bp_is_current_component( 'example' ) ) {
+			// We first need to tell BuddyPress how to deal with templates for our component
 			add_filter( 'bp_located_template',   array( $this, 'template_filter' ), 20, 2 );
+			// As we will be using BuddyPress Theme Compat, we need to add example component templates path
+			// to BuddyPress stack of template paths.
 			add_filter( 'bp_get_template_stack', array( $this, 'add_to_template_stack' ), 10, 1 );
 		}
 	}
@@ -87,11 +105,20 @@ class BuddyPress_Skeleton_Screens {
 		if ( ! empty( $found_template ) )
 			return $found_template;
 
-		// Current theme do use theme compat, no need to carry on
+		/**
+		 * Current theme do use theme compat, no need to carry on
+		 * Retuning false will fire bp_setup_theme_compat action
+		 */ 
 		if ( $bp->theme_compat->use_with_current_theme )
 			return false;
 
-		// Current theme is BP Default or a chilf theme of it
+		/**
+		 * Current theme is BP Default or a chilf theme of it
+		 * 
+		 * Let's handle BP Default theme (or child themes)
+		 * This theme helped BuddyPress growth, so it desearves
+		 * support ;) 
+		 */ 
 		if ( $this->is_bp_default && bp_is_directory() ) {
 			
 			foreach ( $templates as $template ) {
@@ -107,27 +134,68 @@ class BuddyPress_Skeleton_Screens {
 			}
 		}
 
-		// If we're here this means we're probably on the directory in 
-		// a Theme that use it's own BuddyPress support. There's a good
-		// chance as a BuddyPress directory needs a page that the template
-		// loaded is the page.php, so what about filtering the content to 
-		// display a message to help the user to build his template ?
+		/**
+		 * If we're here this means we're probably on the directory in
+		 * a Theme that is using it's own BuddyPress support. There's a good
+		 * chance as a BuddyPress directory needs a page that the template file
+		 * loaded is the page.php one, so you can filter the content to display
+		 * a message to help the user in building his template for this specific
+		 * theme.
+		 */  
 		if ( bp_is_directory() && ! $this->is_bp_default )
 			add_filter( 'the_content', array( $this, 'template_to_build' ) );
 
 		return apply_filters( 'bp_example_load_template_filter', $found_template );
 	}
 
+	/**
+	 * Add the plugin's template to the end of the BuddyPress templates stack
+	 * 
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
+	 */
 	public function add_to_template_stack( $templates = array() ) {
-		// Adding the plugin's provided template to the end of the stack
-		// So that the theme can override it.
-		return array_merge( $templates, array( buddypress()->extend->skeleton->includes_dir . 'templates' ) );
+		$templates = array_merge( $templates, array( buddypress()->extend->skeleton->includes_dir . 'templates' ) );
+
+		/**
+		 * Utility to trace the template stack
+		 * 
+		 * If you define to BP_SKELETON_DEBUG true, you'll see the template stack, BuddyPress will look
+		 * into these different locations to find the template, having the BP Example stack at the end
+		 * let themes to override the template from their buddypress, community or directly root folder
+		 * 
+		 * 1) the active theme stack
+		 * - wwwpath/wp-content/themes/{active_theme}/buddypress
+		 * - wwwpath/wp-content/themes/{active_theme}/community
+		 * - wwwpath/wp-content/themes/twentytwelve
+		 * 
+		 * 2) BuddyPress legacy stack
+		 * - wwwpath/wp-content/plugins/buddypress/bp-templates/bp-legacy/buddypress
+		 * - wwwpath/wp-content/plugins/buddypress/bp-templates/bp-legacy/community
+		 * - wwwpath/wp-content/plugins/buddypress/bp-templates/bp-legacy
+		 * 
+		 * 3) the BP Example stack
+         * -wwwpath/wp-content/plugins/buddypress-skeleton-component/includes/templates
+         * 
+         * PS: each time you want to trace a variable, you can use the following way, when building
+         * your component with this tool
+		 */
+		if ( buddypress()->extend->skeleton->debug ) {
+			buddypress()->extend->skeleton->trace['template_stack'] = $templates;
+		}
+
+		return $templates;
 	}
 
 	/**
 	 * screen_one()
 	 *
 	 * Sets up and displays the screen output for the sub nav item "example/screen-one"
+	 * 
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
 	 */
 	public static function screen_one() {
 
@@ -140,6 +208,10 @@ class BuddyPress_Skeleton_Screens {
 	 * screen_two()
 	 *
 	 * Sets up and displays the screen output for the sub nav item "example/screen-two"
+	 * 
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
 	 */
 	public static function screen_two() {
 
@@ -149,6 +221,18 @@ class BuddyPress_Skeleton_Screens {
 		self::load_template( '', 'screen_two' );
 	}
 
+	/**
+	 * load_template()
+	 *
+	 * Choose the best way to load your plugin's content
+	 * 
+	 * Screen one and Directory page will use option 1
+	 * Screen two will use option 2
+	 * 
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
+	 */
 	public static function load_template( $template = '', $screen = '' ) {
 		$bp = buddypress();
 		/****
@@ -167,6 +251,8 @@ class BuddyPress_Skeleton_Screens {
 		 * This example component comes bundled with a template for screen one, so we can load that
 		 * template to display what we need. If you copied this template from the plugin into your theme
 		 * then it would load that one instead. This allows users to override templates in their theme.
+		 * 
+		 * NB: To maximize theme compatibility you should always prefer to use option 2 for members pages. 
 		 */
 		if ( buddypress()->theme_compat->use_with_current_theme && ! empty( $template ) ) {
 			add_filter( 'bp_get_template_part', array( __CLASS__, 'template_part' ), 10, 3 );
@@ -201,15 +287,51 @@ class BuddyPress_Skeleton_Screens {
 		bp_core_load_template( apply_filters( "bp_example_template_{$screen}", $bp->extend->skeleton->screens->template ) );
 	}
 
+	/**
+	 * Filter the templates part for screen one
+	 *
+	 * In a member's page, BuddyPress will try to load the members/single/plugins.php
+	 * template. Here we're checking it's the case to evantually add the template for
+	 * screen one
+	 * 
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
+	 */
 	public static function template_part( $templates, $slug, $name ) {
 		if ( $slug != 'members/single/plugins' ) {
 	        return $templates;
 		}
-	    return array( buddypress()->extend->skeleton->screens->template . '.php' );
+
+		$templates = array( buddypress()->extend->skeleton->screens->template . '.php' );
+
+		/**
+		 * Utility to trace the template stack
+		 * 
+		 * If you define to BP_SKELETON_DEBUG true, you'll see that the templates var is
+		 * only modified if you display the "screen one" screen
+		 */
+		if ( buddypress()->extend->skeleton->debug ) {
+			buddypress()->extend->skeleton->trace['bp_example_template'] = $templates;
+		}
+
+	    return $templates;
 	}
 
+	/**
+	 * Manage the directory page
+	 * 
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
+	 */
 	private function setup_actions() {
 		add_action( 'bp_screens', array( $this, 'directory_setup' ) );
+
+		/**
+		 * This action will be hooked only if the active theme uses BP Theme compat
+		 * @see  BuddyPress_Skeleton_Screens::template_filter()
+		 */
 		add_action( 'bp_setup_theme_compat', array( $this, 'use_theme_compat' ) );
 	}
 
@@ -217,11 +339,12 @@ class BuddyPress_Skeleton_Screens {
 	 * If your component uses a top-level directory, this function will catch the requests and load
 	 * the index page.
 	 *
-	 * @package BuddyPress_Template_Pack
-	 * @since 1.6
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
 	 */
 	public function directory_setup() {
-		if ( bp_is_example_component() && !bp_current_action() && !bp_current_item() ) {
+		if ( bp_is_example_component() && ! bp_current_action() && ! bp_current_item() ) {
 			// This wrapper function sets the $bp->is_directory flag to true, which help other
 			// content to display content properly on your directory.
 			bp_update_is_directory( true, 'example' );
@@ -233,10 +356,29 @@ class BuddyPress_Skeleton_Screens {
 		}
 	}
 
+	/**
+	 * Theme compat is used
+	 * 
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
+	 */
 	public function use_theme_compat() {
 		if ( ! bp_displayed_user_id() && bp_is_current_component( 'example' ) ) {
 
+			/**
+			 * So we first need to set a dummy post so that the title of the page will be set to:
+	 		 * __( 'High Fives Directory', 'bp-example' )
+	 		 * And so that the comment template won't be loaded :
+	 		 * 'comment_status' => 'closed'
+	 		 * @see  BuddyPress_Skeleton_Screens::directory_dummy_post()
+			 */
 			add_action( 'bp_template_include_reset_dummy_post_data', array( $this, 'directory_dummy_post' ) );
+
+			/**
+			 * Then we need to replace the content by buffering the /includes/example/index.php template
+	 		 * @see  BuddyPress_Skeleton_Screens::directory_content()
+			 */
 			add_filter( 'bp_replace_the_content',                    array( $this, 'directory_content'    ) );
 
 		}
@@ -247,9 +389,9 @@ class BuddyPress_Skeleton_Screens {
 	/**
 	 * Update the global $post with directory data
 	 *
-	 * @package BuddyPress_Template_Pack
+	 * @package BuddyPress Skeleton Component
 	 * @subpackage Screens
-	 * @since 1.X.X
+	 * @since 1.7.0
 	 *
 	 * @uses bp_theme_compat_reset_post() to reset the post data
 	 */
@@ -271,9 +413,9 @@ class BuddyPress_Skeleton_Screens {
 	/**
 	 * Filter the_content with the Example directory template part
 	 *
-	 * @package BuddyPress_Template_Pack
+	 * @package BuddyPress Skeleton Component
 	 * @subpackage Screens
-	 * @since 1.X.X
+	 * @since 1.7.0
 	 *
 	 * @uses bp_buffer_template_part()
 	 */
@@ -281,6 +423,21 @@ class BuddyPress_Skeleton_Screens {
 		bp_buffer_template_part( apply_filters( 'bp_example_directory_content', 'example/index' ) );
 	}
 
+	/**
+	 * Provide explanations to help the admin build the directory page template
+	 * 
+	 * So far, we took care of most existing themes : WordPress themes thanks to BP Theme Compat.
+	 * We also took care of BP Default theme (or child themes).
+	 * As a result the BP Example directory page has great chances to load correctly.
+	 * 
+	 * Still, there's a chance the active theme is a "Standalone" BuddyPress theme that is very different
+	 * form BP Default. As it's very difficult to know how the markup is built for these kind of themes
+	 * you can only help the user to create the directory template in his theme, by displaying a message.
+	 *
+	 * @package BuddyPress Skeleton Component
+	 * @subpackage Screens
+	 * @since 1.7.0
+	 */
 	public function template_to_build( $content ) {
 		if ( ! current_user_can( 'edit_theme_options' ) )
 			return $content;

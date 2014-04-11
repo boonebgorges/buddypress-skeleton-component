@@ -37,7 +37,8 @@ Author URI: http://example.org/some/cool/developer
  your component to run in the /wp-content/plugins/ directory
  *************************************************************************************************************/
 
-
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Main Skeleton Class.
  *
@@ -175,6 +176,7 @@ class Skeleton {
 
 		// Utility
 		$this->debug = defined( 'BP_SKELETON_DEBUG' ) && BP_SKELETON_DEBUG ? true : false;
+		$this->trace = array();
 	}
 
 	/**
@@ -290,10 +292,10 @@ class Skeleton {
 	 * @since 1.7.0
 	 */
 	public function debug() {
-		$to_dump = apply_filters( 'buddypress_skeleton_component_debug', $this );
+		$this->trace['main_class'] = $this;
 		?>
 		<div id="buddypress-skeleton-component-debug-tool">
-			<pre><?php var_dump( $to_dump ); ?></pre>
+			<pre><?php var_dump( $this->trace ); ?></pre>
 		</div>
 		<?php
 	}
