@@ -356,8 +356,10 @@ class Skeleton {
 		if ( empty( $network_plugins ) )
 			return self::$bp_config;
 
+		$plugin_basename = plugin_basename( __FILE__ );
+
 		// Looking for BuddyPress and your plugin
-		$check = array( buddypress()->basename, $this->basename );
+		$check = array( buddypress()->basename, $plugin_basename );
 
 		// Are they active on the network ?
 		$network_active = array_diff( $check, array_keys( $network_plugins ) );
@@ -369,7 +371,7 @@ class Skeleton {
 		
 		// We need to know if the plugin is network activated to choose the right
 		// notice ( admin or network_admin ) to display the warning message.
-		self::$bp_config['network_active'] = isset( $network_plugins[ $this->basename ] );
+		self::$bp_config['network_active'] = isset( $network_plugins[ $plugin_basename ] );
 
 		return self::$bp_config;
 	}
