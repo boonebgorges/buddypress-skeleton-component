@@ -142,8 +142,21 @@ class BuddyPress_Skeleton_Screens {
 		 * a message to help the user in building his template for this specific
 		 * theme.
 		 */  
-		if ( bp_is_directory() && ! $this->is_bp_default )
-			add_filter( 'the_content', array( $this, 'template_to_build' ) );
+		if ( bp_is_directory() && ! $this->is_bp_default ) {
+
+			// This happens to work in some BuddyPress standalone theme :)
+			bp_theme_compat_reset_post( array(
+				'ID'             => $bp->pages->example->id,
+				'post_title'     => $bp->pages->example->title,
+				'post_author'    => 0,
+				'post_date'      => 0,
+				'post_content'   => '',
+				'is_page'        => true,
+				'comment_status' => 'closed'
+			) );
+
+			add_filter( 'the_content', array( $this, 'directory_content' ) );
+		}
 
 		return apply_filters( 'bp_example_load_template_filter', $found_template );
 	}
@@ -421,47 +434,6 @@ class BuddyPress_Skeleton_Screens {
 	 */
 	public function directory_content() {		
 		bp_buffer_template_part( apply_filters( 'bp_example_directory_content', 'example/index' ) );
-	}
-
-	/**
-	 * Provide explanations to help the admin build the directory page template
-	 * 
-	 * So far, we took care of most existing themes : WordPress themes thanks to BP Theme Compat.
-	 * We also took care of BP Default theme (or child themes).
-	 * As a result the BP Example directory page has great chances to load correctly.
-	 * 
-	 * Still, there's a chance the active theme is a "Standalone" BuddyPress theme that is very different
-	 * form BP Default. As it's very difficult to know how the markup is built for these kind of themes
-	 * you can only help the user to create the directory template in his theme, by displaying a message.
-	 *
-	 * @package BuddyPress Skeleton Component
-	 * @subpackage Screens
-	 * @since 1.7.0
-	 */
-	public function template_to_build( $content ) {
-		if ( ! current_user_can( 'edit_theme_options' ) )
-			return $content;
-
-		$templates_folder = str_replace( WP_CONTENT_DIR . '/', '', buddypress()->extend->skeleton->includes_dir . 'templates/example' );
-
-		$templates = array( 'index.php', 'example-loop.php' );
-
-		$message  = '<p>' . __( 'Hi Buddy!', 'bp-example' ) . '</p>';
-		$message .= '<p>' . __( 'You are using a theme that requires to build a specific template for this plugin.', 'bp-example' ) .'</p>' ;
-		$message .= '<p>' . __( 'As BuddyPress Standalone themes are using very different markups, it is difficult for the plugin to display the best way.', 'bp-example' ) .'</p>' ;
-		$message .= '<p>' . __( 'We advise you to contact the theme support so that he can help you to build the template for your theme.', 'bp-example' ) .'</p>' ;
-		$message .= '<p>' . sprintf( __( 'The template of the plugin are localized in the %s folder', 'bp-example' ), '<strong>' . $templates_folder . '</strong>' ) . '</p>' ;
-		$message .= '<p>' . __( 'In your theme, you need to create the folder <strong>example</strong> and copy in it these templates:', 'bp-example' ) . '</p>' ;
-
-		$message .= '<ul>';
-		foreach ( $templates as $template ) {
-			$message .= '<li>' . $template . '</li>';
-		}
-		$message .= '</ul>';
-
-		$message .= '<p>' . __( 'Once done, edit the markup to fit to your theme.', 'bp-example' ) . '</p>' ;
-
-		return $message;
 	}
 }
 add_action( 'bp_init', array( 'BuddyPress_Skeleton_Screens', 'manage_screens' ) );
