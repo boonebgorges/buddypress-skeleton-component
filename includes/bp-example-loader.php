@@ -250,6 +250,7 @@ class BP_Example_Component extends BP_Component {
 			'slug'                  => BP_EXAMPLE_SLUG,
 			'root_slug'             => isset( $bp->pages->{$this->id}->slug ) ? $bp->pages->{$this->id}->slug : BP_EXAMPLE_SLUG,
 			'has_directory'         => true, // Set to false if not required
+			'directory_title'       => __( 'Example', 'bp-example' ),
 			'notification_callback' => 'bp_example_format_notifications',
 			'search_string'         => __( 'Search Examples...', 'buddypress' ),
 			'global_tables'         => $global_tables
