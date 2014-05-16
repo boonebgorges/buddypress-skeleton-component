@@ -253,18 +253,21 @@ class BP_Example_Component extends BP_Component {
 	function setup_globals( $args = array() ) {
 		$bp = buddypress();
 
-		// Defining the slug in this way makes it possible for site admins to override it
+		// Defining the slug in this way makes it possible for site
+		// admins to override it
 		if ( !defined( 'BP_EXAMPLE_SLUG' ) )
 			define( 'BP_EXAMPLE_SLUG', $this->id );
 
-		// Global tables for the example component. Build your table names using
-		// $bp->table_prefix (instead of hardcoding 'wp_') to ensure that your component
-		// works with $wpdb, multisite, and custom table prefixes.
+		// Global tables for the example component. Build your table
+		// names using  $bp->table_prefix (instead of hardcoding 'wp_')
+		// to ensure that your component works with $wpdb, multisite,
+		// and custom table prefixes.
 		$global_tables = array(
 			'table_name'      => $bp->table_prefix . 'bp_example'
 		);
 
-		// Set up the $globals array to be passed along to parent::setup_globals()
+		// Set up the $globals array to be passed along to
+		// parent::setup_globals()
 		$args = array(
 			'slug'                  => BP_EXAMPLE_SLUG,
 			'root_slug'             => isset( $bp->pages->{$this->id}->slug ) ? $bp->pages->{$this->id}->slug : BP_EXAMPLE_SLUG,
@@ -278,19 +281,18 @@ class BP_Example_Component extends BP_Component {
 		// Let BP_Component::setup_globals() do its work.
 		parent::setup_globals( $args );
 
-		// If your component requires any other data in the $bp global, put it there now.
+		// If your component requires any other data in the $bp global,
+		// put it there now.
 		$bp->{$this->id}->misc_data = '123';
 	}
 
 	/**
 	 * Set up your component's navigation.
 	 *
-	 * The navigation elements created here are responsible for the main site navigation (eg
-	 * Profile > Activity > Mentions), as well as the navigation in the BuddyBar. WP Admin Bar
+	 * The navigation elements created here are responsible for the main
+	 * site navigation (eg Profile > Activity > Mentions). WP Admin Bar
 	 * navigation is broken out into a separate method; see
 	 * BP_Example_Component::setup_admin_bar().
-	 *
-	 * @global obj $bp
 	 */
 	function setup_nav( $main_nav = array(), $sub_nav = array() ) {
 		// Add 'Example' to the main navigation
@@ -340,11 +342,12 @@ class BP_Example_Component extends BP_Component {
 
 		parent::setup_nav( $main_nav, $sub_nav );
 
-		// If your component needs additional navigation menus that are not handled by
-		// BP_Component::setup_nav(), you can register them manually here. For example,
-		// if your component needs a subsection under a user's Settings menu, add
-		// it like this. See bp_example_screen_settings_menu() for more info
-		// Don't forget to check if the settings component (optional) is active
+		// If your component needs additional navigation menus that are
+		// not handled by BP_Component::setup_nav(), you can register
+		// them manually here. For example, if your component needs a
+		// subsection under a user's Settings menu, add it like this.
+		// See bp_example_screen_settings_menu() for more info. Don't
+		// forget to check if the settings component (optional) is active
 		if ( bp_is_active( 'settings' ) ) {
 			bp_core_new_subnav_item( array(
 				'name' 		      => __( 'Example', 'bp-example' ),
@@ -404,13 +407,13 @@ class BP_Example_Component extends BP_Component {
 	}
 
 	/**
-	 * If your component needs to store data, it is highly recommended that you use WordPress
-	 * custom post types for that data, instead of creating custom database tables.
+	 * If your component needs to store data, it is highly recommended
+	 * that you use WordPress custom post types for that data, instead of
+	 * creating custom database tables.
 	 *
-	 * In the future, BuddyPress will have its own bp_register_post_types hook. For the moment,
-	 * hook to init. See BP_Example_Component::__construct().
+	 * In the future, BuddyPress will have its own bp_register_post_types
+	 * hook. For the moment, hook to init. See BP_Example_Component::__construct().
 	 *
-	 * @package BuddyPress_Skeleton_Component
 	 * @since 1.6
 	 * @see http://codex.wordpress.org/Function_Reference/register_post_type
 	 */
@@ -431,9 +434,10 @@ class BP_Example_Component extends BP_Component {
 		);
 
 		// Register the post type.
-		// Here we are using $this->id ('example') as the name of the post type. You may
-		// choose to use a different name for the post type; if you register more than one,
-		// you will have to declare more names.
+		// Here we are using $this->id ('example') as the name of the
+		// post type. You may choose to use a different name for the
+		// post type; if you register more than one, you will have to
+		// declare more names.
 		register_post_type( $this->id, $args );
 
 		parent::register_post_types();
