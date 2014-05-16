@@ -12,37 +12,45 @@ Author: Dr. Jan Itor
 Author URI: http://example.org/some/cool/developer
 */
 
-/*************************************************************************************************************
- --- SKELETON COMPONENT V1.6.2 ---
+/** Skeleton Component 1.7.0 *************************************************
 
- Contributors: apeatling, jeffsayre, boonebgorges
+ Contributors: apeatling, jeffsayre, boonebgorges, imath
 
- This is a bare-bones component that should provide a good starting block to building your own custom BuddyPress
- component.
+ This is a bare-bones component that should provide a good starting point for
+ building your own custom BuddyPress component.
 
- It includes some of the functions that will make it easy to get your component registering activity stream
- items, posting notifications, setting up widgets, adding AJAX functionality and also structuring your
- component in a standardized way.
+ It includes some of the functions that will make it easy to get your component
+ registering activity stream items, posting notifications, setting up widgets,
+ adding AJAX functionality and also structuring your component in a
+ standardized way.
 
- It is by no means the letter of the law. You can go about writing your component in any style you like, that's
- one of the best (and worst!) features of a PHP based platform.
+ It is by no means the letter of the law. You can go about writing your
+ component in any style you like, that's one of the best (and worst!) features
+ of a PHP based platform.
 
- I would recommend reading some of the comments littered throughout, as they will provide insight into how
- things tick within BuddyPress.
+ Note also that this sample component does a lot of stuff. It's likely that
+ your component will not need to do everything that this one does.
 
- You should replace all references to the word 'example' with something more suitable for your component.
+ Please be sure to replace all references to the word 'example' with something
+ more suitable for your component. This is especially important in function and
+ class names.
 
- IMPORTANT: DO NOT configure your component so that it has to run in the /plugins/buddypress/ directory. If you
- do this, whenever the user auto-upgrades BuddyPress - your custom component will be deleted automatically. Design
- your component to run in the /wp-content/plugins/ directory
- *************************************************************************************************************/
+ Have fun!
+
+******************************************************************************/
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Main Skeleton Class.
  *
- * @since BuddyPress (1.7)
+ * This wrapper class is a good starting place for bootstrapping your BP
+ * component. It is a centralized place for running certain setup routines,
+ * including setting the textdomain and checking for required BuddyPress
+ * versions.
+ *
+ * @since 1.7.0
  */
 class Skeleton {
 	/**
@@ -57,7 +65,7 @@ class Skeleton {
 
 	/**
 	 * Required BuddyPress version for your plugin.
-	 * 
+	 *
 	 * It can be interesting to check for user's current
 	 * BuddyPress versions to prevent your plugin to temporarly
 	 * break the website of the user. Especially when you are
@@ -73,7 +81,7 @@ class Skeleton {
 
 	/**
 	 * BuddyPress config.
-	 * 
+	 *
 	 * It can be interesting to check for user's current
 	 * BuddyPress config to be sure your plugin is actiated
 	 * the same way.
@@ -87,7 +95,7 @@ class Skeleton {
 
 	/**
 	 * Initialize the plugin
-	 * 
+	 *
 	 * @package BuddyPress Skeleton Component
 	 * @since 1.7.0
 	 */
@@ -120,7 +128,7 @@ class Skeleton {
 
 	/**
 	 * Sets some globals for the plugin
-	 * 
+	 *
 	 * @package BuddyPress Skeleton Component
 	 * @since 1.7.0
 	 */
@@ -143,7 +151,7 @@ class Skeleton {
 		 * triggered again unless you increment the version to a number higher than stored in the meta data.
 		 */
 		$this->db_version    = '1';
-		
+
 		// Define a global that can be checked to see if the component is installed or not.
 		$this->is_installed  = '1';
 
@@ -194,7 +202,7 @@ class Skeleton {
 
 	/**
 	 * Sets the key hooks to add an action or a filter to
-	 * 
+	 *
 	 * @package BuddyPress Skeleton Component
 	 * @since 1.7.0
 	 */
@@ -227,12 +235,12 @@ class Skeleton {
 			// Display a warning message in network admin or admin
 			add_action( self::$bp_config['network_active'] ? 'network_admin_notices' : 'admin_notices', array( $this, 'warning' ) );
 		}
-		
+
 	}
 
 	/**
 	 * Display a warning message to admin
-	 * 
+	 *
 	 * @package BuddyPress Skeleton Component
 	 * @since 1.7.0
 	 */
@@ -248,7 +256,7 @@ class Skeleton {
 		} else {
 			$config = self::config_check();
 		}
-		
+
 		if ( ! bp_core_do_network_admin() && ! $config['blog_status'] ) {
 			$warnings[] = __( 'BP Example requires to be activated on the blog where BuddyPress is activated.', 'bp-example' );
 		}
@@ -270,7 +278,7 @@ class Skeleton {
 
 	/**
 	 * Enqueue scripts if your component is loaded
-	 * 
+	 *
 	 * @package BuddyPress Skeleton Component
 	 * @since 1.7.0
 	 */
@@ -285,9 +293,9 @@ class Skeleton {
 
 	/**
 	 * Debug utility
-	 * 
+	 *
 	 * Define BP_SKELETON_DEBUG to true to use it.
-	 * 
+	 *
 	 * @package BuddyPress Skeleton Component
 	 * @since 1.7.0
 	 */
@@ -305,18 +313,18 @@ class Skeleton {
 	 * - activated on a regular config (single blog)
 	 * - network activated on a multisite config
 	 * - not activated on the network but on a specific blog.
-	 * 
+	 *
 	 * As a BuddyPress plugin, it can be interesting to check
 	 * BuddyPress config and guide the user to apply it to your
 	 * plugin.
-	 * 
+	 *
 	 * Using static methods can help you benefit from them
 	 * while running the activation and deactivation process
 	 */
 
 	/**
 	 * Checks BuddyPress version
-	 * 
+	 *
 	 * @package BuddyPress Skeleton Component
 	 * @since 1.7.0
 	 */
@@ -330,7 +338,7 @@ class Skeleton {
 
 	/**
 	 * Checks if your plugin's config is similar to BuddyPress
-	 * 
+	 *
 	 * @package BuddyPress Skeleton Component
 	 * @since 1.7.0
 	 */
@@ -341,15 +349,15 @@ class Skeleton {
 		 * network_status : BuddyPress & your plugin share the same network status
 		 */
 		self::$bp_config = array(
-			'blog_status'    => false, 
-			'network_active' => false, 
-			'network_status' => true 
+			'blog_status'    => false,
+			'network_active' => false,
+			'network_status' => true
 		);
 
 		if ( get_current_blog_id() == bp_get_root_blog_id() ) {
 			self::$bp_config['blog_status'] = true;
 		}
-		
+
 		$network_plugins = get_site_option( 'active_sitewide_plugins', array() );
 
 		// No Network plugins
@@ -363,12 +371,12 @@ class Skeleton {
 
 		// Are they active on the network ?
 		$network_active = array_diff( $check, array_keys( $network_plugins ) );
-		
+
 		// If result is 1, your plugin is network activated
 		// and not BuddyPress or vice & versa. Config is not ok
 		if ( count( $network_active ) == 1 )
 			self::$bp_config['network_status'] = false;
-		
+
 		// We need to know if the plugin is network activated to choose the right
 		// notice ( admin or network_admin ) to display the warning message.
 		self::$bp_config['network_active'] = isset( $network_plugins[ $plugin_basename ] );
@@ -395,7 +403,7 @@ class Skeleton {
 
 	/**
 	 * Loads the translation files
-	 * 
+	 *
 	 * You should try hard to support translation in your component. It's actually very easy.
  	 * Make sure you wrap any rendered text in __() or _e() and it will then be translatable.
  	 *
@@ -408,7 +416,7 @@ class Skeleton {
 	 *
 	 * @package BuddyPress Skeleton Component
 	 * @since 1.7.0
-	 * 
+	 *
 	 * @uses get_locale() to get the language of WordPress config
 	 * @uses load_texdomain() to load the translation if any is available for the language
 	 */
@@ -435,7 +443,7 @@ function buddypress_skeleton_component() {
 
 	/**
 	 * You could simply return Skeleton::start()
-	 * and access to your global using 
+	 * and access to your global using
 	 * buddypress_skeleton_component()->{the_neede_global}
 	 */
 	if ( empty( $bp->extend ) ) {
@@ -443,11 +451,11 @@ function buddypress_skeleton_component() {
 	}
 	/**
 	 * Setup your plugin globals
-	 * 
-	 * Throughout your plugin, you'll be able to 
+	 *
+	 * Throughout your plugin, you'll be able to
 	 * access to your globals using :
 	 * buddypress()->extend->skeleton->{the_needed_global}
-	 * 
+	 *
 	 * You will also be able to use this name space to temporarly
 	 * store vars in the globals.
 	 */

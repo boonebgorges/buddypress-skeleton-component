@@ -1,27 +1,18 @@
 <?php
 
 // Exit if accessed directly
-// It's a good idea to include this in each of your plugin files, for increased security on
-// improperly configured servers
+// It's a good idea to include this in each of your plugin files, for
+// increased security on improperly configured servers
 if ( !defined( 'ABSPATH' ) ) exit;
 
-/*
- * If you want the users of your component to be able to change the values of your other custom constants,
- * you can use this code to allow them to add new definitions to the wp-config.php file and set the value there.
- *
- *
- *	if ( !defined( 'BP_EXAMPLE_CONSTANT' ) )
- *		define ( 'BP_EXAMPLE_CONSTANT', 'some value' // or some value without quotes if integer );
- */
-
 /**
- * Implementation of BP_Component
+ * Implementation of BP_Component.
  *
- * BP_Component is the base class that all BuddyPress components use to set up their basic
- * structure, including global data, navigation elements, and admin bar information. If there's
- * a particular aspect of this class that is not relevant to your plugin, just leave it out.
+ * BP_Component is the base class that all BuddyPress components use to set up
+ * their basic structure, including global data, navigation elements, and admin
+ * bar information. If there's a particular aspect of this class that is not
+ * relevant to your plugin, just leave it out.
  *
- * @package BuddyPress_Skeleton_Component
  * @since 1.6
  */
 class BP_Example_Component extends BP_Component {
@@ -29,20 +20,21 @@ class BP_Example_Component extends BP_Component {
 	/**
 	 * Constructor method
 	 *
-	 * You can do all sorts of stuff in your constructor, but it's recommended that, at the
-	 * very least, you call the parent::start() function. This tells the parent BP_Component
-	 * to begin its setup routine.
+	 * You can do all sorts of stuff in your constructor, but it's
+	 * recommended that, at the very least, you call the parent::start()
+	 * method. This tells the parent BP_Component to begin its setup routine.
 	 *
 	 * BP_Component::start() takes three parameters:
-	 *   (1) $id   - A unique identifier for the component. Letters, numbers, and underscores
-	 *		 only.
-	 *   (2) $name - This is a translatable name for your component, which will be used in
-	 *               various places through the BuddyPress admin screens to identify it.
-	 *   (3) $path - The path to your plugin directory. Primarily, this is used by
-	 *		 BP_Component::includes(), to include your plugin's files. See loader.php
-	 *		 to see how buddypress()->extend->skeleton->includes_dir was defined.
+	 *   (1) $id   - A unique identifier for the component. Letters,
+	 *               numbers, and underscores only.
+	 *   (2) $name - This is a translatable name for your component, which
+	 *               will be used in various places through the BuddyPress
+	 *               admin screens to identify it.
+	 *   (3) $path - The path to your plugin directory. Primarily, this is
+	 *               used by BP_Component::includes(), to include your
+	 *               plugin's files. See loader.php to see how
+	 *               buddypress()->extend->skeleton->includes_dir was defined.
 	 *
-	 * @package BuddyPress_Skeleton_Component
 	 * @since 1.6
 	 */
 	function __construct() {
@@ -55,93 +47,121 @@ class BP_Example_Component extends BP_Component {
 		);
 
 		/**
-		 * BuddyPress-dependent plugins are loaded too late to depend on BP_Component's
-		 * hooks, so we must call the function directly.
+		 * BuddyPress-dependent plugins are loaded too late to depend
+		 * on BP_Component's , so we must call the function directly.
 		 */
 		 $this->includes();
 
 		/**
 		 * Put your component into the active components array, so that
-		 *   bp_is_active( 'example' );
-		 * returns true when appropriate. We have to do this manually, because non-core
-		 * components are not saved as active components in the database.
+		 *
+		 *     bp_is_active( 'example' );
+		 *
+		 * returns true when appropriate. We have to do this manually,
+		 * because non-core components are not saved as active
+		 * components in the database.
 		 */
-		$bp->active_components[$this->id] = '1';
+		$bp->active_components[ $this->id ] = '1';
 
 		/**
-		 * Hook the register_post_types() method. If you're using custom post types to store
-		 * data (which is recommended), you will need to hook your function manually to
-		 * 'init'.
+		 * Hook the register_post_types() method. If you're using
+		 * custom post types to store data (which is recommended), you
+		 * will need to hook your function manually to 'init'.
 		 */
 		add_action( 'init', array( &$this, 'register_post_types' ) );
 	}
 
 	/**
-	 * Include your component's files
+	 * Include your component's files.
 	 *
-	 * BP_Component has a method called includes(), which will automatically load your plugin's
-	 * files, as long as they are properly named and arranged. BP_Component::includes() loops
-	 * through the $includes array, defined below, and for each $file in the array, it tries
-	 * to load files in the following locations:
-	 *   (1) $this->path . '/' . $file - For example, if your $includes array is defined as
+	 * BP_Component has a method called includes(), which will
+	 * automatically load your plugin's files, as long as they are properly
+	 * named and arranged. BP_Component::includes() loops through the
+	 * $includes array, defined below, and for each $file in the array, it
+	 * tries to load files in the following locations:
+	 *   (1) $this->path . '/' . $file - For example, if your $includes
+	 *       array is defined as
+	 *
 	 *           $includes = array( 'notifications.php', 'filters.php' );
-	 *       BP_Component::includes() will try to load these files (assuming a typical WP
-	 *       setup):
+	 *
+	 *       BP_Component::includes() will try to load these files
+	 *       (assuming a typical WP setup):
+	 *
 	 *           /wp-content/plugins/bp-example/notifications.php
 	 *           /wp-content/plugins/bp-example/filters.php
-	 *       Our includes function, listed below, uses a variation on this method, by specifying
-	 *       the 'includes' directory in our $includes array.
-	 *   (2) $this->path . '/bp-' . $this->id . '/' . $file - Assuming the same $includes array
-	 *       as above, BP will look for the following files:
+	 *
+	 *       Our includes method, listed below, uses a variation on this
+	 *       method, by specifying the 'includes' directory in our
+	 *       $includes array.
+	 *   (2) $this->path . '/bp-' . $this->id . '/' . $file - Assuming the
+	 *       same $includes array as above, BP will look for the following
+	 *       files:
+	 *
 	 *           /wp-content/plugins/bp-example/bp-example/notifications.php
 	 *           /wp-content/plugins/bp-example/bp-example/filters.php
+	 *
 	 *   (3) $this->path . '/bp-' . $this->id . '/' . 'bp-' . $this->id . '-' . $file . '.php' -
-	 *       This is the format that BuddyPress core components use to load their files. Given
-	 *       an $includes array like
+	 *       This is the format that BuddyPress core components use to load
+	 *       their files. Given an $includes array like
+	 *
 	 *           $includes = array( 'notifications', 'filters' );
+	 *
 	 *       BP looks for files at:
+	 *
 	 *           /wp-content/plugins/bp-example/bp-example/bp-example-notifications.php
 	 *           /wp-content/plugins/bp-example/bp-example/bp-example-filters.php
 	 *
-	 * If you'd prefer not to use any of these naming or organizational schemas, you are not
-	 * required to use parent::includes(); your own includes() method can require the files
-	 * manually. For example:
+	 * If you'd prefer not to use any of these naming or organizational
+	 * schemas, you are not required to use parent::includes(); your own
+	 * includes() method can require the files manually. For example:
 	 *    require( $this->path . '/includes/notifications.php' );
 	 *    require( $this->path . '/includes/filters.php' );
 	 *
-	 * Notice that this method is called directly in $this->__construct(). While this step is
-	 * not necessary for BuddyPress core components, plugins are loaded later, and thus their
-	 * includes() method must be invoked manually.
+	 * Notice that this method is called directly in $this->__construct().
+	 * While this step is not necessary for BuddyPress core components,
+	 * plugins are loaded later, and thus their includes() method must be
+	 * invoked manually.
 	 *
-	 * Our example component includes a fairly large number of files. Your component may not
-	 * need to have versions of all of these files. What follows is a short description of
-	 * what each file does; for more details, open the file itself and see its inline docs.
-	 *   - -actions.php       - Functions hooked to bp_actions, mainly used to catch action
-	 *			    requests (save, delete, etc)
-	 *   - -screens.php       - Functions hooked to bp_screens. These are the screen functions
-	 *			    responsible for the display of your plugin's content.
+	 * Our example component includes a fairly large number of files. Your
+	 * component may not need to have versions of all of these files. What
+	 * follows is a short description of what each file does; for more
+	 * details, open the file itself and see its inline docs.
+	 *
+	 *   - -actions.php       - Functions hooked to bp_actions, mainly
+	 *                          used to catch action requests (save,
+	 *                          delete, etc)
+	 *   - -screens.php       - Functions hooked to bp_screens. These are
+	 *                          the screen functions responsible for the
+	 *                          display of your plugin's content.
 	 *   - -filters.php	  - Functions that are hooked via apply_filters()
-	 *   - -classes.php	  - Your plugin's classes. Depending on how you organize your
-	 *			    plugin, this could mean: a database query class, a custom post
-	 *			    type data schema, and so forth
-	 *   - -activity.php      - Functions related to the BP Activity Component. This is where
-	 *			    you put functions responsible for creating, deleting, and
-	 *			    modifying activity items related to your component
-	 *   - -template.php	  - Template tags. These are functions that are called from your
-	 *			    templates, or from your screen functions. If your plugin
-	 *			    contains its own version of the WordPress Loop (such as
-	 *			    bp_example_has_items()), those functions should go in this file.
-	 *   - -functions.php     - Miscellaneous utility functions required by your component.
-	 *   - -notifications.php - Functions related to email notification, as well as the
-	 *			    BuddyPress notifications that show up in the admin bar.
-	 *   - -widgets.php       - If your plugin includes any sidebar widgets, define them in this
-	 *			    file.
+	 *   - -classes.php	  - Your plugin's classes. Depending on how
+	 *                          you organize your plugin, this could mean:
+	 *                          a database query class, a custom post type
+	 *                          data schema, and so forth
+	 *   - -activity.php      - Functions related to the BP Activity
+	 *                          Component. This is where you put functions
+	 *                          responsible for creating, deleting, and
+	 *			    modifying activity items related to your
+	 *			    component
+	 *   - -template.php	  - Template tags. These are functions that are
+	 *                          called from your templates, or from your
+	 *                          screen functions. If your plugin contains
+	 *                          its own version of the WordPress Loop (such
+	 *                          as bp_example_has_items()), those functions
+	 *                          should go in this file.
+	 *   - -functions.php     - Miscellaneous utility functions required by
+	 *                          your component.
+	 *   - -notifications.php - Functions related to email notification, as
+	 *                          well as the BuddyPress notifications that
+	 *                          show up in the admin bar.
+	 *   - -widgets.php       - If your plugin includes any sidebar widgets,
+	 *                          define them in this file.
 	 *   - -buddybar.php	  - Functions related to the BuddyBar.
 	 *   - -adminbar.php      - Functions related to the WordPress Admin Bar.
-	 *   - -cssjs.php	  - Here is where you set up and enqueue your CSS and JS.
+	 *   - -cssjs.php	  - Here is where you set up and enqueue your
+	 *                          CSS and JS.
 	 *   - -ajax.php	  - Functions used in the process of AJAX requests.
 	 *
-	 * @package BuddyPress_Skeleton_Component
 	 * @since 1.6
 	 */
 	function includes( $includes = array() ) {
@@ -160,73 +180,72 @@ class BP_Example_Component extends BP_Component {
 		);
 
 		/**
-		 * It can be interesting to only load the file of your
-		 * component that requuired BuddyPress optional components
-		 * only if they are active.
-		 * 
-		 * Then at the place you want to create a notification or
-		 * an activity, you can insert a "do_action" that will be
-		 * hooked from your specific file to create the notification
-		 * or the activity.
-		 * 
+		 * Some files may contain functionality that's only relevant if
+		 * a certain component is active. Do a bp_is_active() check to
+		 * reduce unnecessary overhead, and avoid potential errors.
+		 *
 		 * @see do_action( 'bp_example_send_high_five', $to_user_id, $from_user_id ); for an example
-		 */ 
-		if ( bp_is_active( 'notifications' ) )
+		 */
+		if ( bp_is_active( 'notifications' ) ) {
 			$includes[] = 'bp-example-notifications.php';
+		}
 
-		if ( bp_is_active( 'activity' ) )
+		if ( bp_is_active( 'activity' ) ) {
 			$includes[] = 'bp-example-activity.php';
-
+		}
 
 		parent::includes( $includes );
 
-		// As an example of how you might do it manually, let's include the functions used
-		// on the WordPress Dashboard conditionally:
+		// As an example of how you might do it manually, let's include
+		// the functions used on the WordPress Dashboard conditionally:
 		if ( is_admin() || is_network_admin() ) {
 			include( buddypress()->extend->skeleton->includes_dir . 'bp-example-admin.php' );
 		}
 	}
 
 	/**
-	 * Set up your plugin's globals
+	 * Set up your plugin's globals.
 	 *
-	 * Use the parent::setup_globals() method to set up the key global data for your plugin:
-	 *   - 'slug'			- This is the string used to create URLs when your component
-	 *				  adds navigation underneath profile URLs. For example,
-	 *				  in the URL http://testbp.com/members/boone/example, the
-	 *				  'example' portion of the URL is formed by the 'slug'.
-	 *				  Site admins can customize this value by defining
-	 *				  BP_EXAMPLE_SLUG in their wp-config.php or bp-custom.php
-	 *				  files.
-	 *   - 'root_slug'		- This is the string used to create URLs when your component
-	 *				  adds navigation to the root of the site. In other words,
-	 *				  you only need to define root_slug if your component is a
-	 *				  "root component". Eg, in:
-	 *				    http://testbp.com/example/test
-	 *				  'example' is a root slug. This should always be defined
-	 *				  in terms of $bp->pages; see the example below. Site admins
-	 *				  can customize this value by changing the permalink of the
-	 *				  corresponding WP page in the Dashboard. NOTE:
-	 *				  'root_slug' requires that 'has_directory' is true.
-	 *   - 'has_directory'		- Set this to true if your component requires a top-level
-	 *				  directory, such as http://testbp.com/example. When
-	 *				  'has_directory' is true, BP will require that site admins
-	 *				  associate a WordPress page with your component. NOTE:
-	 *				  When 'has_directory' is true, you must also define your
-	 *				  component's 'root_slug'; see previous item. Defaults to
-	 *				  false.
-	 *   - 'notification_callback'  - The name of the function that is used to format BP
-	 *				  admin bar notifications for your component.
-	 *   - 'search_string'		- If your component is a root component (has_directory),
-	 *				  you can provide a custom string that will be used as the
-	 *				  default text in the directory search box.
-	 *   - 'global_tables'		- If your component creates custom database tables, store
-	 *				  the names of the tables in a $global_tables array, so that
-	 *				  they are available to other BP functions.
+	 * Use the parent::setup_globals() method to set up the key global
+	 * data for your plugin:
+	 *   - 'slug'
+	 *     This is the string used to create URLs when your component adds
+	 *     navigation underneath profile URLs. For example, in the URL
+	 *     http://testbp.com/members/boone/example, the 'example' portion
+	 *     of the URL is formed by the 'slug'. Site admins can customize
+	 *     this value by defining BP_EXAMPLE_SLUG in their wp-config.php
+	 *     or bp-custom.php files.
+	 *   - 'root_slug'
+	 *     This is the string used to create URLs when your component adds
+	 *     navigation to the root of the site. In other words, you only
+	 *     need to define root_slug if your component is a "root
+	 *     component". Eg, in: http://testbp.com/example/test 'example' is
+	 *     a root slug. This should always be defined in terms of
+	 *     $bp->pages; see the example below. Site admins can customize
+	 *     this value by changing the permalink of the corresponding WP
+	 *     page in the Dashboard. NOTE: 'root_slug' requires that
+	 *     'has_directory' is true.
+	 *   - 'has_directory'
+	 *     Set this to true if your component requires a top-level
+	 *     directory, such as http://testbp.com/example. When
+	 *     'has_directory' is true, BP will require that site admins
+	 *     associate a WordPress page with your component. NOTE: When
+	 *     'has_directory' is true, you must also define your
+	 *     component's 'root_slug'; see previous item. Defaults to false.
+	 *   - 'notification_callback'
+	 *     The name of the function that is used to format BP admin bar
+	 *     notifications for your component.
+	 *   - 'search_string'
+	 *     If your component is a root component (has_directory), you can
+	 *     provide a custom string that will be used as the default text in
+	 *     the directory search box.
+	 *   - 'global_tables'
+	 *     If your component creates custom database tables, store the
+	 *     names of the tables in a $global_tables array, so that they are
+	 *     available to other BP functions.
 	 *
 	 * You can also use this function to put data directly into the $bp global.
 	 *
-	 * @package BuddyPress_Skeleton_Component
 	 * @since 1.6
 	 *
 	 * @global obj $bp BuddyPress's global object
