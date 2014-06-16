@@ -58,7 +58,7 @@ function bp_example_screen_notification_settings() {
 			<td></td>
 			<td><?php _e( 'Action One', 'bp-example' ) ?></td>
 			<td class="yes"><input type="radio" name="notifications[notification_example_action_one]" value="yes" <?php if ( !get_user_meta( $current_user->id, 'notification_example_action_one', true ) || 'yes' == get_user_meta( $current_user->id, 'notification_example_action_one', true ) ) { ?>checked="checked" <?php } ?>/></td>
-			<td class="no"><input type="radio" name="notifications[notification_example_action_one]" value="no" <?php if ( get_user_meta( $current_user->id, 'notification_example_action_one') == 'no' ) { ?>checked="checked" <?php } ?>/></td>
+			<td class="no"><input type="radio" name="notifications[notification_example_action_one]" value="no" <?php if ( get_user_meta( $current_user->id, 'notification_example_action_one', true) == 'no' ) { ?>checked="checked" <?php } ?>/></td>
 		</tr>
 		<tr>
 			<td></td>
