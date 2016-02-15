@@ -159,7 +159,7 @@ class BP_Example_Component extends BP_Component {
 	 * @package BuddyPress_Skeleton_Component
 	 * @since 1.6
 	 */
-	function includes() {
+	public function includes( $includes = array() ) {
 
 		// Files to include
 		$includes = array(
@@ -229,7 +229,7 @@ class BP_Example_Component extends BP_Component {
 	 *
 	 * @global obj $bp BuddyPress's global object
 	 */
-	function setup_globals() {
+	public function setup_globals( $args = array() ) {
 		global $bp;
 
 		// Defining the slug in this way makes it possible for site admins to override it
@@ -270,7 +270,7 @@ class BP_Example_Component extends BP_Component {
 	 *
 	 * @global obj $bp
 	 */
-	function setup_nav() {
+	public function setup_nav( $main_nav = array(), $sub_nav = array() ) {
 		// Add 'Example' to the main navigation
 		$main_nav = array(
 			'name' 		      => __( 'Example', 'bp-example' ),
