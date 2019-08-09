@@ -30,18 +30,55 @@ function bp_example_load_template_filter( $found_template, $templates ) {
 	if ( $bp->current_component != $bp->example->slug )
 		return $found_template;
 
-	foreach ( (array) $templates as $template ) {
-		if ( file_exists( STYLESHEETPATH . '/' . $template ) )
-			$filtered_templates[] = STYLESHEETPATH . '/' . $template;
-		else
-			$filtered_templates[] = BP_EXAMPLE_PLUGIN_DIR . '/includes/templates/' . $template;
+	// $found_template is not empty when the older template files are found in the
+	// parent and child theme
+	//
+	//  /wp-content/themes/YOUR-THEME/members/single/example.php
+	//
+	// The older template files utilize a full template ( get_header() +
+	// get_footer() ), which sucks for themes and theme compat.
+	//
+	// When the older template files are not found, we use our new template method,
+	// which will act more like a template part.
+	if ( empty( $found_template ) ) {
+		// register our theme compat directory
+		//
+		// this tells BP to look for templates in our plugin directory last
+		// when the template isn't found in the parent / child theme
+		bp_register_template_stack( 'bp_example_get_template_directory', 14 );
+		// locate_template() will attempt to find the plugins.php template in the
+		// child and parent theme and return the located template when found
+		//
+		// plugins.php is the preferred template to use, since all we'd need to do is
+		// inject our content into BP
+		//
+		// note: this is only really relevant for bp-default themes as theme compat
+		// will kick in on its own when this template isn't found
+		$found_template = locate_template( 'members/single/plugins.php', false, false );
+		// add our hook to inject content into BP
+		//
+		// note the new template name for our template part
+		add_action( 'bp_template_content', function() use ($templates) {
+			echo $templates[0];
+			bp_get_template_part( $templates[0] );
+		} );
 	}
-
-	$found_template = $filtered_templates[0];
 
 	return apply_filters( 'bp_example_load_template_filter', $found_template );
 }
 add_filter( 'bp_located_template', 'bp_example_load_template_filter', 10, 2 );
+
+/**
+ * Get the BP Example template directory.
+ *
+ * @since 1.7
+ *
+ * @uses apply_filters()
+ * @return string
+ */
+function bp_example_get_template_directory() {
+	return apply_filters( 'bp_example_get_template_directory', constant( 'BP_EXAMPLE_PLUGIN_DIR' ) . '/includes/templates' );
+}
 
 /***
  * From now on you will want to add your own functions that are specific to the component you are developing.
