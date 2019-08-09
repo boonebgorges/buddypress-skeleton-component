@@ -63,7 +63,7 @@ define ( 'BP_EXAMPLE_DB_VERSION', '1' );
 /* Only load the component if BuddyPress is loaded and initialized. */
 function bp_example_init() {
 	// Because our loader file uses BP_Component, it requires BP 1.5 or greater.
-	if ( version_compare( BP_VERSION, '1.3', '>' ) )
+	if ( version_compare( BP_VERSION, '1.7', '>' ) )
 		require( BP_EXAMPLE_PLUGIN_DIR . '/includes/bp-example-loader.php' );
 }
 add_action( 'bp_include', 'bp_example_init' );
