@@ -235,7 +235,15 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 	 * Remember, like activity streams we need to tell the activity stream component how to format
 	 * this notification in bp_example_format_notifications() using the 'new_high_five' action.
 	 */
-	bp_core_add_notification( $from_user_id, $to_user_id, $bp->example->slug, 'new_high_five' );
+	bp_notifications_add_notification( array(
+		'item_id'           => $from_user_id,
+		'user_id'           => $to_user_id,
+		'component_name'    => $bp->example->slug,
+		'component_action'  => 'new_high_five',
+		'secondary_item_id' => 0,
+		'date_notified'     => false,
+		'is_new'            => 1
+	));
 
 	/* Now record the new 'new_high_five' activity item */
 	$to_user_link = bp_core_get_userlink( $to_user_id );
