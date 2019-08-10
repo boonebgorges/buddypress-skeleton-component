@@ -202,6 +202,9 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 	delete_user_meta( $to_user_id, 'high-fives' );
 	/* Get existing fives */
 	$existing_fives = maybe_unserialize( get_user_meta( $to_user_id, 'high-fives', true ) );
+	if (!$existing_fives) {
+		$existing_fives = array();
+	}
 
 	/* Check to see if the user has already high-fived. That's okay, but lets not
 	 * store duplicate high-fives in the database. What's the point, right?
