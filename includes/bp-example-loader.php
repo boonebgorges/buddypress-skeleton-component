@@ -280,7 +280,7 @@ class BP_Example_Component extends BP_Component {
 			'default_subnav_slug' => 'screen-one'
 		);
 
-		$example_link = trailingslashit( bp_loggedin_user_domain() . bp_get_example_slug() );
+		$example_link = trailingslashit( bp_displayed_user_domain() . bp_get_example_slug() );
 
 		// Add a few subnav items under the main Example tab
 		$sub_nav[] = array(
