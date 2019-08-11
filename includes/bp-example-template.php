@@ -349,4 +349,51 @@ function bp_example_get_total_high_five_count_for_user( $user_id = false ) {
 	return apply_filters( 'bp_example_get_total_high_five_count', $high_fives->query->found_posts, $high_fives );
 }
 
+
+function bp_example_send_high_five_button( $args = '' ) {
+	echo bp_example_get_send_high_five_button( $args );
+}
+
+/**
+ * Return button for sending high-fives.
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ *
+ * @param array|string $args {
+ *     All arguments are optional. See {@link BP_Button} for complete
+ *     descriptions.
+ *     @type string $id                Default: 'bp_example_high_five'.
+ *     @type string $component         Default: 'member'.
+ *     @type bool   $must_be_logged_in Default: true.
+ *     @type bool   $block_self        Default: true.
+ *     @type string $wrapper_id        Default: 'bp-example-send-high-five'.
+ *     @type string $link_href         Default: the public message link for
+ *                                     the current member in the loop.
+ *     @type string $link_text         Default: 'Send high-five!'.
+ *     @type string $link_class        Default: 'bp-example-button bp-example-high-five'.
+ * }
+ * @return string The button for sending a high five.
+ */
+function bp_example_get_send_high_five_button( $args = '' ) {
+
+	$r = bp_parse_args( $args, array(
+		'id'                => 'bp_example_high_five',
+		'component'         => 'example',
+		'must_be_logged_in' => true,
+		'block_self'        => true,
+		'wrapper_id'        => 'bp-example-send-high-five',
+		'link_href'         => bp_example_get_send_high_five_link(),
+		'link_text'         => __( 'Send high-five!', 'bp-example' ),
+		'link_class'        => 'bp-example-button bp-example-high-five'
+	) );
+
+	return bp_get_button( apply_filters( 'bp_example_get_send_high_five_button', $r ) );
+}
+
+function bp_example_get_send_high_five_link() {
+	return wp_nonce_url( bp_displayed_user_domain() . bp_get_example_slug() . '/screen-one/send-h5/', 'bp_example_send_high_five');
+}
+
+
 ?>

@@ -320,6 +320,21 @@ class BP_Example_Component extends BP_Component {
 	}
 
 	/**
+	 * Set up your component's actions.
+	 *
+	 * This is the global setup action. It creates all the needed sutup for this component.
+	 * You can add custom global action filters here; see BP_Example_Component::setup_actions().
+	 *
+	 * @global obj $bp
+	 */
+	function setup_actions() {
+		parent::setup_actions();
+
+		// add the high five send button to the members actions bar
+		add_action( 'bp_member_header_actions', 'bp_example_send_high_five_button',  20 );
+	}
+
+	/**
 	 * If your component needs to store data, it is highly recommended that you use WordPress
 	 * custom post types for that data, instead of creating custom database tables.
 	 *
