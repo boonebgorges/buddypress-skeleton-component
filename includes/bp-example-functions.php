@@ -59,8 +59,9 @@ function bp_example_load_template_filter( $found_template, $templates ) {
 		//
 		// note the new template name for our template part
 		add_action( 'bp_template_content', function() use ($templates) {
-			
-			bp_get_template_part(str_replace(".php", "", $templates[0]));
+			foreach ($templates as $template) {
+				bp_get_template_part(str_replace(".php", "", $template));
+			}
 		} );
 	}
 
