@@ -385,7 +385,8 @@ function bp_example_get_send_high_five_button( $args = '' ) {
 		'wrapper_id'        => 'bp-example-send-high-five',
 		'link_href'         => bp_example_get_send_high_five_link(),
 		'link_text'         => __( 'Send high-five!', 'bp-example' ),
-		'link_class'        => 'bp-example-button bp-example-high-five'
+		'link_class'        => 'bp-example-button bp-example-high-five',
+		'parent_element'	=> bp_get_theme_package_id() == 'nouveau' ? 'li' : 'div'
 	) );
 
 	return bp_get_button( apply_filters( 'bp_example_get_send_high_five_button', $r ) );
