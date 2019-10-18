@@ -60,7 +60,12 @@ function bp_example_load_template_filter( $found_template, $templates ) {
 		// note the new template name for our template part
 		add_action( 'bp_template_content', function() use ($templates) {
 			foreach ($templates as $template) {
-				bp_get_template_part(str_replace(".php", "", $template));
+				$template_name = str_replace(".php", "", $template);
+				// only add the template to the content when it's not the generic buddypress template
+				// to avoid infinite loop
+				if ("members/single/plugins" !== $template_name) {
+					bp_get_template_part($template_name);
+				}
 			}
 		} );
 	}
