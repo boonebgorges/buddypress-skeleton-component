@@ -207,7 +207,7 @@ class BP_Example_Highfive {
 	 * @package BuddyPress_Skeleton_Component
 	 * @since 1.6
 	 */
-	function have_posts() {
+	public function have_posts() {
 		return $this->query->have_posts();
 	}
 
@@ -217,7 +217,7 @@ class BP_Example_Highfive {
 	 * @package BuddyPress_Skeleton_Component
 	 * @since 1.6
 	 */
-	function the_post() {
+	public function the_post() {
 		return $this->query->the_post();
 	}
 
@@ -226,7 +226,7 @@ class BP_Example_Highfive {
 	 *
 	 * This method will delete the corresponding row for an object from the database.
 	 */
-	function delete() {
+	public function delete() {
 		return wp_trash_post( $this->id );
 	}
 
@@ -239,11 +239,11 @@ class BP_Example_Highfive {
 	 * Look at bp-core-classes.php for examples of mass delete.
 	 */
 
-	function delete_all() {
+	public static function delete_all() {
 
 	}
 
-	function delete_by_user_id() {
+	public static function delete_by_user_id() {
 
 	}
 }
