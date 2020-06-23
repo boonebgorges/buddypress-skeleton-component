@@ -33,21 +33,22 @@
 function bp_example_record_activity( $args = '' ) {
 	global $bp;
 
-	if ( !function_exists( 'bp_activity_add' ) )
+	if ( ! function_exists( 'bp_activity_add' ) ) {
 		return false;
+	}
 
 	$defaults = array(
-		'id' => false,
-		'user_id' => $bp->loggedin_user->id,
-		'action' => '',
-		'content' => '',
-		'primary_link' => '',
-		'component' => $bp->example->id,
-		'type' => false,
-		'item_id' => false,
+		'id'                => false,
+		'user_id'           => bp_loggedin_user_id(),
+		'action'            => '',
+		'content'           => '',
+		'primary_link'      => '',
+		'component'         => $bp->example->id,
+		'type'              => false,
+		'item_id'           => false,
 		'secondary_item_id' => false,
-		'recorded_time' => gmdate( "Y-m-d H:i:s" ),
-		'hide_sitewide' => false
+		'recorded_time'     => gmdate( "Y-m-d H:i:s" ),
+		'hide_sitewide'     => false
 	);
 
 	$r = wp_parse_args( $args, $defaults );
@@ -55,5 +56,3 @@ function bp_example_record_activity( $args = '' ) {
 
 	return bp_activity_add( array( 'id' => $id, 'user_id' => $user_id, 'action' => $action, 'content' => $content, 'primary_link' => $primary_link, 'component' => $component, 'type' => $type, 'item_id' => $item_id, 'secondary_item_id' => $secondary_item_id, 'recorded_time' => $recorded_time, 'hide_sitewide' => $hide_sitewide ) );
 }
-
-?>
