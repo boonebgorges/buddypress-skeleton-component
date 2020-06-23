@@ -16,7 +16,7 @@
  * @since 1.6
  */
 function bp_example_directory_setup() {
-	if ( bp_is_example_component() && !bp_current_action() && !bp_current_item() ) {
+	if ( bp_is_example_component() && ! bp_current_action() && ! bp_current_item() ) {
 		// This wrapper function sets the $bp->is_directory flag to true, which help other
 		// content to display content properly on your directory.
 		bp_update_is_directory( true, 'example' );
@@ -105,50 +105,60 @@ function bp_example_screen_one() {
 	 *
 	 * Generally, this method of adding content is preferred, as it makes your plugin
 	 * work better with a wider variety of themes.
- 	 */
+	 */
 
-//	add_action( 'bp_template_title', 'bp_example_screen_one_title' );
-//	add_action( 'bp_template_content', 'bp_example_screen_one_content' );
+	//  add_action( 'bp_template_title', 'bp_example_screen_one_title' );
+	//  add_action( 'bp_template_content', 'bp_example_screen_one_content' );
 
-//	bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
+	//  bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
 }
 	/***
 	 * The second argument of each of the above add_action() calls is a function that will
 	 * display the corresponding information. The functions are presented below:
 	 */
-	function bp_example_screen_one_title() {
-		_e( 'Screen One', 'bp-example' );
-	}
+function bp_example_screen_one_title() {
+	_e( 'Screen One', 'bp-example' );
+}
 
-	function bp_example_screen_one_content() {
-		global $bp;
+function bp_example_screen_one_content() {
+	global $bp;
 
-		$high_fives = bp_example_get_highfives_for_user( $bp->displayed_user->id );
+	$high_fives = bp_example_get_highfives_for_user( $bp->displayed_user->id );
 
-		/**
-		 * For security reasons, we MUST use the wp_nonce_url() function on any actions.
-		 * This will stop naughty people from tricking users into performing actions without their
-		 * knowledge or intent.
-		 */
-		$send_link = wp_nonce_url( $bp->displayed_user->domain . $bp->current_component . '/screen-one/send-h5', 'bp_example_send_high_five' );
+	/**
+	 * For security reasons, we MUST use the wp_nonce_url() function on any actions.
+	 * This will stop naughty people from tricking users into performing actions without their
+	 * knowledge or intent.
+	 */
+	$send_link = wp_nonce_url( $bp->displayed_user->domain . $bp->current_component . '/screen-one/send-h5', 'bp_example_send_high_five' );
 	?>
-		<h4><?php _e( 'Welcome to Screen One', 'bp-example' ) ?></h4>
-		<p><?php printf( __( 'Send %s a <a href="%s" title="Send high-five!">high-five!</a>', 'bp-example' ), $bp->displayed_user->fullname, $send_link ) ?></p>
+		<h4><?php _e( 'Welcome to Screen One', 'bp-example' ); ?></h4>
+		<p><?php printf( __( 'Send %1$s a <a href="%2$s" title="Send high-five!">high-five!</a>', 'bp-example' ), $bp->displayed_user->fullname, $send_link ); ?></p>
 
-		<?php if ( $high_fives ) : ?>
-			<h4><?php _e( 'Received High Fives!', 'bp-example' ) ?></h4>
+	<?php if ( $high_fives ) : ?>
+			<h4><?php _e( 'Received High Fives!', 'bp-example' ); ?></h4>
 
 			<table id="high-fives">
 				<?php foreach ( $high_fives as $user_id ) : ?>
 				<tr>
-					<td width="1%"><?php echo bp_core_fetch_avatar( array( 'item_id' => $user_id, 'width' => 25, 'height' => 25 ) ) ?></td>
-					<td>&nbsp; <?php echo bp_core_get_userlink( $user_id ) ?></td>
-	 			</tr>
+					<td width="1%">
+					<?php
+					echo bp_core_fetch_avatar(
+						array(
+							'item_id' => $user_id,
+							'width'   => 25,
+							'height'  => 25,
+						)
+					);
+					?>
+									</td>
+					<td>&nbsp; <?php echo bp_core_get_userlink( $user_id ); ?></td>
+				 </tr>
 				<?php endforeach; ?>
 			</table>
 		<?php endif; ?>
 	<?php
-	}
+}
 
 /**
  * bp_example_screen_two()
@@ -209,23 +219,24 @@ function bp_example_screen_two() {
 	bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
 }
 
-	function bp_example_screen_two_title() {
-		_e( 'Screen Two', 'bp-example' );
-	}
+function bp_example_screen_two_title() {
+	_e( 'Screen Two', 'bp-example' );
+}
 
-	function bp_example_screen_two_content() {
-		global $bp; ?>
+function bp_example_screen_two_content() {
+	global $bp;
+	?>
 
-		<h4><?php _e( 'Welcome to Screen Two', 'bp-example' ) ?></h4>
+		<h4><?php _e( 'Welcome to Screen Two', 'bp-example' ); ?></h4>
 
 		<?php
-			$accept_link = '<a href="' . wp_nonce_url( $bp->loggedin_user->domain . $bp->example->slug . '/screen-two/accept', 'bp_example_accept_terms' ) . '">' . __( 'Accept', 'bp-example' ) . '</a>';
-			$reject_link = '<a href="' . wp_nonce_url( $bp->loggedin_user->domain . $bp->example->slug . '/screen-two/reject', 'bp_example_reject_terms' ) . '">' . __( 'Reject', 'bp-example' ) . '</a>';
+		$accept_link = '<a href="' . wp_nonce_url( $bp->loggedin_user->domain . $bp->example->slug . '/screen-two/accept', 'bp_example_accept_terms' ) . '">' . __( 'Accept', 'bp-example' ) . '</a>';
+		$reject_link = '<a href="' . wp_nonce_url( $bp->loggedin_user->domain . $bp->example->slug . '/screen-two/reject', 'bp_example_reject_terms' ) . '">' . __( 'Reject', 'bp-example' ) . '</a>';
 		?>
 
-		<p><?php printf( __( 'You must %s or %s the terms of use policy.', 'bp-example' ), $accept_link, $reject_link ) ?></p>
+		<p><?php printf( __( 'You must %1$s or %2$s the terms of use policy.', 'bp-example' ), $accept_link, $reject_link ); ?></p>
 	<?php
-	}
+}
 
 /**
  * The following screen functions are called when the Settings subpanel for this component is viewed
@@ -235,7 +246,7 @@ function bp_example_screen_settings_menu() {
 
 	if ( isset( $_POST['submit'] ) ) {
 		/* Check the nonce */
-		check_admin_referer('bp-example-admin');
+		check_admin_referer( 'bp-example-admin' );
 
 		$bp_settings_updated = true;
 
@@ -253,28 +264,33 @@ function bp_example_screen_settings_menu() {
 	bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
 }
 
-	function bp_example_screen_settings_menu_header() {
-		_e( 'Example Settings Header', 'bp-example' );
-	}
+function bp_example_screen_settings_menu_header() {
+	_e( 'Example Settings Header', 'bp-example' );
+}
 
-	function bp_example_screen_settings_menu_title() {
-		_e( 'Example Settings', 'bp-example' );
-	}
+function bp_example_screen_settings_menu_title() {
+	_e( 'Example Settings', 'bp-example' );
+}
 
-	function bp_example_screen_settings_menu_content() {
-		global $bp, $bp_settings_updated; ?>
+function bp_example_screen_settings_menu_content() {
+	global $bp, $bp_settings_updated;
+	?>
 
 		<?php if ( $bp_settings_updated ) { ?>
 			<div id="message" class="updated fade">
-				<p><?php _e( 'Changes Saved.', 'bp-example' ) ?></p>
+				<p><?php _e( 'Changes Saved.', 'bp-example' ); ?></p>
 			</div>
 		<?php } ?>
 
 		<form action="<?php echo $bp->loggedin_user->domain . 'settings/example-admin'; ?>" name="bp-example-admin-form" id="account-delete-form" class="bp-example-admin-form" method="post">
 
-			<input type="checkbox" name="bp-example-option-one" id="bp-example-option-one" value="1"<?php if ( '1' == get_user_meta( $bp->loggedin_user->id, 'bp-example-option-one', true ) ) : ?> checked="checked"<?php endif; ?> /> <?php _e( 'Do you love clicking checkboxes?', 'bp-example' ); ?>
+			<input type="checkbox" name="bp-example-option-one" id="bp-example-option-one" value="1"
+			<?php
+			if ( '1' == get_user_meta( $bp->loggedin_user->id, 'bp-example-option-one', true ) ) :
+				?>
+				 checked="checked"<?php endif; ?> /> <?php _e( 'Do you love clicking checkboxes?', 'bp-example' ); ?>
 			<p class="submit">
-				<input type="submit" value="<?php _e( 'Save Settings', 'bp-example' ) ?> &raquo;" id="submit" name="submit" />
+				<input type="submit" value="<?php _e( 'Save Settings', 'bp-example' ); ?> &raquo;" id="submit" name="submit" />
 			</p>
 
 			<?php
@@ -284,5 +300,5 @@ function bp_example_screen_settings_menu() {
 
 		</form>
 	<?php
-	}
+}
 ?>

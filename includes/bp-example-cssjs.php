@@ -14,9 +14,10 @@
 function bp_example_add_js() {
 	global $bp;
 
-	if ( $bp->current_component == $bp->example->slug )
+	if ( $bp->current_component == $bp->example->slug ) {
 		wp_enqueue_script( 'bp-example-js', plugin_dir_url( __FILE__ ) . '/js/general.js', array( 'jquery' ) );
+	}
 }
 add_action( 'template_redirect', 'bp_example_add_js', 1 );
 
-?>
+

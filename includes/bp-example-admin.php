@@ -19,8 +19,9 @@
 function bp_example_add_admin_menu() {
 	global $bp;
 
-	if ( !is_super_admin() )
+	if ( ! is_super_admin() ) {
 		return false;
+	}
 
 	add_submenu_page( 'bp-general-settings', __( 'Example Admin', 'bp-example' ), __( 'Example Admin', 'bp-example' ), 'manage_options', 'bp-example-settings', 'bp_example_admin' );
 }
@@ -37,7 +38,7 @@ function bp_example_admin() {
 	global $bp;
 
 	/* If the form has been submitted and the admin referrer checks out, save the settings */
-	if ( isset( $_POST['submit'] ) && check_admin_referer('example-settings') ) {
+	if ( isset( $_POST['submit'] ) && check_admin_referer( 'example-settings' ) ) {
 		update_option( 'example-setting-one', $_POST['example-setting-one'] );
 		update_option( 'example-setting-two', $_POST['example-setting-two'] );
 
@@ -46,9 +47,9 @@ function bp_example_admin() {
 
 	$setting_one = get_option( 'example-setting-one' );
 	$setting_two = get_option( 'example-setting-two' );
-?>
+	?>
 	<div class="wrap">
-		<h2><?php esc_html_e( 'Example Admin', 'bp-example' ) ?></h2>
+		<h2><?php esc_html_e( 'Example Admin', 'bp-example' ); ?></h2>
 		<br />
 
 		<?php if ( isset( $updated ) ) : ?>
@@ -66,14 +67,14 @@ function bp_example_admin() {
 						<input name="example-setting-one" type="text" id="example-setting-one" value="<?php echo esc_attr( $setting_one ); ?>" size="60" />
 					</td>
 				</tr>
-					<th scope="row"><label for="target_uri"><?php esc_html_e( 'Option Two', 'bp-example' ) ?></label></th>
+					<th scope="row"><label for="target_uri"><?php esc_html_e( 'Option Two', 'bp-example' ); ?></label></th>
 					<td>
 						<input name="example-setting-two" type="text" id="example-setting-two" value="<?php echo esc_attr( $setting_two ); ?>" size="60" />
 					</td>
 				</tr>
 			</table>
 			<p class="submit">
-				<input type="submit" name="submit" value="<?php esc_attr_e( 'Save Settings', 'bp-example' ) ?>"/>
+				<input type="submit" name="submit" value="<?php esc_attr_e( 'Save Settings', 'bp-example' ); ?>"/>
 			</p>
 
 			<?php
@@ -82,7 +83,7 @@ function bp_example_admin() {
 			?>
 		</form>
 	</div>
-<?php
+	<?php
 }
 
 /**
@@ -121,7 +122,7 @@ function bp_example_install_tables() {
 	 * Write your table definition below, you can define multiple
 	 * tables by adding SQL to the $sql array.
 	 */
-	$sql = array();
+	$sql   = array();
 	$sql[] = "CREATE TABLE IF NOT EXISTS {$wpdb->base_prefix}bp_example (
 		  		id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 		  		high_fiver_id bigint(20) NOT NULL,
@@ -140,7 +141,7 @@ function bp_example_install_tables() {
 	 * Once you define the SQL for your new table, uncomment this line to install
 	 * the table. (Make sure you increment the BP_EXAMPLE_DB_VERSION constant though).
 	 */
-	dbDelta($sql);
+	dbDelta( $sql );
 
 	update_site_option( 'bp-example-db-version', BP_EXAMPLE_DB_VERSION );
 }

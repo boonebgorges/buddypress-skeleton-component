@@ -3,7 +3,9 @@
 // Exit if accessed directly
 // It's a good idea to include this in each of your plugin files, for increased security on
 // improperly configured servers
-if ( !defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /*
  * If you want the users of your component to be able to change the values of your other custom constants,
@@ -26,8 +28,9 @@ if ( !defined( 'ABSPATH' ) ) exit;
  * _e( 'This text will be translatable', 'bp-example' ); // Echos the first parameter value
  */
 
-if ( file_exists( BP_EXAMPLE_PLUGIN_DIR . '/languages/' . get_locale() . '.mo' ) )
+if ( file_exists( BP_EXAMPLE_PLUGIN_DIR . '/languages/' . get_locale() . '.mo' ) ) {
 	load_textdomain( 'bp-example', BP_EXAMPLE_PLUGIN_DIR . '/languages/' . get_locale() . '.mo' );
+}
 
 /**
  * Implementation of BP_Component
@@ -50,12 +53,12 @@ class BP_Example_Component extends BP_Component {
 	 *
 	 * BP_Component::start() takes three parameters:
 	 *   (1) $id   - A unique identifier for the component. Letters, numbers, and underscores
-	 *		 only.
+	 *       only.
 	 *   (2) $name - This is a translatable name for your component, which will be used in
 	 *               various places through the BuddyPress admin screens to identify it.
 	 *   (3) $path - The path to your plugin directory. Primarily, this is used by
-	 *		 BP_Component::includes(), to include your plugin's files. See loader.php
-	 *		 to see how BP_EXAMPLE_PLUGIN_DIR was defined.
+	 *       BP_Component::includes(), to include your plugin's files. See loader.php
+	 *       to see how BP_EXAMPLE_PLUGIN_DIR was defined.
 	 *
 	 * @package BuddyPress_Skeleton_Component
 	 * @since 1.6
@@ -81,7 +84,7 @@ class BP_Example_Component extends BP_Component {
 		 * returns true when appropriate. We have to do this manually, because non-core
 		 * components are not saved as active components in the database.
 		 */
-		$bp->active_components[$this->id] = '1';
+		$bp->active_components[ $this->id ] = '1';
 
 		/**
 		 * Hook the register_post_types() method. If you're using custom post types to store
@@ -132,29 +135,29 @@ class BP_Example_Component extends BP_Component {
 	 * need to have versions of all of these files. What follows is a short description of
 	 * what each file does; for more details, open the file itself and see its inline docs.
 	 *   - -actions.php       - Functions hooked to bp_actions, mainly used to catch action
-	 *			    requests (save, delete, etc)
+	 *              requests (save, delete, etc)
 	 *   - -screens.php       - Functions hooked to bp_screens. These are the screen functions
-	 *			    responsible for the display of your plugin's content.
-	 *   - -filters.php	  - Functions that are hooked via apply_filters()
-	 *   - -classes.php	  - Your plugin's classes. Depending on how you organize your
-	 *			    plugin, this could mean: a database query class, a custom post
-	 *			    type data schema, and so forth
+	 *              responsible for the display of your plugin's content.
+	 *   - -filters.php   - Functions that are hooked via apply_filters()
+	 *   - -classes.php   - Your plugin's classes. Depending on how you organize your
+	 *              plugin, this could mean: a database query class, a custom post
+	 *              type data schema, and so forth
 	 *   - -activity.php      - Functions related to the BP Activity Component. This is where
-	 *			    you put functions responsible for creating, deleting, and
-	 *			    modifying activity items related to your component
-	 *   - -template.php	  - Template tags. These are functions that are called from your
-	 *			    templates, or from your screen functions. If your plugin
-	 *			    contains its own version of the WordPress Loop (such as
-	 *			    bp_example_has_items()), those functions should go in this file.
+	 *              you put functions responsible for creating, deleting, and
+	 *              modifying activity items related to your component
+	 *   - -template.php      - Template tags. These are functions that are called from your
+	 *              templates, or from your screen functions. If your plugin
+	 *              contains its own version of the WordPress Loop (such as
+	 *              bp_example_has_items()), those functions should go in this file.
 	 *   - -functions.php     - Miscellaneous utility functions required by your component.
 	 *   - -notifications.php - Functions related to email notification, as well as the
-	 *			    BuddyPress notifications that show up in the admin bar.
+	 *              BuddyPress notifications that show up in the admin bar.
 	 *   - -widgets.php       - If your plugin includes any sidebar widgets, define them in this
-	 *			    file.
-	 *   - -buddybar.php	  - Functions related to the BuddyBar.
+	 *              file.
+	 *   - -buddybar.php      - Functions related to the BuddyBar.
 	 *   - -adminbar.php      - Functions related to the WordPress Admin Bar.
-	 *   - -cssjs.php	  - Here is where you set up and enqueue your CSS and JS.
-	 *   - -ajax.php	  - Functions used in the process of AJAX requests.
+	 *   - -cssjs.php     - Here is where you set up and enqueue your CSS and JS.
+	 *   - -ajax.php      - Functions used in the process of AJAX requests.
 	 *
 	 * @package BuddyPress_Skeleton_Component
 	 * @since 1.6
@@ -173,7 +176,7 @@ class BP_Example_Component extends BP_Component {
 			'includes/bp-example-notifications.php',
 			'includes/bp-example-widgets.php',
 			'includes/bp-example-cssjs.php',
-			'includes/bp-example-ajax.php'
+			'includes/bp-example-ajax.php',
 		);
 
 		parent::includes( $includes );
@@ -189,38 +192,38 @@ class BP_Example_Component extends BP_Component {
 	 * Set up your plugin's globals
 	 *
 	 * Use the parent::setup_globals() method to set up the key global data for your plugin:
-	 *   - 'slug'			- This is the string used to create URLs when your component
-	 *				  adds navigation underneath profile URLs. For example,
-	 *				  in the URL http://testbp.com/members/boone/example, the
-	 *				  'example' portion of the URL is formed by the 'slug'.
-	 *				  Site admins can customize this value by defining
-	 *				  BP_EXAMPLE_SLUG in their wp-config.php or bp-custom.php
-	 *				  files.
-	 *   - 'root_slug'		- This is the string used to create URLs when your component
-	 *				  adds navigation to the root of the site. In other words,
-	 *				  you only need to define root_slug if your component is a
-	 *				  "root component". Eg, in:
-	 *				    http://testbp.com/example/test
-	 *				  'example' is a root slug. This should always be defined
-	 *				  in terms of $bp->pages; see the example below. Site admins
-	 *				  can customize this value by changing the permalink of the
-	 *				  corresponding WP page in the Dashboard. NOTE:
-	 *				  'root_slug' requires that 'has_directory' is true.
-	 *   - 'has_directory'		- Set this to true if your component requires a top-level
-	 *				  directory, such as http://testbp.com/example. When
-	 *				  'has_directory' is true, BP will require that site admins
-	 *				  associate a WordPress page with your component. NOTE:
-	 *				  When 'has_directory' is true, you must also define your
-	 *				  component's 'root_slug'; see previous item. Defaults to
-	 *				  false.
+	 *   - 'slug'           - This is the string used to create URLs when your component
+	 *                adds navigation underneath profile URLs. For example,
+	 *                in the URL http://testbp.com/members/boone/example, the
+	 *                'example' portion of the URL is formed by the 'slug'.
+	 *                Site admins can customize this value by defining
+	 *                BP_EXAMPLE_SLUG in their wp-config.php or bp-custom.php
+	 *                files.
+	 *   - 'root_slug'      - This is the string used to create URLs when your component
+	 *                adds navigation to the root of the site. In other words,
+	 *                you only need to define root_slug if your component is a
+	 *                "root component". Eg, in:
+	 *                  http://testbp.com/example/test
+	 *                'example' is a root slug. This should always be defined
+	 *                in terms of $bp->pages; see the example below. Site admins
+	 *                can customize this value by changing the permalink of the
+	 *                corresponding WP page in the Dashboard. NOTE:
+	 *                'root_slug' requires that 'has_directory' is true.
+	 *   - 'has_directory'      - Set this to true if your component requires a top-level
+	 *                directory, such as http://testbp.com/example. When
+	 *                'has_directory' is true, BP will require that site admins
+	 *                associate a WordPress page with your component. NOTE:
+	 *                When 'has_directory' is true, you must also define your
+	 *                component's 'root_slug'; see previous item. Defaults to
+	 *                false.
 	 *   - 'notification_callback'  - The name of the function that is used to format BP
-	 *				  admin bar notifications for your component.
-	 *   - 'search_string'		- If your component is a root component (has_directory),
-	 *				  you can provide a custom string that will be used as the
-	 *				  default text in the directory search box.
-	 *   - 'global_tables'		- If your component creates custom database tables, store
-	 *				  the names of the tables in a $global_tables array, so that
-	 *				  they are available to other BP functions.
+	 *                admin bar notifications for your component.
+	 *   - 'search_string'      - If your component is a root component (has_directory),
+	 *                you can provide a custom string that will be used as the
+	 *                default text in the directory search box.
+	 *   - 'global_tables'      - If your component creates custom database tables, store
+	 *                the names of the tables in a $global_tables array, so that
+	 *                they are available to other BP functions.
 	 *
 	 * You can also use this function to put data directly into the $bp global.
 	 *
@@ -233,14 +236,15 @@ class BP_Example_Component extends BP_Component {
 		global $bp;
 
 		// Defining the slug in this way makes it possible for site admins to override it
-		if ( !defined( 'BP_EXAMPLE_SLUG' ) )
+		if ( ! defined( 'BP_EXAMPLE_SLUG' ) ) {
 			define( 'BP_EXAMPLE_SLUG', $this->id );
+		}
 
 		// Global tables for the example component. Build your table names using
 		// $bp->table_prefix (instead of hardcoding 'wp_') to ensure that your component
 		// works with $wpdb, multisite, and custom table prefixes.
 		$global_tables = array(
-			'table_name'      => $bp->table_prefix . 'bp_example'
+			'table_name' => $bp->table_prefix . 'bp_example',
 		);
 
 		// Set up the $globals array to be passed along to parent::setup_globals()
@@ -250,7 +254,7 @@ class BP_Example_Component extends BP_Component {
 			'has_directory'         => true, // Set to false if not required
 			'notification_callback' => 'bp_example_format_notifications',
 			'search_string'         => __( 'Search Examples...', 'buddypress' ),
-			'global_tables'         => $global_tables
+			'global_tables'         => $global_tables,
 		);
 
 		// Let BP_Component::setup_globals() do its work.
@@ -273,33 +277,33 @@ class BP_Example_Component extends BP_Component {
 	public function setup_nav( $main_nav = array(), $sub_nav = array() ) {
 		// Add 'Example' to the main navigation
 		$main_nav = array(
-			'name' 		      => __( 'Example', 'bp-example' ),
-			'slug' 		      => bp_get_example_slug(),
-			'position' 	      => 80,
+			'name'                => __( 'Example', 'bp-example' ),
+			'slug'                => bp_get_example_slug(),
+			'position'            => 80,
 			'screen_function'     => 'bp_example_screen_one',
-			'default_subnav_slug' => 'screen-one'
+			'default_subnav_slug' => 'screen-one',
 		);
 
 		$example_link = trailingslashit( bp_displayed_user_domain() . bp_get_example_slug() );
 
 		// Add a few subnav items under the main Example tab
 		$sub_nav[] = array(
-			'name'            =>  __( 'Screen One', 'bp-example' ),
+			'name'            => __( 'Screen One', 'bp-example' ),
 			'slug'            => 'screen-one',
 			'parent_url'      => $example_link,
 			'parent_slug'     => bp_get_example_slug(),
 			'screen_function' => 'bp_example_screen_one',
-			'position'        => 10
+			'position'        => 10,
 		);
 
 		// Add the subnav items to the friends nav item
 		$sub_nav[] = array(
-			'name'            =>  __( 'Screen Two', 'bp-example' ),
+			'name'            => __( 'Screen Two', 'bp-example' ),
 			'slug'            => 'screen-two',
 			'parent_url'      => $example_link,
 			'parent_slug'     => bp_get_example_slug(),
 			'screen_function' => 'bp_example_screen_two',
-			'position'        => 20
+			'position'        => 20,
 		);
 
 		parent::setup_nav( $main_nav, $sub_nav );
@@ -308,15 +312,17 @@ class BP_Example_Component extends BP_Component {
 		// BP_Component::setup_nav(), you can register them manually here. For example,
 		// if your component needs a subsection under a user's Settings menu, add
 		// it like this. See bp_example_screen_settings_menu() for more info
-		bp_core_new_subnav_item( array(
-			'name' 		  => __( 'Example', 'bp-example' ),
-			'slug' 		  => 'example-admin',
-			'parent_slug'     => bp_get_settings_slug(),
-			'parent_url' 	  => trailingslashit( bp_loggedin_user_domain() . bp_get_settings_slug() ),
-			'screen_function' => 'bp_example_screen_settings_menu',
-			'position' 	  => 40,
-			'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
-		) );
+		bp_core_new_subnav_item(
+			array(
+				'name'            => __( 'Example', 'bp-example' ),
+				'slug'            => 'example-admin',
+				'parent_slug'     => bp_get_settings_slug(),
+				'parent_url'      => trailingslashit( bp_loggedin_user_domain() . bp_get_settings_slug() ),
+				'screen_function' => 'bp_example_screen_settings_menu',
+				'position'        => 40,
+				'user_has_access' => bp_is_my_profile(), // Only the logged in user can access this on his/her profile
+			)
+		);
 	}
 
 	/**
@@ -331,7 +337,7 @@ class BP_Example_Component extends BP_Component {
 		parent::setup_actions();
 
 		// add the high five send button to the members actions bar
-		add_action( 'bp_member_header_actions', 'bp_example_send_high_five_button',  20 );
+		add_action( 'bp_member_header_actions', 'bp_example_send_high_five_button', 20 );
 	}
 
 	/**
@@ -348,17 +354,17 @@ class BP_Example_Component extends BP_Component {
 	function register_post_types() {
 		// Set up some labels for the post type
 		$labels = array(
-			'name'	   => __( 'High Fives', 'bp-example' ),
-			'singular' => __( 'High Five', 'bp-example' )
+			'name'     => __( 'High Fives', 'bp-example' ),
+			'singular' => __( 'High Five', 'bp-example' ),
 		);
 
 		// Set up the argument array for register_post_type()
 		$args = array(
-			'label'	   => __( 'High Fives', 'bp-example' ),
+			'label'    => __( 'High Fives', 'bp-example' ),
 			'labels'   => $labels,
 			'public'   => false,
 			'show_ui'  => true,
-			'supports' => array( 'title' )
+			'supports' => array( 'title' ),
 		);
 
 		// Register the post type.
@@ -389,8 +395,8 @@ class BP_Example_Component extends BP_Component {
  * will therefore only give you a partial picture of your component. If you need to dump the content
  * of your component for troubleshooting, try doing it at bp_init, ie
  *   function bp_example_var_dump() {
- *   	  global $bp;
- *	  var_dump( $bp->example );
+ *        global $bp;
+ *    var_dump( $bp->example );
  *   }
  *   add_action( 'bp_init', 'bp_example_var_dump' );
  * It goes without saying that you should not do this on a production site!
@@ -406,4 +412,4 @@ function bp_example_load_core_component() {
 add_action( 'bp_loaded', 'bp_example_load_core_component' );
 
 
-?>
+

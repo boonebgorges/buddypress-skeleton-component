@@ -38,19 +38,19 @@ class BP_Example_Widget extends WP_Widget {
 
 		echo $before_widget;
 		echo $before_title .
-		     $widget_name .
-		     $after_title; ?>
+			 $widget_name .
+			 $after_title; ?>
 
-	<?php
+		<?php
 
-	/***
-	 * This is where you add your HTML and render what you want your widget to display.
-	 */
+		/***
+		 * This is where you add your HTML and render what you want your widget to display.
+		 */
 
-	?>
+		?>
 
-	<?php echo $after_widget; ?>
-	<?php
+		<?php echo $after_widget; ?>
+		<?php
 	}
 
 	public function update( $new_instance, $old_instance ) {
@@ -69,7 +69,7 @@ class BP_Example_Widget extends WP_Widget {
 			(array) $instance,
 			array(
 				'max_items' => 200,
-				'per_page'  => 25
+				'per_page'  => 25,
 			)
 		);
 
@@ -80,6 +80,6 @@ class BP_Example_Widget extends WP_Widget {
 
 		<p><label for="bp-example-widget-per-page"><?php esc_html_e( 'Number of Items Per Page:', 'bp-example' ); ?> <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'per_page' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'per_page' ) ); ?>" type="text" value="<?php echo esc_attr( $per_page ); ?>" style="width: 30%" /></label></p>
 		<p><label for="bp-example-widget-max"><?php esc_html_e( 'Max items to show:', 'bp-example' ); ?> <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'max_items' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'max_items' ) ); ?>" type="text" value="<?php echo esc_attr( $max_items ); ?>" style="width: 30%" /></label></p>
-	<?php
+		<?php
 	}
 }

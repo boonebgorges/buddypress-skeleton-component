@@ -11,7 +11,7 @@
 <?php do_action( 'bp_before_example_loop' ); ?>
 
 <?php if ( bp_example_has_items( bp_ajax_querystring( 'example' ) ) ) : ?>
-<?php // global $items_template; var_dump( $items_template ) ?>
+	<?php // global $items_template; var_dump( $items_template ) ?>
 	<div id="pag-top" class="pagination">
 
 		<div class="pag-count" id="example-dir-count-top">
@@ -32,7 +32,10 @@
 
 	<ul id="example-list" class="item-list" role="main">
 
-	<?php while ( bp_example_has_items() ) : bp_example_the_item(); ?>
+	<?php
+	while ( bp_example_has_items() ) :
+		bp_example_the_item();
+		?>
 
 		<li>
 			<div class="item-avatar">
@@ -40,7 +43,7 @@
 			</div>
 
 			<div class="item">
-				<div class="item-title"><?php bp_example_high_five_title() ?></div>
+				<div class="item-title"><?php bp_example_high_five_title(); ?></div>
 
 				<?php do_action( 'bp_directory_example_item' ); ?>
 
@@ -71,7 +74,7 @@
 
 	</div>
 
-<?php else: ?>
+<?php else : ?>
 
 	<div id="message" class="info">
 		<p><?php _e( 'There were no high-fives found.', 'buddypress' ); ?></p>

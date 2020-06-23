@@ -20,10 +20,11 @@ function bp_example_high_five_save() {
 			// Don't let users high five themselves
 			bp_core_add_message( __( 'No self-fives! :)', 'bp-example' ), 'error' );
 		} else {
-			if ( bp_example_send_highfive( bp_displayed_user_id(), bp_loggedin_user_id() ) )
+			if ( bp_example_send_highfive( bp_displayed_user_id(), bp_loggedin_user_id() ) ) {
 				bp_core_add_message( __( 'High-five sent!', 'bp-example' ) );
-			else
+			} else {
 				bp_core_add_message( __( 'High-five could not be sent.', 'bp-example' ), 'error' );
+			}
 		}
 
 		bp_core_redirect( bp_displayed_user_domain() . bp_get_example_slug() . '/screen-one' );
@@ -31,4 +32,4 @@ function bp_example_high_five_save() {
 }
 add_action( 'bp_actions', 'bp_example_high_five_save' );
 
-?>
+

@@ -27,8 +27,9 @@ function bp_example_load_template_filter( $found_template, $templates ) {
 	/**
 	 * Only filter the template location when we're on the example component pages.
 	 */
-	if ( $bp->current_component != $bp->example->slug )
+	if ( $bp->current_component != $bp->example->slug ) {
 		return $found_template;
+	}
 
 	// $found_template is not empty when the older template files are found in the
 	// parent and child theme
@@ -58,16 +59,19 @@ function bp_example_load_template_filter( $found_template, $templates ) {
 		// add our hook to inject content into BP
 		//
 		// note the new template name for our template part
-		add_action( 'bp_template_content', function() use ($templates) {
-			foreach ($templates as $template) {
-				$template_name = str_replace(".php", "", $template);
-				// only add the template to the content when it's not the generic buddypress template
-				// to avoid infinite loop
-				if ("members/single/plugins" !== $template_name) {
-					bp_get_template_part($template_name);
+		add_action(
+			'bp_template_content',
+			function() use ( $templates ) {
+				foreach ( $templates as $template ) {
+					$template_name = str_replace( '.php', '', $template );
+					// only add the template to the content when it's not the generic buddypress template
+					// to avoid infinite loop
+					if ( 'members/single/plugins' !== $template_name ) {
+						bp_get_template_part( $template_name );
+					}
 				}
 			}
-		} );
+		);
 	}
 
 	return apply_filters( 'bp_example_load_template_filter', $found_template );
@@ -95,14 +99,14 @@ function bp_example_get_template_directory() {
  *
  * Some guidelines:
  *    - Don't set up error messages in these functions, just return false if you hit a problem and
- *	deal with error messages in screen or action functions.
+ *  deal with error messages in screen or action functions.
  *
  *    - Don't directly query the database in any of these functions. Use database access classes
- * 	or functions in your bp-example-classes.php file to fetch what you need. Spraying database
- * 	access all over your plugin turns into a maintenance nightmare, trust me.
+ *  or functions in your bp-example-classes.php file to fetch what you need. Spraying database
+ *  access all over your plugin turns into a maintenance nightmare, trust me.
  *
  *    - Try to include add_action() functions within all of these functions. That way others will
- *	find it easy to extend your component without hacking it to pieces.
+ *  find it easy to extend your component without hacking it to pieces.
  */
 
 /**
@@ -128,14 +132,22 @@ function bp_example_accept_terms() {
 	 */
 	$user_link = bp_core_get_userlink( $bp->loggedin_user->id );
 
-	bp_example_record_activity( array(
-		'type' => 'accepted_terms',
-		'action' => apply_filters( 'bp_example_accepted_terms_activity_action', sprintf( __( '%s accepted the really exciting terms and conditions!', 'bp-example' ), $user_link ), $user_link ),
-	) );
+	bp_example_record_activity(
+		array(
+			'type'   => 'accepted_terms',
+			'action' => apply_filters( 'bp_example_accepted_terms_activity_action', sprintf( __( '%s accepted the really exciting terms and conditions!', 'bp-example' ), $user_link ), $user_link ),
+		)
+	);
 
 	/* See bp_example_reject_terms() for an explanation of deleting activity items */
-	if ( function_exists( 'bp_activity_delete') )
-		bp_activity_delete( array( 'type' => 'rejected_terms', 'user_id' => $bp->loggedin_user->id ) );
+	if ( function_exists( 'bp_activity_delete' ) ) {
+		bp_activity_delete(
+			array(
+				'type'    => 'rejected_terms',
+				'user_id' => $bp->loggedin_user->id,
+			)
+		);
+	}
 
 	/* Add a do_action here so other plugins can hook in */
 	do_action( 'bp_example_accept_terms', $bp->loggedin_user->id );
@@ -172,14 +184,22 @@ function bp_example_reject_terms() {
 	$user_link = bp_core_get_userlink( $bp->loggedin_user->id );
 
 	/* Now record the new 'rejected' activity item */
-	bp_example_record_activity( array(
-		'type' => 'rejected_terms',
-		'action' => apply_filters( 'bp_example_rejected_terms_activity_action', sprintf( __( '%s rejected the really exciting terms and conditions.', 'bp-example' ), $user_link ), $user_link ),
-	) );
+	bp_example_record_activity(
+		array(
+			'type'   => 'rejected_terms',
+			'action' => apply_filters( 'bp_example_rejected_terms_activity_action', sprintf( __( '%s rejected the really exciting terms and conditions.', 'bp-example' ), $user_link ), $user_link ),
+		)
+	);
 
 	/* Delete any accepted_terms activity items for the user */
-	if ( function_exists( 'bp_activity_delete') )
-		bp_activity_delete( array( 'type' => 'accepted_terms', 'user_id' => $bp->loggedin_user->id ) );
+	if ( function_exists( 'bp_activity_delete' ) ) {
+		bp_activity_delete(
+			array(
+				'type'    => 'accepted_terms',
+				'user_id' => $bp->loggedin_user->id,
+			)
+		);
+	}
 
 	do_action( 'bp_example_reject_terms', $bp->loggedin_user->id );
 
@@ -208,23 +228,23 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 	delete_user_meta( $to_user_id, 'high-fives' );
 	/* Get existing fives */
 	$existing_fives = maybe_unserialize( get_user_meta( $to_user_id, 'high-fives', true ) );
-	if (!$existing_fives) {
+	if ( ! $existing_fives ) {
 		$existing_fives = array();
 	}
 
 	/* Check to see if the user has already high-fived. That's okay, but lets not
 	 * store duplicate high-fives in the database. What's the point, right?
 	 */
-	if ( !in_array( $from_user_id, (array)$existing_fives ) ) {
-		$existing_fives[] = (int)$from_user_id;
+	if ( ! in_array( $from_user_id, (array) $existing_fives ) ) {
+		$existing_fives[] = (int) $from_user_id;
 
 		/* Now wrap it up and fire it back to the database overlords. */
 		update_user_meta( $to_user_id, 'high-fives', serialize( $existing_fives ) );
 
 		// Let's also record it in our custom database tables
 		$db_args = array(
-			'recipient_id'  => (int)$to_user_id,
-			'high_fiver_id' => (int)$from_user_id
+			'recipient_id'  => (int) $to_user_id,
+			'high_fiver_id' => (int) $from_user_id,
 		);
 
 		$high_five = new BP_Example_Highfive( $db_args );
@@ -241,25 +261,29 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 	 * Remember, like activity streams we need to tell the activity stream component how to format
 	 * this notification in bp_example_format_notifications() using the 'new_high_five' action.
 	 */
-	bp_notifications_add_notification( array(
-		'item_id'           => $from_user_id,
-		'user_id'           => $to_user_id,
-		'component_name'    => $bp->example->slug,
-		'component_action'  => 'new_high_five',
-		'secondary_item_id' => 0,
-		'date_notified'     => false,
-		'is_new'            => 1
-	));
+	bp_notifications_add_notification(
+		array(
+			'item_id'           => $from_user_id,
+			'user_id'           => $to_user_id,
+			'component_name'    => $bp->example->slug,
+			'component_action'  => 'new_high_five',
+			'secondary_item_id' => 0,
+			'date_notified'     => false,
+			'is_new'            => 1,
+		)
+	);
 
 	/* Now record the new 'new_high_five' activity item */
-	$to_user_link = bp_core_get_userlink( $to_user_id );
+	$to_user_link   = bp_core_get_userlink( $to_user_id );
 	$from_user_link = bp_core_get_userlink( $from_user_id );
 
-	bp_example_record_activity( array(
-		'type' => 'rejected_terms',
-		'action' => apply_filters( 'bp_example_new_high_five_activity_action', sprintf( __( '%s high-fived %s!', 'bp-example' ), $from_user_link, $to_user_link ), $from_user_link, $to_user_link ),
-		'item_id' => $to_user_id,
-	) );
+	bp_example_record_activity(
+		array(
+			'type'    => 'rejected_terms',
+			'action'  => apply_filters( 'bp_example_new_high_five_activity_action', sprintf( __( '%1$s high-fived %2$s!', 'bp-example' ), $from_user_link, $to_user_link ), $from_user_link, $to_user_link ),
+			'item_id' => $to_user_id,
+		)
+	);
 
 	/* We'll use this do_action call to send the email notification. See bp-example-notifications.php */
 	do_action( 'bp_example_send_high_five', $to_user_id, $from_user_id );
@@ -275,8 +299,9 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 function bp_example_get_highfives_for_user( $user_id ) {
 	global $bp;
 
-	if ( !$user_id )
+	if ( ! $user_id ) {
 		return false;
+	}
 
 	return maybe_unserialize( get_user_meta( $user_id, 'high-fives', true ) );
 }
@@ -323,9 +348,9 @@ add_action( 'delete_user', 'bp_example_remove_data', 1 );
  * Example:
  *
  *   function groups_clear_group_object_cache( $group_id ) {
- *	     wp_cache_delete( 'groups_group_' . $group_id );
- *	 }
- *	 add_action( 'groups_settings_updated', 'groups_clear_group_object_cache' );
+ *       wp_cache_delete( 'groups_group_' . $group_id );
+ *   }
+ *   add_action( 'groups_settings_updated', 'groups_clear_group_object_cache' );
  *
  * The "'groups_group_' . $group_id" part refers to the unique identifier you gave the cached object in the
  * wp_cache_set() call in your code.
@@ -337,4 +362,4 @@ add_action( 'delete_user', 'bp_example_remove_data', 1 );
  * but you should try to if you can (it makes a big difference). :)
  */
 
-?>
+

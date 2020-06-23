@@ -36,10 +36,10 @@ function bp_example_screen_notification_settings() {
 	  * used like this:
 	  *
 	  * if ( 'no' == get_user_meta( $bp->displayed_user->id, 'notification_friends_friendship_accepted', true ) )
-	  *		// don't send the email notification
-	  *	else
-	  *		// send the email notification.
-      */
+	  *     // don't send the email notification
+	  * else
+	  *     // send the email notification.
+	  */
 
 	?>
 	<table class="notification-settings" id="bp-example-notification-settings">
@@ -47,31 +47,47 @@ function bp_example_screen_notification_settings() {
 		<thead>
 		<tr>
 			<th class="icon"></th>
-			<th class="title"><?php _e( 'Example', 'bp-example' ) ?></th>
-			<th class="yes"><?php _e( 'Yes', 'bp-example' ) ?></th>
-			<th class="no"><?php _e( 'No', 'bp-example' )?></th>
+			<th class="title"><?php _e( 'Example', 'bp-example' ); ?></th>
+			<th class="yes"><?php _e( 'Yes', 'bp-example' ); ?></th>
+			<th class="no"><?php _e( 'No', 'bp-example' ); ?></th>
 		</tr>
 		</thead>
 
 		<tbody>
 		<tr>
 			<td></td>
-			<td><?php _e( 'Action One', 'bp-example' ) ?></td>
-			<td class="yes"><input type="radio" name="notifications[notification_example_action_one]" value="yes" <?php if ( !get_user_meta( $current_user->id, 'notification_example_action_one', true ) || 'yes' == get_user_meta( $current_user->id, 'notification_example_action_one', true ) ) { ?>checked="checked" <?php } ?>/></td>
-			<td class="no"><input type="radio" name="notifications[notification_example_action_one]" value="no" <?php if ( get_user_meta( $current_user->id, 'notification_example_action_one', true) == 'no' ) { ?>checked="checked" <?php } ?>/></td>
+			<td><?php _e( 'Action One', 'bp-example' ); ?></td>
+			<td class="yes"><input type="radio" name="notifications[notification_example_action_one]" value="yes" 
+			<?php
+			if ( ! get_user_meta( $current_user->id, 'notification_example_action_one', true ) || 'yes' == get_user_meta( $current_user->id, 'notification_example_action_one', true ) ) {
+				?>
+				checked="checked" <?php } ?>/></td>
+			<td class="no"><input type="radio" name="notifications[notification_example_action_one]" value="no" 
+			<?php
+			if ( get_user_meta( $current_user->id, 'notification_example_action_one', true ) == 'no' ) {
+				?>
+				checked="checked" <?php } ?>/></td>
 		</tr>
 		<tr>
 			<td></td>
-			<td><?php _e( 'Action Two', 'bp-example' ) ?></td>
-			<td class="yes"><input type="radio" name="notifications[notification_example_action_two]" value="yes" <?php if ( !get_user_meta( $current_user->id, 'notification_example_action_two', true ) || 'yes' == get_user_meta( $current_user->id, 'notification_example_action_two', true ) ) { ?>checked="checked" <?php } ?>/></td>
-			<td class="no"><input type="radio" name="notifications[notification_example_action_two]" value="no" <?php if ( 'no' == get_user_meta( $current_user->id, 'notification_example_action_two', true ) ) { ?>checked="checked" <?php } ?>/></td>
+			<td><?php _e( 'Action Two', 'bp-example' ); ?></td>
+			<td class="yes"><input type="radio" name="notifications[notification_example_action_two]" value="yes" 
+			<?php
+			if ( ! get_user_meta( $current_user->id, 'notification_example_action_two', true ) || 'yes' == get_user_meta( $current_user->id, 'notification_example_action_two', true ) ) {
+				?>
+				checked="checked" <?php } ?>/></td>
+			<td class="no"><input type="radio" name="notifications[notification_example_action_two]" value="no" 
+			<?php
+			if ( 'no' == get_user_meta( $current_user->id, 'notification_example_action_two', true ) ) {
+				?>
+				checked="checked" <?php } ?>/></td>
 		</tr>
 
 		<?php do_action( 'bp_example_notification_settings' ); ?>
 
 		</tbody>
 	</table>
-<?php
+	<?php
 }
 add_action( 'bp_notification_settings', 'bp_example_screen_notification_settings' );
 
@@ -87,7 +103,7 @@ function bp_example_remove_screen_notifications() {
 	/**
 	 * When clicking on a screen notification, we need to remove it from the menu.
 	 * The following command will do so.
- 	 */
+	 */
 	BP_Core_Notification::delete_for_user_by_type( $bp->loggedin_user->id, $bp->example->slug, 'new_high_five' );
 }
 add_action( 'bp_example_screen_one', 'bp_example_remove_screen_notifications' );
@@ -119,14 +135,14 @@ function bp_example_format_notifications( $action, $item_id, $secondary_item_id,
 			 * If the user has more than one action from the same component, they are counted and the
 			 * notification is rendered differently.
 			 */
-			if ( (int)$total_items > 1 ) {
-				return apply_filters( 'bp_example_multiple_new_high_five_notification', '<a href="' . $bp->loggedin_user->domain . $bp->example->slug . '/screen-one/" title="' . __( 'Multiple high-fives', 'bp-example' ) . '">' . sprintf( __( '%d new high-fives, multi-five!', 'bp-example' ), (int)$total_items ) . '</a>', $total_items );
+			if ( (int) $total_items > 1 ) {
+				return apply_filters( 'bp_example_multiple_new_high_five_notification', '<a href="' . $bp->loggedin_user->domain . $bp->example->slug . '/screen-one/" title="' . __( 'Multiple high-fives', 'bp-example' ) . '">' . sprintf( __( '%d new high-fives, multi-five!', 'bp-example' ), (int) $total_items ) . '</a>', $total_items );
 			} else {
 				$user_fullname = bp_core_get_user_displayname( $item_id, false );
-				$user_url = bp_core_get_user_domain( $item_id );
-				return apply_filters( 'bp_example_single_new_high_five_notification', '<a href="' . $user_url . '?new" title="' . $user_fullname .'\'s profile">' . sprintf( __( '%s sent you a high-five!', 'bp-example' ), $user_fullname ) . '</a>', $user_fullname );
+				$user_url      = bp_core_get_user_domain( $item_id );
+				return apply_filters( 'bp_example_single_new_high_five_notification', '<a href="' . $user_url . '?new" title="' . $user_fullname . '\'s profile">' . sprintf( __( '%s sent you a high-five!', 'bp-example' ), $user_fullname ) . '</a>', $user_fullname );
 			}
-		break;
+			break;
 	}
 
 	do_action( 'bp_example_format_notifications', $action, $item_id, $secondary_item_id, $total_items );
@@ -146,35 +162,51 @@ function bp_example_send_high_five_notification( $to_user_id, $from_user_id ) {
 	global $bp;
 
 	/* Let's grab both user's names to use in the email. */
-	$sender_name = bp_core_get_user_displayname( $from_user_id, false );
+	$sender_name   = bp_core_get_user_displayname( $from_user_id, false );
 	$receiver_name = bp_core_get_user_displayname( $to_user_id, false );
 
 	/* We need to check to see if the recipient has opted not to recieve high-five emails */
-	if ( 'no' == get_user_meta( (int)$to_user_id, 'notification_example_new_high_five', true ) )
+	if ( 'no' == get_user_meta( (int) $to_user_id, 'notification_example_new_high_five', true ) ) {
 		return false;
+	}
 
 	/* Get the userdata for the receiver and sender, this will include usernames and emails that we need. */
 	$receiver_ud = get_userdata( $to_user_id );
-	$sender_ud = get_userdata( $from_user_id );
+	$sender_ud   = get_userdata( $from_user_id );
 
 	/* Now we need to construct the URL's that we are going to use in the email */
-	$sender_profile_link = site_url( BP_MEMBERS_SLUG . '/' . $sender_ud->user_login . '/' . $bp->profile->slug );
-	$sender_highfive_link = site_url( BP_MEMBERS_SLUG . '/' . $sender_ud->user_login . '/' . $bp->example->slug . '/screen-one' );
+	$sender_profile_link    = site_url( BP_MEMBERS_SLUG . '/' . $sender_ud->user_login . '/' . $bp->profile->slug );
+	$sender_highfive_link   = site_url( BP_MEMBERS_SLUG . '/' . $sender_ud->user_login . '/' . $bp->example->slug . '/screen-one' );
 	$receiver_settings_link = site_url( BP_MEMBERS_SLUG . '/' . $receiver_ud->user_login . '/settings/notifications' );
 
 	/* Set up and send the message */
-	$to = $receiver_ud->user_email;
-	$subject = '[' . get_blog_option( 1, 'blogname' ) . '] ' . sprintf( __( '%s high-fived you!', 'bp-example' ), stripslashes($sender_name) );
+	$to      = $receiver_ud->user_email;
+	$subject = '[' . get_blog_option( 1, 'blogname' ) . '] ' . sprintf( __( '%s high-fived you!', 'bp-example' ), stripslashes( $sender_name ) );
 
-	$message = sprintf( __(
-'%s sent you a high-five! Why not send one back?
+	$message = sprintf(
+		__(
+			'%1$s sent you a high-five! Why not send one back?
 
-To see %s\'s profile: %s
+To see %2$s\'s profile: %3$s
+
+To send %4$s a high five: %5$s
+
+---------------------
+'
+			To see % s\'s profile: %s
 
 To send %s a high five: %s
 
 ---------------------
-', 'bp-example' ), $sender_name, $sender_name, $sender_profile_link, $sender_name, $sender_highfive_link );
+',
+			'bp-example'
+		),
+		$sender_name,
+		$sender_name,
+		$sender_profile_link,
+		$sender_name,
+		$sender_highfive_link
+	);
 
 	$message .= sprintf( __( 'To disable these notifications please log in and go to: %s', 'bp-example' ), $receiver_settings_link );
 

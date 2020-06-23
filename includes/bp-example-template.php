@@ -17,19 +17,19 @@
  *
  * The example template class below would allow you do the following in the template file:
  *
- * 	<?php if ( bp_get_example_has_items() ) : ?>
+ *  <?php if ( bp_get_example_has_items() ) : ?>
  *
- *		<?php while ( bp_get_example_items() ) : bp_get_example_the_item(); ?>
+ *      <?php while ( bp_get_example_items() ) : bp_get_example_the_item(); ?>
 *
-*			<p><?php bp_get_example_item_name() ?></p>
+*           <p><?php bp_get_example_item_name() ?></p>
 *
-*		<?php endwhile; ?>
+*       <?php endwhile; ?>
 *
-*	<?php else : ?>
+*   <?php else : ?>
 *
-*		<p class="error">No items!</p>
+*       <p class="error">No items!</p>
 *
-*	<?php endif; ?>
+*   <?php endif; ?>
 *
 * Obviously, you'd want to be more specific than the word 'item'.
 *
@@ -61,7 +61,7 @@ function bp_example_has_items( $args = '' ) {
 			'high_fiver_id' => 0,
 			'recipient_id'  => 0,
 			'per_page'      => 10,
-			'paged'		=> 1
+			'paged'         => 1,
 		);
 
 		/***
@@ -160,7 +160,7 @@ function bp_example_high_fiver_avatar( $args = array() ) {
 function bp_example_get_high_fiver_avatar( $args = array() ) {
 	$defaults = array(
 		'item_id' => get_the_author_meta( 'ID' ),
-		'object'  => 'user'
+		'object'  => 'user',
 	);
 
 	$r = wp_parse_args( $args, $defaults );
@@ -192,11 +192,11 @@ function bp_example_get_high_five_title() {
 	$high_fiver_link = bp_core_get_userlink( get_the_author_meta( 'ID' ) );
 
 	// Next, get the information for the high five recipient
-	$recipient_id    = get_post_meta( get_the_ID(), 'bp_example_recipient_id', true );
-	$recipient_link  = bp_core_get_userlink( $recipient_id );
+	$recipient_id   = get_post_meta( get_the_ID(), 'bp_example_recipient_id', true );
+	$recipient_link = bp_core_get_userlink( $recipient_id );
 
 	// Use sprintf() to make a translatable message
-	$title 		 = sprintf( __( '%1$s gave %2$s a high-five!', 'bp-example' ), $high_fiver_link, $recipient_link );
+	$title = sprintf( __( '%1$s gave %2$s a high-five!', 'bp-example' ), $high_fiver_link, $recipient_link );
 
 	return apply_filters( 'bp_example_get_high_five_title', $title, $high_fiver_link, $recipient_link );
 }
@@ -335,11 +335,11 @@ function bp_example_total_high_five_count_for_user( $user_id = false ) {
  */
 function bp_example_get_total_high_five_count_for_user( $user_id = false ) {
 	// If no explicit user id is passed, fall back on the loggedin user
-	if ( !$user_id ) {
+	if ( ! $user_id ) {
 		$user_id = bp_loggedin_user_id();
 	}
 
-	if ( !$user_id ) {
+	if ( ! $user_id ) {
 		return 0;
 	}
 
@@ -377,24 +377,27 @@ function bp_example_send_high_five_button( $args = '' ) {
  */
 function bp_example_get_send_high_five_button( $args = '' ) {
 
-	$r = bp_parse_args( $args, array(
-		'id'                => 'bp_example_high_five',
-		'component'         => 'example',
-		'must_be_logged_in' => true,
-		'block_self'        => true,
-		'wrapper_id'        => 'bp-example-send-high-five',
-		'link_href'         => bp_example_get_send_high_five_link(),
-		'link_text'         => __( 'Send high-five!', 'bp-example' ),
-		'link_class'        => 'bp-example-button bp-example-high-five',
-		'parent_element'	=> bp_get_theme_package_id() == 'nouveau' ? 'li' : 'div'
-	) );
+	$r = bp_parse_args(
+		$args,
+		array(
+			'id'                => 'bp_example_high_five',
+			'component'         => 'example',
+			'must_be_logged_in' => true,
+			'block_self'        => true,
+			'wrapper_id'        => 'bp-example-send-high-five',
+			'link_href'         => bp_example_get_send_high_five_link(),
+			'link_text'         => __( 'Send high-five!', 'bp-example' ),
+			'link_class'        => 'bp-example-button bp-example-high-five',
+			'parent_element'    => bp_get_theme_package_id() == 'nouveau' ? 'li' : 'div',
+		)
+	);
 
 	return bp_get_button( apply_filters( 'bp_example_get_send_high_five_button', $r ) );
 }
 
 function bp_example_get_send_high_five_link() {
-	return wp_nonce_url( bp_displayed_user_domain() . bp_get_example_slug() . '/screen-one/send-h5/', 'bp_example_send_high_five');
+	return wp_nonce_url( bp_displayed_user_domain() . bp_get_example_slug() . '/screen-one/send-h5/', 'bp_example_send_high_five' );
 }
 
 
-?>
+
