@@ -63,7 +63,7 @@ class BP_Example_Component extends BP_Component {
 	 * @package BuddyPress_Skeleton_Component
 	 * @since 1.6
 	 */
-	function __construct() {
+	public function __construct() {
 		global $bp;
 
 		parent::start(
@@ -333,7 +333,7 @@ class BP_Example_Component extends BP_Component {
 	 *
 	 * @global obj $bp
 	 */
-	function setup_actions() {
+	public function setup_actions() {
 		parent::setup_actions();
 
 		// add the high five send button to the members actions bar
@@ -351,7 +351,7 @@ class BP_Example_Component extends BP_Component {
 	 * @since 1.6
 	 * @see http://codex.wordpress.org/Function_Reference/register_post_type
 	 */
-	function register_post_types() {
+	public function register_post_types() {
 		// Set up some labels for the post type
 		$labels = array(
 			'name'     => __( 'High Fives', 'bp-example' ),
@@ -376,7 +376,7 @@ class BP_Example_Component extends BP_Component {
 		parent::register_post_types();
 	}
 
-	function register_taxonomies() {
+	public function register_taxonomies() {
 
 	}
 

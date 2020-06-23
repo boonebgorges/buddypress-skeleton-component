@@ -31,41 +31,50 @@ function bp_example_load_template_filter( $found_template, $templates ) {
 		return $found_template;
 	}
 
-	// $found_template is not empty when the older template files are found in the
-	// parent and child theme
-	//
-	//  /wp-content/themes/YOUR-THEME/members/single/example.php
-	//
-	// The older template files utilize a full template ( get_header() +
-	// get_footer() ), which sucks for themes and theme compat.
-	//
-	// When the older template files are not found, we use our new template method,
-	// which will act more like a template part.
+	/*
+	 * $found_template is not empty when the older template files are found in the
+	 * parent and child theme.
+	 *
+	 * /wp-content/themes/YOUR-THEME/members/single/example.php
+	 *
+	 * The older template files utilize a full template ( get_header() +
+	 * get_footer() ), which doesn't work for themes and theme compat.
+	 *
+	 * When the older template files are not found, we use our new template method,
+	 * which will act more like a template part.
+	 */
 	if ( empty( $found_template ) ) {
-		// register our theme compat directory
-		//
-		// this tells BP to look for templates in our plugin directory last
-		// when the template isn't found in the parent / child theme
+		/*
+		 * Register our theme compat directory.
+		 *
+		 * This tells BP to look for templates in our plugin directory last
+		 * when the template isn't found in the parent / child theme
+		 */
 		bp_register_template_stack( 'bp_example_get_template_directory', 14 );
-		// locate_template() will attempt to find the plugins.php template in the
-		// child and parent theme and return the located template when found
-		//
-		// plugins.php is the preferred template to use, since all we'd need to do is
-		// inject our content into BP
-		//
-		// note: this is only really relevant for bp-default themes as theme compat
-		// will kick in on its own when this template isn't found
+
+		/*
+		 * locate_template() will attempt to find the plugins.php template in the
+		 * child and parent theme and return the located template when found
+		 *
+		 * plugins.php is the preferred template to use, since all we'd need to do is
+		 * inject our content into BP.
+		 *
+		 * Note: this is only really relevant for bp-default themes as theme compat
+		 * will kick in on its own when this template isn't found.
+		 */
 		$found_template = locate_template( 'members/single/plugins.php', false, false );
-		// add our hook to inject content into BP
-		//
-		// note the new template name for our template part
+
+		// Add our hook to inject content into BP.
 		add_action(
 			'bp_template_content',
 			function() use ( $templates ) {
 				foreach ( $templates as $template ) {
 					$template_name = str_replace( '.php', '', $template );
-					// only add the template to the content when it's not the generic buddypress template
-					// to avoid infinite loop
+
+					/*
+					 * Only add the template to the content when it's not the generic
+					 * plugins.php template  to avoid infinite loop.
+					 */
 					if ( 'members/single/plugins' !== $template_name ) {
 						bp_get_template_part( $template_name );
 					}
@@ -116,8 +125,6 @@ function bp_example_get_template_directory() {
  * Records an activity stream item for the user.
  */
 function bp_example_accept_terms() {
-	global $bp;
-
 	/**
 	 * First check the nonce to make sure that the user has initiated this
 	 * action. Remember the wp_nonce_url() call? The second parameter is what
@@ -130,7 +137,7 @@ function bp_example_accept_terms() {
 	 * The user has excepted the terms on screen two, and now we want to post
 	 * "Andy accepted the really exciting terms and conditions!" to the stream.
 	 */
-	$user_link = bp_core_get_userlink( $bp->loggedin_user->id );
+	$user_link = bp_core_get_userlink( bp_loggedin_user_id() );
 
 	bp_example_record_activity(
 		array(
@@ -144,13 +151,13 @@ function bp_example_accept_terms() {
 		bp_activity_delete(
 			array(
 				'type'    => 'rejected_terms',
-				'user_id' => $bp->loggedin_user->id,
+				'user_id' => bp_loggedin_user_id(),
 			)
 		);
 	}
 
 	/* Add a do_action here so other plugins can hook in */
-	do_action( 'bp_example_accept_terms', $bp->loggedin_user->id );
+	do_action( 'bp_example_accept_terms', bp_loggedin_user_id() );
 
 	/***
 	 * You'd want to do something here, like set a flag in the database, or set usermeta.
@@ -167,8 +174,6 @@ function bp_example_accept_terms() {
  * Records an activity stream item for the user.
  */
 function bp_example_reject_terms() {
-	global $bp;
-
 	check_admin_referer( 'bp_example_reject_terms' );
 
 	/***
@@ -181,7 +186,7 @@ function bp_example_reject_terms() {
 	 * A real world example of this would be a user deleting a published blog post.
 	 */
 
-	$user_link = bp_core_get_userlink( $bp->loggedin_user->id );
+	$user_link = bp_core_get_userlink( bp_loggedin_user_id() );
 
 	/* Now record the new 'rejected' activity item */
 	bp_example_record_activity(
@@ -196,12 +201,12 @@ function bp_example_reject_terms() {
 		bp_activity_delete(
 			array(
 				'type'    => 'accepted_terms',
-				'user_id' => $bp->loggedin_user->id,
+				'user_id' => bp_loggedin_user_id(),
 			)
 		);
 	}
 
-	do_action( 'bp_example_reject_terms', $bp->loggedin_user->id );
+	do_action( 'bp_example_reject_terms', bp_loggedin_user_id() );
 
 	return true;
 }
@@ -215,7 +220,7 @@ function bp_example_reject_terms() {
  * Also records an activity stream item saying "User 1 high-fived User 2".
  */
 function bp_example_send_highfive( $to_user_id, $from_user_id ) {
-	global $bp;
+	$bp = buddypress();
 
 	check_admin_referer( 'bp_example_send_high_five' );
 
@@ -225,7 +230,7 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 	 * in a custom DB table, we'd want to reference a function in
 	 * bp-example-classes.php that would run the SQL query.
 	 */
-	delete_user_meta( $to_user_id, 'high-fives' );
+
 	/* Get existing fives */
 	$existing_fives = maybe_unserialize( get_user_meta( $to_user_id, 'high-fives', true ) );
 	if ( ! $existing_fives ) {
@@ -297,8 +302,6 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
  * Returns an array of user ID's for users who have high fived the user passed to the function.
  */
 function bp_example_get_highfives_for_user( $user_id ) {
-	global $bp;
-
 	if ( ! $user_id ) {
 		return false;
 	}

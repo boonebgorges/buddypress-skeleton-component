@@ -41,46 +41,40 @@ function bp_example_screen_notification_settings() {
 	  *     // send the email notification.
 	  */
 
+	$action_one_setting = get_user_meta( bp_displayed_user_id(), 'notification_example_action_one', true );
+	if ( 'no' !== $action_one_setting ) {
+		$action_one_setting = 'yes';
+	}
+
+	$action_two_setting = get_user_meta( bp_displayed_user_id(), 'notification_example_action_two', true );
+	if ( 'no' !== $action_two_setting ) {
+		$action_two_setting = 'yes';
+	}
+
 	?>
 	<table class="notification-settings" id="bp-example-notification-settings">
 
 		<thead>
 		<tr>
 			<th class="icon"></th>
-			<th class="title"><?php _e( 'Example', 'bp-example' ); ?></th>
-			<th class="yes"><?php _e( 'Yes', 'bp-example' ); ?></th>
-			<th class="no"><?php _e( 'No', 'bp-example' ); ?></th>
+			<th class="title"><?php esc_html_e( 'Example', 'bp-example' ); ?></th>
+			<th class="yes"><?php esc_html_e( 'Yes', 'bp-example' ); ?></th>
+			<th class="no"><?php esc_html_e( 'No', 'bp-example' ); ?></th>
 		</tr>
 		</thead>
 
 		<tbody>
 		<tr>
 			<td></td>
-			<td><?php _e( 'Action One', 'bp-example' ); ?></td>
-			<td class="yes"><input type="radio" name="notifications[notification_example_action_one]" value="yes" 
-			<?php
-			if ( ! get_user_meta( $current_user->id, 'notification_example_action_one', true ) || 'yes' == get_user_meta( $current_user->id, 'notification_example_action_one', true ) ) {
-				?>
-				checked="checked" <?php } ?>/></td>
-			<td class="no"><input type="radio" name="notifications[notification_example_action_one]" value="no" 
-			<?php
-			if ( get_user_meta( $current_user->id, 'notification_example_action_one', true ) == 'no' ) {
-				?>
-				checked="checked" <?php } ?>/></td>
+			<td><?php esc_html_e( 'Action One', 'bp-example' ); ?></td>
+			<td class="yes"><input type="radio" name="notifications[notification_example_action_one]" value="yes" <?php checked( 'yes', $action_one_setting ); ?> /></td>
+			<td class="no"><input type="radio" name="notifications[notification_example_action_one]" value="no" <?php checked( 'no', $action_one_setting ); ?> /></td>
 		</tr>
 		<tr>
 			<td></td>
-			<td><?php _e( 'Action Two', 'bp-example' ); ?></td>
-			<td class="yes"><input type="radio" name="notifications[notification_example_action_two]" value="yes" 
-			<?php
-			if ( ! get_user_meta( $current_user->id, 'notification_example_action_two', true ) || 'yes' == get_user_meta( $current_user->id, 'notification_example_action_two', true ) ) {
-				?>
-				checked="checked" <?php } ?>/></td>
-			<td class="no"><input type="radio" name="notifications[notification_example_action_two]" value="no" 
-			<?php
-			if ( 'no' == get_user_meta( $current_user->id, 'notification_example_action_two', true ) ) {
-				?>
-				checked="checked" <?php } ?>/></td>
+			<td><?php esc_html_e( 'Action Two', 'bp-example' ); ?></td>
+			<td class="yes"><input type="radio" name="notifications[notification_example_action_two]" value="yes" <?php checked( 'yes', $action_two_setting ); ?> /></td>
+			<td class="no"><input type="radio" name="notifications[notification_example_action_two]" value="no" <?php checked( 'no', $action_two_setting ); ?> /></td>
 		</tr>
 
 		<?php do_action( 'bp_example_notification_settings' ); ?>
@@ -166,7 +160,7 @@ function bp_example_send_high_five_notification( $to_user_id, $from_user_id ) {
 	$receiver_name = bp_core_get_user_displayname( $to_user_id, false );
 
 	/* We need to check to see if the recipient has opted not to recieve high-five emails */
-	if ( 'no' == get_user_meta( (int) $to_user_id, 'notification_example_new_high_five', true ) ) {
+	if ( 'no' === get_user_meta( (int) $to_user_id, 'notification_example_new_high_five', true ) ) {
 		return false;
 	}
 
@@ -214,5 +208,3 @@ To send %s a high five: %s
 	wp_mail( $to, $subject, $message );
 }
 add_action( 'bp_example_send_high_five', 'bp_example_send_high_five_notification', 10, 2 );
-
-?>
