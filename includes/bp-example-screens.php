@@ -117,7 +117,7 @@ function bp_example_screen_one() {
 	 * display the corresponding information. The functions are presented below:
 	 */
 function bp_example_screen_one_title() {
-	_e( 'Screen One', 'bp-example' );
+	esc_html_e( 'Screen One', 'bp-example' );
 }
 
 function bp_example_screen_one_content() {
@@ -132,26 +132,26 @@ function bp_example_screen_one_content() {
 	 */
 	$send_link = wp_nonce_url( $bp->displayed_user->domain . $bp->current_component . '/screen-one/send-h5', 'bp_example_send_high_five' );
 	?>
-		<h4><?php _e( 'Welcome to Screen One', 'bp-example' ); ?></h4>
-		<p><?php printf( __( 'Send %1$s a <a href="%2$s" title="Send high-five!">high-five!</a>', 'bp-example' ), $bp->displayed_user->fullname, $send_link ); ?></p>
+		<h4><?php esc_html_e( 'Welcome to Screen One', 'bp-example' ); ?></h4>
+		<p><?php printf( __( 'Send %1$s a <a href="%2$s" title="Send high-five!">high-five!</a>', 'bp-example' ), esc_html( $bp->displayed_user->fullname ), esc_attr( $send_link ) ); ?></p>
 
-	<?php if ( $high_fives ) : ?>
-			<h4><?php _e( 'Received High Fives!', 'bp-example' ); ?></h4>
+		<?php if ( $high_fives ) : ?>
+			<h4><?php esc_html_e( 'Received High Fives!', 'bp-example' ); ?></h4>
 
 			<table id="high-fives">
 				<?php foreach ( $high_fives as $user_id ) : ?>
 				<tr>
 					<td width="1%">
-					<?php
-					echo bp_core_fetch_avatar(
-						array(
-							'item_id' => $user_id,
-							'width'   => 25,
-							'height'  => 25,
-						)
-					);
-					?>
-									</td>
+						<?php
+						echo bp_core_fetch_avatar(
+							array(
+								'item_id' => $user_id,
+								'width'   => 25,
+								'height'  => 25,
+							)
+						);
+						?>
+					</td>
 					<td>&nbsp; <?php echo bp_core_get_userlink( $user_id ); ?></td>
 				 </tr>
 				<?php endforeach; ?>

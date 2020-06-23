@@ -1,3 +1,7 @@
+Version 1.7.0
+--------------------------------------------------------------
+- Upgrades for more recent versions of BP and WP.
+
 Version 1.6.2 (??????????)
 --------------------------------------------------------------
 - Corrected path issue for load_textdomain

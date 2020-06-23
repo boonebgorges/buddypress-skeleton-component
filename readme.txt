@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: apeatling, jeffsayre, boonebgorges
 Tags: buddypress
-Requires at least: WordPress 3.2, BuddyPress 1.5
-Tested up to: WordPress 3.2.1 / BuddyPress 1.5
-Stable tag: 1.6.2
+Requires at least: WordPress 4.0, BuddyPress 1.9
+Tested up to: WordPress 5.4 / BuddyPress 6.0
+Stable tag: 1.7.0
 
 This is a bare-bones component that should provide a good starting block to building your own custom BuddyPress component.
 
