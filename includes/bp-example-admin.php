@@ -48,28 +48,32 @@ function bp_example_admin() {
 	$setting_two = get_option( 'example-setting-two' );
 ?>
 	<div class="wrap">
-		<h2><?php _e( 'Example Admin', 'bp-example' ) ?></h2>
+		<h2><?php esc_html_e( 'Example Admin', 'bp-example' ) ?></h2>
 		<br />
 
-		<?php if ( isset($updated) ) : ?><?php echo "<div id='message' class='updated fade'><p>" . __( 'Settings Updated.', 'bp-example' ) . "</p></div>" ?><?php endif; ?>
+		<?php if ( isset( $updated ) ) : ?>
+			<div id='message' class='updated fade'>
+				<p><?php esc_html_e( 'Settings Updated.', 'bp-example' ); ?></p>
+			</div>
+		<?php endif; ?>
 
-		<form action="<?php echo site_url() . '/wp-admin/admin.php?page=bp-example-settings' ?>" name="example-settings-form" id="example-settings-form" method="post">
+		<form action="<?php echo esc_attr( site_url() . '/wp-admin/admin.php?page=bp-example-settings' ); ?>" name="example-settings-form" id="example-settings-form" method="post">
 
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="target_uri"><?php _e( 'Option One', 'bp-example' ) ?></label></th>
+					<th scope="row"><label for="target_uri"><?php esc_html_e( 'Option One', 'bp-example' ); ?></label></th>
 					<td>
 						<input name="example-setting-one" type="text" id="example-setting-one" value="<?php echo esc_attr( $setting_one ); ?>" size="60" />
 					</td>
 				</tr>
-					<th scope="row"><label for="target_uri"><?php _e( 'Option Two', 'bp-example' ) ?></label></th>
+					<th scope="row"><label for="target_uri"><?php esc_html_e( 'Option Two', 'bp-example' ) ?></label></th>
 					<td>
 						<input name="example-setting-two" type="text" id="example-setting-two" value="<?php echo esc_attr( $setting_two ); ?>" size="60" />
 					</td>
 				</tr>
 			</table>
 			<p class="submit">
-				<input type="submit" name="submit" value="<?php _e( 'Save Settings', 'bp-example' ) ?>"/>
+				<input type="submit" name="submit" value="<?php esc_attr_e( 'Save Settings', 'bp-example' ) ?>"/>
 			</p>
 
 			<?php
@@ -99,11 +103,13 @@ function bp_example_admin() {
 function bp_example_install_tables() {
 	global $wpdb;
 
-	if ( !is_super_admin() )
+	if ( ! current_user_can( 'bp_moderate' ) ) {
 		return;
+	}
 
-	if ( !empty($wpdb->charset) )
+	if ( ! empty( $wpdb->charset ) ) {
 		$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+	}
 
 	/**
 	 * If you want to create new tables you'll need to install them on
@@ -125,7 +131,9 @@ function bp_example_install_tables() {
 			    KEY recipient_id (recipient_id)
 		 	   ) {$charset_collate};";
 
-	//require_once( ABSPATH . 'wp-admin/upgrade.php' );
+	if ( ! function_exists( 'dbDelta' ) ) {
+		require_once( ABSPATH . 'wp-admin/upgrade.php' );
+	}
 
 	/**
 	 * The dbDelta call is commented out so the example table is not installed.
@@ -137,4 +145,3 @@ function bp_example_install_tables() {
 	update_site_option( 'bp-example-db-version', BP_EXAMPLE_DB_VERSION );
 }
 //add_action( 'admin_init', 'bp_example_install_tables' );
-?>
