@@ -280,7 +280,7 @@ class BP_Example_Component extends BP_Component {
 			'default_subnav_slug' => 'screen-one'
 		);
 
-		$example_link = trailingslashit( bp_loggedin_user_domain() . bp_get_example_slug() );
+		$example_link = trailingslashit( bp_displayed_user_domain() . bp_get_example_slug() );
 
 		// Add a few subnav items under the main Example tab
 		$sub_nav[] = array(
@@ -317,6 +317,21 @@ class BP_Example_Component extends BP_Component {
 			'position' 	  => 40,
 			'user_has_access' => bp_is_my_profile() // Only the logged in user can access this on his/her profile
 		) );
+	}
+
+	/**
+	 * Set up your component's actions.
+	 *
+	 * This is the global setup action. It creates all the needed sutup for this component.
+	 * You can add custom global action filters here; see BP_Example_Component::setup_actions().
+	 *
+	 * @global obj $bp
+	 */
+	function setup_actions() {
+		parent::setup_actions();
+
+		// add the high five send button to the members actions bar
+		add_action( 'bp_member_header_actions', 'bp_example_send_high_five_button',  20 );
 	}
 
 	/**

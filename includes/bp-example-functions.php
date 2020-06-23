@@ -30,18 +30,61 @@ function bp_example_load_template_filter( $found_template, $templates ) {
 	if ( $bp->current_component != $bp->example->slug )
 		return $found_template;
 
-	foreach ( (array) $templates as $template ) {
-		if ( file_exists( STYLESHEETPATH . '/' . $template ) )
-			$filtered_templates[] = STYLESHEETPATH . '/' . $template;
-		else
-			$filtered_templates[] = BP_EXAMPLE_PLUGIN_DIR . '/includes/templates/' . $template;
+	// $found_template is not empty when the older template files are found in the
+	// parent and child theme
+	//
+	//  /wp-content/themes/YOUR-THEME/members/single/example.php
+	//
+	// The older template files utilize a full template ( get_header() +
+	// get_footer() ), which sucks for themes and theme compat.
+	//
+	// When the older template files are not found, we use our new template method,
+	// which will act more like a template part.
+	if ( empty( $found_template ) ) {
+		// register our theme compat directory
+		//
+		// this tells BP to look for templates in our plugin directory last
+		// when the template isn't found in the parent / child theme
+		bp_register_template_stack( 'bp_example_get_template_directory', 14 );
+		// locate_template() will attempt to find the plugins.php template in the
+		// child and parent theme and return the located template when found
+		//
+		// plugins.php is the preferred template to use, since all we'd need to do is
+		// inject our content into BP
+		//
+		// note: this is only really relevant for bp-default themes as theme compat
+		// will kick in on its own when this template isn't found
+		$found_template = locate_template( 'members/single/plugins.php', false, false );
+		// add our hook to inject content into BP
+		//
+		// note the new template name for our template part
+		add_action( 'bp_template_content', function() use ($templates) {
+			foreach ($templates as $template) {
+				$template_name = str_replace(".php", "", $template);
+				// only add the template to the content when it's not the generic buddypress template
+				// to avoid infinite loop
+				if ("members/single/plugins" !== $template_name) {
+					bp_get_template_part($template_name);
+				}
+			}
+		} );
 	}
-
-	$found_template = $filtered_templates[0];
 
 	return apply_filters( 'bp_example_load_template_filter', $found_template );
 }
 add_filter( 'bp_located_template', 'bp_example_load_template_filter', 10, 2 );
+
+/**
+ * Get the BP Example template directory.
+ *
+ * @since 1.7
+ *
+ * @uses apply_filters()
+ * @return string
+ */
+function bp_example_get_template_directory() {
+	return apply_filters( 'bp_example_get_template_directory', constant( 'BP_EXAMPLE_PLUGIN_DIR' ) . '/includes/templates' );
+}
 
 /***
  * From now on you will want to add your own functions that are specific to the component you are developing.
@@ -165,6 +208,9 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 	delete_user_meta( $to_user_id, 'high-fives' );
 	/* Get existing fives */
 	$existing_fives = maybe_unserialize( get_user_meta( $to_user_id, 'high-fives', true ) );
+	if (!$existing_fives) {
+		$existing_fives = array();
+	}
 
 	/* Check to see if the user has already high-fived. That's okay, but lets not
 	 * store duplicate high-fives in the database. What's the point, right?
@@ -195,7 +241,15 @@ function bp_example_send_highfive( $to_user_id, $from_user_id ) {
 	 * Remember, like activity streams we need to tell the activity stream component how to format
 	 * this notification in bp_example_format_notifications() using the 'new_high_five' action.
 	 */
-	bp_core_add_notification( $from_user_id, $to_user_id, $bp->example->slug, 'new_high_five' );
+	bp_notifications_add_notification( array(
+		'item_id'           => $from_user_id,
+		'user_id'           => $to_user_id,
+		'component_name'    => $bp->example->slug,
+		'component_action'  => 'new_high_five',
+		'secondary_item_id' => 0,
+		'date_notified'     => false,
+		'is_new'            => 1
+	));
 
 	/* Now record the new 'new_high_five' activity item */
 	$to_user_link = bp_core_get_userlink( $to_user_id );

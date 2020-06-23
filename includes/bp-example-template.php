@@ -20,24 +20,24 @@
  * 	<?php if ( bp_get_example_has_items() ) : ?>
  *
  *		<?php while ( bp_get_example_items() ) : bp_get_example_the_item(); ?>
- *
- *			<p><?php bp_get_example_item_name() ?></p>
- *
- *		<?php endwhile; ?>
- *
- *	<?php else : ?>
- *
- *		<p class="error">No items!</p>
- *
- *	<?php endif; ?>
- *
- * Obviously, you'd want to be more specific than the word 'item'.
- *
- * In our example here, we've used a custom post type for storing and fetching our content. Though
- * the custom post type method is recommended, you can also create custom database tables for this
- * purpose. See bp-example-classes.php for more details.
- *
- */
+*
+*			<p><?php bp_get_example_item_name() ?></p>
+*
+*		<?php endwhile; ?>
+*
+*	<?php else : ?>
+*
+*		<p class="error">No items!</p>
+*
+*	<?php endif; ?>
+*
+* Obviously, you'd want to be more specific than the word 'item'.
+*
+* In our example here, we've used a custom post type for storing and fetching our content. Though
+* the custom post type method is recommended, you can also create custom database tables for this
+* purpose. See bp-example-classes.php for more details.
+*
+*/
 
 function bp_example_has_items( $args = '' ) {
 	global $bp, $items_template;
@@ -86,11 +86,12 @@ function bp_example_the_item() {
 function bp_example_item_name() {
 	echo bp_example_get_item_name();
 }
-	/* Always provide a "get" function for each template tag, that will return, not echo. */
-	function bp_example_get_item_name() {
-		global $items_template;
-		echo apply_filters( 'bp_example_get_item_name', $items_template->item->name ); // Example: $items_template->item->name;
-	}
+
+/* Always provide a "get" function for each template tag, that will return, not echo. */
+function bp_example_get_item_name() {
+	global $items_template;
+	echo apply_filters( 'bp_example_get_item_name', $items_template->item->name ); // Example: $items_template->item->name;
+}
 
 /**
  * Echo "Viewing x of y pages"
@@ -101,19 +102,20 @@ function bp_example_item_name() {
 function bp_example_pagination_count() {
 	echo bp_example_get_pagination_count();
 }
-	/**
-	 * Return "Viewing x of y pages"
-	 *
-	 * @package BuddyPress_Skeleton_Component
-	 * @since 1.6
-	 */
-	function bp_example_get_pagination_count() {
-		global $items_template;
 
-		$pagination_count = sprintf( __( 'Viewing page %1$s of %2$s', 'bp-example' ), $items_template->query->query_vars['paged'], $items_template->query->max_num_pages );
+/**
+ * Return "Viewing x of y pages"
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ */
+function bp_example_get_pagination_count() {
+	global $items_template;
 
-		return apply_filters( 'bp_example_get_pagination_count', $pagination_count );
-	}
+	$pagination_count = sprintf( __( 'Viewing page %1$s of %2$s', 'bp-example' ), $items_template->query->query_vars['paged'], $items_template->query->max_num_pages );
+
+	return apply_filters( 'bp_example_get_pagination_count', $pagination_count );
+}
 
 /**
  * Echo pagination links
@@ -124,16 +126,17 @@ function bp_example_pagination_count() {
 function bp_example_item_pagination() {
 	echo bp_example_get_item_pagination();
 }
-	/**
-	 * return pagination links
-	 *
-	 * @package BuddyPress_Skeleton_Component
-	 * @since 1.6
-	 */
-	function bp_example_get_item_pagination() {
-		global $items_template;
-		return apply_filters( 'bp_example_get_item_pagination', $items_template->pag_links );
-	}
+
+/**
+ * return pagination links
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ */
+function bp_example_get_item_pagination() {
+	global $items_template;
+	return apply_filters( 'bp_example_get_item_pagination', $items_template->pag_links );
+}
 
 /**
  * Echo the high-fiver avatar (post author)
@@ -144,25 +147,26 @@ function bp_example_item_pagination() {
 function bp_example_high_fiver_avatar( $args = array() ) {
 	echo bp_example_get_high_fiver_avatar( $args );
 }
-	/**
-	 * Return the high-fiver avatar (the post author)
-	 *
-	 * @package BuddyPress_Skeleton_Component
-	 * @since 1.6
-	 *
-	 * @param mixed $args Accepts WP style arguments - either a string of URL params, or an array
-	 * @return str The HTML for a user avatar
-	 */
-	function bp_example_get_high_fiver_avatar( $args = array() ) {
-		$defaults = array(
-			'item_id' => get_the_author_meta( 'ID' ),
-			'object'  => 'user'
-		);
 
-		$r = wp_parse_args( $args, $defaults );
+/**
+ * Return the high-fiver avatar (the post author)
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ *
+ * @param mixed $args Accepts WP style arguments - either a string of URL params, or an array
+ * @return str The HTML for a user avatar
+ */
+function bp_example_get_high_fiver_avatar( $args = array() ) {
+	$defaults = array(
+		'item_id' => get_the_author_meta( 'ID' ),
+		'object'  => 'user'
+	);
 
-		return bp_core_fetch_avatar( $r );
-	}
+	$r = wp_parse_args( $args, $defaults );
+
+	return bp_core_fetch_avatar( $r );
+}
 
 /**
  * Echo the "title" of the high-five
@@ -173,28 +177,29 @@ function bp_example_high_fiver_avatar( $args = array() ) {
 function bp_example_high_five_title() {
 	echo bp_example_get_high_five_title();
 }
-	/**
-	 * Return the "title" of the high-five
-	 *
-	 * We'll assemble the title out of the available information. This way, we can insert
-	 * fancy stuff link links, and secondary avatars.
-	 *
-	 * @package BuddyPress_Skeleton_Component
-	 * @since 1.6
-	 */
-	function bp_example_get_high_five_title() {
-		// First, set up the high fiver's information
-		$high_fiver_link = bp_core_get_userlink( get_the_author_meta( 'ID' ) );
 
-		// Next, get the information for the high five recipient
-		$recipient_id    = get_post_meta( get_the_ID(), 'bp_example_recipient_id', true );
-		$recipient_link  = bp_core_get_userlink( $recipient_id );
+/**
+ * Return the "title" of the high-five
+ *
+ * We'll assemble the title out of the available information. This way, we can insert
+ * fancy stuff link links, and secondary avatars.
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ */
+function bp_example_get_high_five_title() {
+	// First, set up the high fiver's information
+	$high_fiver_link = bp_core_get_userlink( get_the_author_meta( 'ID' ) );
 
-		// Use sprintf() to make a translatable message
-		$title 		 = sprintf( __( '%1$s gave %2$s a high-five!', 'bp-example' ), $high_fiver_link, $recipient_link );
+	// Next, get the information for the high five recipient
+	$recipient_id    = get_post_meta( get_the_ID(), 'bp_example_recipient_id', true );
+	$recipient_link  = bp_core_get_userlink( $recipient_id );
 
-		return apply_filters( 'bp_example_get_high_five_title', $title, $high_fiver_link, $recipient_link );
-	}
+	// Use sprintf() to make a translatable message
+	$title 		 = sprintf( __( '%1$s gave %2$s a high-five!', 'bp-example' ), $high_fiver_link, $recipient_link );
+
+	return apply_filters( 'bp_example_get_high_five_title', $title, $high_fiver_link, $recipient_link );
+}
 
 /**
  * Is this page part of the Example component?
@@ -224,26 +229,27 @@ function bp_is_example_component() {
 function bp_example_slug() {
 	echo bp_get_example_slug();
 }
-	/**
-	 * Return the component's slug
-	 *
-	 * Having a template function for this purpose is not absolutely necessary, but it helps to
-	 * avoid too-frequent direct calls to the $bp global.
-	 *
-	 * @package BuddyPress_Skeleton_Component
-	 * @since 1.6
-	 *
-	 * @uses apply_filters() Filter 'bp_get_example_slug' to change the output
-	 * @return str $example_slug The slug from $bp->example->slug, if it exists
-	 */
-	function bp_get_example_slug() {
-		global $bp;
 
-		// Avoid PHP warnings, in case the value is not set for some reason
-		$example_slug = isset( $bp->example->slug ) ? $bp->example->slug : '';
+/**
+ * Return the component's slug
+ *
+ * Having a template function for this purpose is not absolutely necessary, but it helps to
+ * avoid too-frequent direct calls to the $bp global.
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ *
+ * @uses apply_filters() Filter 'bp_get_example_slug' to change the output
+ * @return str $example_slug The slug from $bp->example->slug, if it exists
+ */
+function bp_get_example_slug() {
+	global $bp;
 
-		return apply_filters( 'bp_get_example_slug', $example_slug );
-	}
+	// Avoid PHP warnings, in case the value is not set for some reason
+	$example_slug = isset( $bp->example->slug ) ? $bp->example->slug : '';
+
+	return apply_filters( 'bp_get_example_slug', $example_slug );
+}
 
 /**
  * Echo the component's root slug
@@ -254,26 +260,27 @@ function bp_example_slug() {
 function bp_example_root_slug() {
 	echo bp_get_example_root_slug();
 }
-	/**
-	 * Return the component's root slug
-	 *
-	 * Having a template function for this purpose is not absolutely necessary, but it helps to
-	 * avoid too-frequent direct calls to the $bp global.
-	 *
-	 * @package BuddyPress_Skeleton_Component
-	 * @since 1.6
-	 *
-	 * @uses apply_filters() Filter 'bp_get_example_root_slug' to change the output
-	 * @return str $example_root_slug The slug from $bp->example->root_slug, if it exists
-	 */
-	function bp_get_example_root_slug() {
-		global $bp;
 
-		// Avoid PHP warnings, in case the value is not set for some reason
-		$example_root_slug = isset( $bp->example->root_slug ) ? $bp->example->root_slug : '';
+/**
+ * Return the component's root slug
+ *
+ * Having a template function for this purpose is not absolutely necessary, but it helps to
+ * avoid too-frequent direct calls to the $bp global.
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ *
+ * @uses apply_filters() Filter 'bp_get_example_root_slug' to change the output
+ * @return str $example_root_slug The slug from $bp->example->root_slug, if it exists
+ */
+function bp_get_example_root_slug() {
+	global $bp;
 
-		return apply_filters( 'bp_get_example_root_slug', $example_root_slug );
-	}
+	// Avoid PHP warnings, in case the value is not set for some reason
+	$example_root_slug = isset( $bp->example->root_slug ) ? $bp->example->root_slug : '';
+
+	return apply_filters( 'bp_get_example_root_slug', $example_root_slug );
+}
 
 /**
  * Echo the total of all high-fives across the site
@@ -284,24 +291,25 @@ function bp_example_root_slug() {
 function bp_example_total_high_five_count() {
 	echo bp_example_get_total_high_five_count();
 }
-	/**
-	 * Return the total of all high-fives across the site
-	 *
-	 * The most straightforward way to get a post count is to run a WP_Query. In your own plugin
-	 * you might consider storing data like this with update_option(), incrementing each time
-	 * a new item is published.
-	 *
-	 * @package BuddyPress_Skeleton_Component
-	 * @since 1.6
-	 *
-	 * @return int
-	 */
-	function bp_example_get_total_high_five_count() {
-		$high_fives = new BP_Example_Highfive();
-		$high_fives->get();
 
-		return apply_filters( 'bp_example_get_total_high_five_count', $high_fives->query->found_posts, $high_fives );
-	}
+/**
+ * Return the total of all high-fives across the site
+ *
+ * The most straightforward way to get a post count is to run a WP_Query. In your own plugin
+ * you might consider storing data like this with update_option(), incrementing each time
+ * a new item is published.
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ *
+ * @return int
+ */
+function bp_example_get_total_high_five_count() {
+	$high_fives = new BP_Example_Highfive();
+	$high_fives->get();
+
+	return apply_filters( 'bp_example_get_total_high_five_count', $high_fives->query->found_posts, $high_fives );
+}
 
 /**
  * Echo the total of all high-fives given to a particular user
@@ -312,32 +320,81 @@ function bp_example_total_high_five_count() {
 function bp_example_total_high_five_count_for_user( $user_id = false ) {
 	echo bp_example_get_total_high_five_count_for_user( $user_id = false );
 }
-	/**
-	 * Return the total of all high-fives given to a particular user
-	 *
-	 * The most straightforward way to get a post count is to run a WP_Query. In your own plugin
-	 * you might consider storing data like this with update_option(), incrementing each time
-	 * a new item is published.
-	 *
-	 * @package BuddyPress_Skeleton_Component
-	 * @since 1.6
-	 *
-	 * @return int
-	 */
-	function bp_example_get_total_high_five_count_for_user( $user_id = false ) {
-		// If no explicit user id is passed, fall back on the loggedin user
-		if ( !$user_id ) {
-			$user_id = bp_loggedin_user_id();
-		}
 
-		if ( !$user_id ) {
-			return 0;
-		}
-
-		$high_fives = new BP_Example_Highfive();
-		$high_fives->get( array( 'recipient_id' => $user_id ) );
-
-		return apply_filters( 'bp_example_get_total_high_five_count', $high_fives->query->found_posts, $high_fives );
+/**
+ * Return the total of all high-fives given to a particular user
+ *
+ * The most straightforward way to get a post count is to run a WP_Query. In your own plugin
+ * you might consider storing data like this with update_option(), incrementing each time
+ * a new item is published.
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ *
+ * @return int
+ */
+function bp_example_get_total_high_five_count_for_user( $user_id = false ) {
+	// If no explicit user id is passed, fall back on the loggedin user
+	if ( !$user_id ) {
+		$user_id = bp_loggedin_user_id();
 	}
+
+	if ( !$user_id ) {
+		return 0;
+	}
+
+	$high_fives = new BP_Example_Highfive();
+	$high_fives->get( array( 'recipient_id' => $user_id ) );
+
+	return apply_filters( 'bp_example_get_total_high_five_count', $high_fives->query->found_posts, $high_fives );
+}
+
+
+function bp_example_send_high_five_button( $args = '' ) {
+	echo bp_example_get_send_high_five_button( $args );
+}
+
+/**
+ * Return button for sending high-fives.
+ *
+ * @package BuddyPress_Skeleton_Component
+ * @since 1.6
+ *
+ * @param array|string $args {
+ *     All arguments are optional. See {@link BP_Button} for complete
+ *     descriptions.
+ *     @type string $id                Default: 'bp_example_high_five'.
+ *     @type string $component         Default: 'member'.
+ *     @type bool   $must_be_logged_in Default: true.
+ *     @type bool   $block_self        Default: true.
+ *     @type string $wrapper_id        Default: 'bp-example-send-high-five'.
+ *     @type string $link_href         Default: the public message link for
+ *                                     the current member in the loop.
+ *     @type string $link_text         Default: 'Send high-five!'.
+ *     @type string $link_class        Default: 'bp-example-button bp-example-high-five'.
+ * }
+ * @return string The button for sending a high five.
+ */
+function bp_example_get_send_high_five_button( $args = '' ) {
+
+	$r = bp_parse_args( $args, array(
+		'id'                => 'bp_example_high_five',
+		'component'         => 'example',
+		'must_be_logged_in' => true,
+		'block_self'        => true,
+		'wrapper_id'        => 'bp-example-send-high-five',
+		'link_href'         => bp_example_get_send_high_five_link(),
+		'link_text'         => __( 'Send high-five!', 'bp-example' ),
+		'link_class'        => 'bp-example-button bp-example-high-five',
+		'parent_element'	=> bp_get_theme_package_id() == 'nouveau' ? 'li' : 'div'
+	) );
+
+	return bp_get_button( apply_filters( 'bp_example_get_send_high_five_button', $r ) );
+}
+
+function bp_example_get_send_high_five_link() {
+	return wp_nonce_url( bp_displayed_user_domain() . bp_get_example_slug() . '/screen-one/send-h5/', 'bp_example_send_high_five');
+}
+
 
 ?>
