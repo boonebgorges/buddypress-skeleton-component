@@ -19,7 +19,7 @@ add_action( 'plugins_loaded', 'bp_example_register_widgets' );
 
 class BP_Example_Widget extends WP_Widget {
 
-	function bp_example_widget() {
+	function __construct() {
 		parent::WP_Widget( false, $name = __( 'Example Widget', 'buddypress' ) );
 	}
 
