@@ -186,7 +186,6 @@ To see %2$s\'s profile: %3$s
 To send %4$s a high five: %5$s
 
 ---------------------
-'
 			To see % s\'s profile: %s
 
 To send %s a high five: %s
